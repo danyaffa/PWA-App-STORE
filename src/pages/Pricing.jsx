@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
-import { useToast } from '../hooks/useToast.js'
+import { useToast } from '../hooks/useToast.jsx'
 import styles from './Pricing.module.css'
 
 const PLANS = [

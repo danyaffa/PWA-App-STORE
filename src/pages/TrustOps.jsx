@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useToast } from '../hooks/useToast.js'
+import { useToast } from '../hooks/useToast.jsx'
 import styles from './TrustOps.module.css'
 
 const QUEUE = [
