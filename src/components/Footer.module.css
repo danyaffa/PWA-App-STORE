@@ -1,0 +1,19 @@
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto;
+  color: var(--muted); font-size: 0.85rem;
+  flex-wrap: wrap; gap: 16px;
+}
+.logo {
+  font-family: var(--font-display); font-size: 1.2rem;
+  color: var(--text);
+}
+.logo span { color: var(--accent); }
+.links { display: flex; gap: 24px; }
+.links a { color: var(--muted); transition: color .2s; }
+.links a:hover { color: var(--accent); }
+@media (max-width: 768px) {
+  .footer { flex-direction: column; text-align: center; }
+}

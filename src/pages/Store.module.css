@@ -1,0 +1,25 @@
+.featured {
+  background: linear-gradient(135deg, var(--surface), rgba(0,229,160,.05));
+  border: 1px solid rgba(0,229,160,.2); border-radius: var(--radius-lg);
+  padding: 32px 36px; margin: 40px 0 48px;
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+}
+.featuredEmoji { font-size: 3rem; }
+.featuredInfo { flex: 1; min-width: 200px; }
+.featuredLabel { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.featuredName  { font-weight: 700; font-size: 1.3rem; margin-bottom: 6px; }
+.featuredDesc  { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+.controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+.filters  { display: flex; gap: 10px; flex-wrap: wrap; }
+.filterBtn {
+  padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all .2s; letter-spacing: 0.04em;
+}
+.filterBtn:hover, .active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,.05); }
+.search { width: 240px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.empty { text-align: center; color: var(--muted); padding: 80px 20px; }

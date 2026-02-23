@@ -1,0 +1,71 @@
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 40px 60px;
+  position: relative; overflow: hidden;
+}
+.grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,229,160,.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,229,160,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+}
+.orb1 { width:500px; height:500px; background:rgba(0,229,160,.08); top:10%; left:-10%; }
+.orb2 { width:400px; height:400px; background:rgba(124,111,255,.08); bottom:10%; right:-5%; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  border: 1px solid rgba(0,229,160,.3); background: rgba(0,229,160,.05);
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 32px; position: relative; z-index: 1;
+}
+.pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.1;
+  letter-spacing: -0.03em; max-width: 800px; margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.h1 em { font-style: italic; color: var(--accent); }
+
+.sub {
+  font-size: 1.1rem; color: var(--muted); max-width: 560px;
+  line-height: 1.7; margin-bottom: 40px; position: relative; z-index: 1;
+}
+
+.actions {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 80px; position: relative; z-index: 1;
+}
+
+.stats {
+  display: flex; gap: 60px; justify-content: center;
+  padding-top: 60px; border-top: 1px solid var(--border);
+  width: 100%; max-width: 700px; position: relative; z-index: 1;
+}
+.stat { text-align: center; }
+.statNum { font-size: 2.5rem; color: var(--text); }
+.statLabel { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+.features {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; padding: 100px 40px;
+  max-width: 1200px; margin: 0 auto;
+}
+.featCard { padding: 36px; transition: border-color .2s; }
+.featCard:hover { border-color: rgba(0,229,160,.3); }
+.featIcon { font-size: 2.4rem; margin-bottom: 20px; display: block; }
+.featTitle { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+.featDesc { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+@media (max-width: 768px) {
+  .hero { padding: 80px 20px 40px; }
+  .stats { gap: 30px; }
+  .features { grid-template-columns: 1fr; padding: 60px 20px; }
+}

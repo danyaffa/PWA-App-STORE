@@ -1,0 +1,36 @@
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 0; position: fixed; top: 0; left: 0; }
+.logo { font-family: var(--font-display); font-size: 1.3rem; padding: 0 24px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; display: block; color: var(--text); }
+.logo span { color: var(--accent); }
+.adminTag { background: rgba(255,77,109,.15); color: var(--danger); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 100px; vertical-align: middle; }
+.navSection { padding: 0 12px; margin-bottom: 8px; }
+.navLabel   { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; margin-bottom: 4px; }
+.navItem    { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--muted); font-size: 0.87rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+.navItem:hover { background: var(--surface2); color: var(--text); }
+.navActive  { background: rgba(255,77,109,.1) !important; color: var(--danger) !important; }
+.navBadge   { background: var(--danger); color: #fff; border-radius: 100px; padding: 1px 7px; font-size: 0.65rem; margin-left: auto; }
+
+.main { margin-left: 240px; flex: 1; padding: 40px; }
+.topBar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.pageTitle { font-size: 2rem; }
+
+.qStats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+.qStat  { padding: 20px; text-align: center; }
+.qNum   { font-size: 2.2rem; line-height: 1; }
+.qLabel { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px; }
+
+.qItem { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 16px; overflow: hidden; }
+.q_block  { border-left: 4px solid var(--danger); }
+.q_review { border-left: 4px solid var(--warn); }
+.qHeader  { display: flex; align-items: center; gap: 20px; padding: 20px 24px; cursor: pointer; flex-wrap: wrap; gap: 16px; }
+.qScore   { font-size: 2.4rem; min-width: 56px; text-align: center; line-height: 1; }
+.qInfo    { flex: 1; min-width: 200px; }
+.qActions { display: flex; gap: 8px; flex-wrap: wrap; }
+.qExpand  { background: var(--bg); border-top: 1px solid var(--border); padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; }
+.finding  { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border-radius: 8px; padding: 10px 14px; }
+.fdot     { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+
+.overlay  { position: fixed; inset: 0; background: rgba(0,0,0,.8); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.modal    { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 36px; max-width: 460px; width: 90%; }
+
+@media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; } .qStats { grid-template-columns: 1fr 1fr; } }
