@@ -27,7 +27,7 @@ export default function Safety() {
         <div style={{marginBottom:80}}>
           {PIPELINE_STAGES.map((s, i) => (
             <div key={s.num} style={{display:'flex',alignItems:'flex-start',gap:24,padding:'28px 0',borderBottom:'1px solid var(--border)',cursor:'pointer'}} onClick={() => setOpen(open===i?null:i)}>
-              <div style={{width:48,height:48,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:'0.85rem',flexShrink:0,border:'2px solid var(--accent)',color:'var(--accent)',transition:'all .3s',background: open===i?'var(--accent)':'transparent',color: open===i?'#0a0a0f':'var(--accent)'}}>{s.num}</div>
+              <div style={{width:48,height:48,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:'0.85rem',flexShrink:0,border:'2px solid var(--accent)',transition:'all .3s',background: open===i?'var(--accent)':'transparent',color: open===i?'#0a0a0f':'var(--accent)'}}>{s.num}</div>
               <div style={{flex:1}}>
                 <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6,flexWrap:'wrap',gap:8}}>
                   <strong style={{fontSize:'1.05rem'}}>{s.title}</strong>
