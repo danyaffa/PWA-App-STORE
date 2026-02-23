@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import { APPS } from '../utils/data.js'
-import { useToast } from '../hooks/useToast.jsx'
+import { useToast } from '../hooks/useToast.js'
 import styles from './ScanReport.module.css'
 
 const STAGES = [

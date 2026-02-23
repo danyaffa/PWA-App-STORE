@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import { SCAN_STEPS } from '../utils/data.js'
-import { useToast } from '../hooks/useToast.jsx'
+import { useToast } from '../hooks/useToast.js'
 import styles from './Publish.module.css'
 
 const STEPS = ['Upload', 'Configure', 'Scan', 'Publish']

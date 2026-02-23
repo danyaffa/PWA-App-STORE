@@ -3,7 +3,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
 import { APPS, CATEGORIES } from '../utils/data.js'
-import { useToast } from '../hooks/useToast'
+import { useToast } from '../hooks/useToast.js'
 import styles from './Store.module.css'
 
 export default function Store() {
