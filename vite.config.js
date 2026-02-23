@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({ include: /\.(jsx|js)$/ }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
