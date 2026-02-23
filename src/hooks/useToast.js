@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, createElement } from 'react'
 
 export function useToast() {
   const [toasts, setToasts] = useState([])
@@ -9,11 +9,15 @@ export function useToast() {
     setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration)
   }, [])
 
-  const ToastContainer = () => (
-    <div style={{ position:'fixed', bottom:30, right:30, zIndex:999, display:'flex', flexDirection:'column', gap:10 }}>
-      {toasts.map(t => <div key={t.id} className="toast">{t.msg}</div>)}
-    </div>
-  )
+  const ToastContainer = () => {
+    return createElement(
+      'div',
+      { style: { position:'fixed', bottom:30, right:30, zIndex:999, display:'flex', flexDirection:'column', gap:10 } },
+      toasts.map(t =>
+        createElement('div', { key: t.id, className: 'toast' }, t.msg)
+      )
+    )
+  }
 
   return { toast, ToastContainer }
 }
