@@ -29,6 +29,8 @@ export default function Footer() {
             <h4>Legal</h4>
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms of Service</Link>
+            <Link to="/developer-agreement">Developer Agreement</Link>
+            <Link to="/dmca">DMCA / Content Removal</Link>
             <Link to="/support">Contact</Link>
           </div>
         </div>

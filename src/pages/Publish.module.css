@@ -73,6 +73,11 @@
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 16px;
 }
+.selfCert {
+  margin-top: 24px; padding: 20px;
+  background: rgba(0,229,160,.04); border: 1px solid rgba(0,229,160,.15);
+  border-radius: var(--radius-md);
+}
 @media (max-width: 768px) {
   .formGrid { grid-template-columns: 1fr; }
   .steps { overflow-x: auto; }

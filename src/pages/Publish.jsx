@@ -1,13 +1,21 @@
-import { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { SCAN_STEPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Publish.module.css'
 
 const STEPS = ['Upload', 'Configure', 'Scan', 'Publish']
+
+function hasDevAgreement() {
+  try {
+    const stored = JSON.parse(localStorage.getItem('sl_dev_agreement') || 'null')
+    return stored && stored.version
+  } catch { return false }
+}
 
 export default function Publish() {
   const [tab,        setTab]        = useState('zip')
@@ -18,8 +26,18 @@ export default function Publish() {
   const [scanIdx,    setScanIdx]    = useState(-1)
   const [logs,       setLogs]       = useState([])
   const [done,       setDone]       = useState(false)
+  const [selfCert,   setSelfCert]   = useState({ noMalware: false, copyright: false, legal: false })
   const { toast, ToastContainer } = useToast()
+  const { user, isConfigured } = useAuth()
+  const navigate = useNavigate()
   const logRef = useRef()
+
+  // Agreement gate: redirect to /developer-agreement if not accepted
+  useEffect(() => {
+    if (!hasDevAgreement()) {
+      navigate('/developer-agreement', { replace: true })
+    }
+  }, [])
 
   function handleFile(e) {
     const f = e.target.files?.[0] || e.dataTransfer?.files?.[0]
@@ -108,8 +126,28 @@ export default function Publish() {
                   <div className="form-group"><label>Privacy Policy URL</label><input className="input" type="url" placeholder="https://yoursite.com/privacy" /></div>
                   <div className="form-group"><label>Contact Email</label><input className="input" type="email" placeholder="hello@yourapp.com" /></div>
                 </div>
+                {/* Self-certification */}
+                <div className={styles.selfCert}>
+                  <h4 style={{ fontSize: '0.88rem', fontWeight: 700, marginBottom: 12 }}>Developer Self-Certification</h4>
+                  {[
+                    ['noMalware', 'My application contains no malware, spyware, or crypto-miners.'],
+                    ['copyright', 'I own or have rights to all content and code in this submission.'],
+                    ['legal', 'My app complies with all applicable laws and does not promote illegal activity.'],
+                  ].map(([key, label]) => (
+                    <label key={key} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer', marginBottom: 10, fontSize: '0.85rem', lineHeight: 1.5 }}>
+                      <input type="checkbox" checked={selfCert[key]} onChange={e => setSelfCert(prev => ({ ...prev, [key]: e.target.checked }))} style={{ marginTop: 3, accentColor: 'var(--accent)' }} />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+
                 <div className={styles.btnRow}>
-                  <button className="btn btn-primary" onClick={startScan}>🚀 Build & Scan</button>
+                  <button
+                    className="btn btn-primary"
+                    disabled={!selfCert.noMalware || !selfCert.copyright || !selfCert.legal}
+                    onClick={startScan}
+                    style={{ opacity: (selfCert.noMalware && selfCert.copyright && selfCert.legal) ? 1 : 0.5 }}
+                  >🚀 Build & Scan</button>
                   <button className="btn btn-ghost"   onClick={() => toast('💾 Draft saved')}>Save Draft</button>
                 </div>
               </div>
