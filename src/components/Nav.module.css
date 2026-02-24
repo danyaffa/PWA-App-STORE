@@ -29,6 +29,22 @@
 }
 .link:hover, .active { color: var(--accent); }
 
+/* Nav search bar */
+.navSearch {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: 4px 14px;
+  transition: border-color .2s;
+}
+.navSearch:focus-within { border-color: var(--accent); }
+.navSearchIcon { font-size: 0.8rem; }
+.navSearchInput {
+  border: none; background: transparent; outline: none;
+  color: var(--text); font-size: 0.82rem; padding: 6px 0;
+  width: 180px; font-family: var(--font-body);
+}
+.navSearchInput::placeholder { color: var(--muted); }
+
 .actions { display: flex; gap: 12px; }
 
 /* Hamburger */
@@ -50,6 +66,14 @@
 @media (max-width: 768px) {
   .nav { padding: 16px 20px; }
   .hamburger { display: flex; }
+
+  .navSearch {
+    display: none;
+    width: calc(100% - 40px); margin: 0 auto;
+    position: fixed; top: calc(var(--nav-h) + 12px); left: 20px; right: 20px;
+    z-index: 99;
+  }
+  .navSearch.menuOpen { display: flex; }
 
   .links {
     display: none;

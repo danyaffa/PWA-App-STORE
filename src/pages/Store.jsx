@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
@@ -48,10 +48,17 @@ const RISING_FAST = [...APPS].sort((a, b) => (b.installVelocity || 0) - (a.insta
 const FEATURED = TRENDING[0]
 
 export default function Store() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState('All')
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('q') || '')
   const [sort, setSort]     = useState('ranking')
   const { toast, ToastContainer } = useToast()
+
+  // Sync search from URL query param (e.g. /store?q=focus)
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q && q !== search) setSearch(q)
+  }, [searchParams])
 
   const filtered = APPS.filter(a =>
     (filter === 'All' || a.category === filter) &&
@@ -79,8 +86,34 @@ export default function Store() {
         <div className="section-label">The SafeLaunch Store</div>
         <h1 className="section-title display">AI-Verified Apps.<br />Every Single One.</h1>
 
+        {/* Hero search bar — always visible at top */}
+        <div className={styles.heroSearch}>
+          <div className={styles.heroSearchInner}>
+            <span className={styles.heroSearchIcon}>🔍</span>
+            <input
+              className={styles.heroSearchInput}
+              type="search"
+              placeholder="Search by app name, category, or keyword..."
+              value={search}
+              onChange={handleSearch}
+            />
+            {search && (
+              <button className={styles.heroSearchClear} onClick={() => setSearch('')} aria-label="Clear search">✕</button>
+            )}
+          </div>
+          <div className={styles.heroFilters}>
+            {CATEGORIES.map(c => (
+              <button
+                key={c}
+                className={`${styles.filterBtn} ${filter === c ? styles.active : ''}`}
+                onClick={() => setFilter(c)}
+              >{c}</button>
+            ))}
+          </div>
+        </div>
+
         {/* Featured strip — algorithm selected */}
-        {FEATURED && (
+        {showSections && FEATURED && (
           <div className={styles.featured}>
             <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
             <div className={styles.featuredInfo}>
@@ -132,30 +165,12 @@ export default function Store() {
           </>
         )}
 
-        {/* Filters + search + sort */}
-        <h2 className={styles.sectionTitle} style={{ marginTop: showSections ? 48 : 0 }}>All Apps</h2>
-        <div className={styles.controls}>
-          <div className={styles.filters}>
-            {CATEGORIES.map(c => (
-              <button
-                key={c}
-                className={`${styles.filterBtn} ${filter === c ? styles.active : ''}`}
-                onClick={() => setFilter(c)}
-              >{c}</button>
-            ))}
-          </div>
-          <div className={styles.controlsRight}>
-            <select className={`input ${styles.sortSelect}`} value={sort} onChange={e => setSort(e.target.value)}>
-              {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-            <input
-              className={`input ${styles.search}`}
-              type="search"
-              placeholder="Search apps..."
-              value={search}
-              onChange={handleSearch}
-            />
-          </div>
+        {/* All Apps heading + sort */}
+        <div className={styles.allAppsHeader}>
+          <h2 className={styles.sectionTitle} style={{ margin: 0 }}>{search || filter !== 'All' ? `Results${search ? ` for "${search}"` : ''}${filter !== 'All' ? ` in ${filter}` : ''}` : 'All Apps'}</h2>
+          <select className={`input ${styles.sortSelect}`} value={sort} onChange={e => setSort(e.target.value)}>
+            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
         </div>
 
         {visible.length === 0
