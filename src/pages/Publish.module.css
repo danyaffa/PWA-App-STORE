@@ -113,32 +113,6 @@
   flex-shrink: 0;
 }
 
-/* ── Screenshots ── */
-.screenshotGrid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-}
-.screenshotEntry {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); overflow: hidden;
-}
-.ssPreviewBox {
-  height: 56px; display: flex; align-items: center; justify-content: center;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-}
-.ssFields {
-  padding: 10px; display: flex; flex-direction: column; gap: 8px;
-}
-.ssColorRow {
-  display: flex; gap: 8px; align-items: center;
-}
-.colorPicker {
-  width: 36px; height: 36px; padding: 0; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); cursor: pointer;
-  background: none;
-}
-.colorPicker::-webkit-color-swatch-wrapper { padding: 2px; }
-.colorPicker::-webkit-color-swatch { border: none; border-radius: 4px; }
-
 /* ── Pricing Toggle ── */
 .pricingToggle {
   display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;
@@ -219,7 +193,6 @@
 
 @media (max-width: 768px) {
   .formGrid { grid-template-columns: 1fr; }
-  .screenshotGrid { grid-template-columns: 1fr; }
   .pricingToggle { grid-template-columns: 1fr; }
   .steps { overflow-x: auto; }
   .stepLabel { display: none; }
