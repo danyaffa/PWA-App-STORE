@@ -8,6 +8,7 @@ import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
 import ReportApp from '../components/ReportApp.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
+import { useInstallState } from '../hooks/useInstallState.js'
 import { trackView, trackInstall } from '../lib/analytics.js'
 import styles from './AppDetail.module.css'
 
@@ -43,15 +44,211 @@ const VERSIONS = [
   { ver: '2.2.0', date: '18 Dec 2025', score: 7,  build: 'c3d9f44', current: false },
 ]
 
-function getInstalledApps() {
-  try { return JSON.parse(localStorage.getItem('installedApps') || '[]') } catch { return [] }
-}
+/* ── Screenshot Mockup Component ── */
+function ScreenshotMockup({ type, color }) {
+  const bg = 'rgba(255,255,255,.12)'
+  const bg2 = 'rgba(255,255,255,.08)'
+  const text = 'rgba(255,255,255,.5)'
 
-function markAppInstalled(appId) {
-  const installed = getInstalledApps()
-  if (!installed.includes(appId)) {
-    installed.push(appId)
-    localStorage.setItem('installedApps', JSON.stringify(installed))
+  switch (type) {
+    case 'editor':
+      return (
+        <div className={styles.mockup}>
+          <div style={{ display:'flex', gap:4, marginBottom:6 }}>
+            <div style={{ width:8, height:8, borderRadius:'50%', background:'#ff5f56' }} />
+            <div style={{ width:8, height:8, borderRadius:'50%', background:'#ffbd2e' }} />
+            <div style={{ width:8, height:8, borderRadius:'50%', background:'#27c93f' }} />
+          </div>
+          <div style={{ height:3, width:'40%', background:bg, borderRadius:2, marginBottom:6 }} />
+          <div style={{ display:'flex', gap:4, flex:1 }}>
+            <div style={{ flex:1, background:bg2, borderRadius:4, padding:4, display:'flex', flexDirection:'column', gap:3 }}>
+              <div style={{ height:2, width:'90%', background:'rgba(130,180,255,.4)', borderRadius:1 }} />
+              <div style={{ height:2, width:'70%', background:'rgba(180,130,255,.3)', borderRadius:1 }} />
+              <div style={{ height:2, width:'85%', background:'rgba(130,230,160,.3)', borderRadius:1 }} />
+              <div style={{ height:2, width:'60%', background:'rgba(255,180,100,.3)', borderRadius:1 }} />
+              <div style={{ height:2, width:'75%', background:'rgba(130,180,255,.4)', borderRadius:1 }} />
+            </div>
+            <div style={{ width:'35%', background:bg2, borderRadius:4 }} />
+          </div>
+        </div>
+      )
+
+    case 'list':
+      return (
+        <div className={styles.mockup}>
+          {[85, 70, 90, 60].map((w, i) => (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
+              <div style={{ width:10, height:10, borderRadius:3, border:`1.5px solid ${i < 2 ? 'rgba(0,229,160,.6)' : bg}`, background: i < 2 ? 'rgba(0,229,160,.2)' : 'transparent', flexShrink:0 }} />
+              <div style={{ height:3, width:`${w}%`, background:bg, borderRadius:2 }} />
+            </div>
+          ))}
+        </div>
+      )
+
+    case 'grid':
+      return (
+        <div className={styles.mockup}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:5, flex:1 }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ background:bg, borderRadius:5, minHeight:24 }} />
+            ))}
+          </div>
+        </div>
+      )
+
+    case 'player':
+      return (
+        <div className={styles.mockup} style={{ alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:36, height:36, borderRadius:6, background:bg, marginBottom:8 }} />
+          <div style={{ height:3, width:'70%', background:bg, borderRadius:2, marginBottom:4 }} />
+          <div style={{ height:2, width:'50%', background:bg2, borderRadius:2, marginBottom:8 }} />
+          <div style={{ height:3, width:'80%', background:bg2, borderRadius:2, marginBottom:4, position:'relative' }}>
+            <div style={{ position:'absolute', left:0, top:0, height:'100%', width:'35%', background:'rgba(255,255,255,.35)', borderRadius:2 }} />
+          </div>
+          <div style={{ display:'flex', gap:10, marginTop:4 }}>
+            <div style={{ width:0, height:0, borderLeft:'6px solid rgba(255,255,255,.5)', borderTop:'4px solid transparent', borderBottom:'4px solid transparent' }} />
+            <div style={{ width:8, height:8, borderRadius:'50%', background:'rgba(255,255,255,.4)' }} />
+            <div style={{ width:0, height:0, borderLeft:'6px solid rgba(255,255,255,.5)', borderTop:'4px solid transparent', borderBottom:'4px solid transparent' }} />
+          </div>
+        </div>
+      )
+
+    case 'chat':
+      return (
+        <div className={styles.mockup} style={{ justifyContent:'flex-end' }}>
+          <div style={{ alignSelf:'flex-start', background:bg, borderRadius:'8px 8px 8px 2px', padding:'4px 8px', marginBottom:4, maxWidth:'75%' }}>
+            <div style={{ height:2, width:40, background:text, borderRadius:1 }} />
+          </div>
+          <div style={{ alignSelf:'flex-end', background:'rgba(0,229,160,.2)', borderRadius:'8px 8px 2px 8px', padding:'4px 8px', marginBottom:4, maxWidth:'75%' }}>
+            <div style={{ height:2, width:50, background:'rgba(0,229,160,.5)', borderRadius:1 }} />
+          </div>
+          <div style={{ alignSelf:'flex-start', background:bg, borderRadius:'8px 8px 8px 2px', padding:'4px 8px', maxWidth:'75%' }}>
+            <div style={{ height:2, width:35, background:text, borderRadius:1, marginBottom:2 }} />
+            <div style={{ height:2, width:25, background:text, borderRadius:1 }} />
+          </div>
+        </div>
+      )
+
+    case 'map':
+      return (
+        <div className={styles.mockup} style={{ position:'relative' }}>
+          <div style={{ flex:1, background:bg2, borderRadius:6, position:'relative', overflow:'hidden' }}>
+            {/* Map grid lines */}
+            <div style={{ position:'absolute', top:'20%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
+            <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
+            <div style={{ position:'absolute', top:'80%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
+            <div style={{ position:'absolute', left:'30%', top:0, bottom:0, width:1, background:'rgba(255,255,255,.06)' }} />
+            <div style={{ position:'absolute', left:'65%', top:0, bottom:0, width:1, background:'rgba(255,255,255,.06)' }} />
+            {/* Map road */}
+            <div style={{ position:'absolute', top:'35%', left:'10%', width:'80%', height:3, background:'rgba(255,255,255,.15)', borderRadius:2, transform:'rotate(-8deg)' }} />
+            <div style={{ position:'absolute', top:'55%', left:'20%', width:'60%', height:3, background:'rgba(255,255,255,.15)', borderRadius:2, transform:'rotate(5deg)' }} />
+            {/* Pin */}
+            <div style={{ position:'absolute', top:'30%', left:'50%', transform:'translate(-50%, -50%)', fontSize:14, filter:'drop-shadow(0 2px 3px rgba(0,0,0,.4))' }}>📍</div>
+          </div>
+        </div>
+      )
+
+    case 'chart':
+      return (
+        <div className={styles.mockup} style={{ justifyContent:'flex-end' }}>
+          <div style={{ display:'flex', alignItems:'flex-end', gap:4, flex:1, paddingTop:8 }}>
+            {[40, 65, 45, 80, 55, 70].map((h, i) => (
+              <div key={i} style={{ flex:1, height:`${h}%`, background:`rgba(0,229,160,${0.2 + i * 0.08})`, borderRadius:'3px 3px 0 0' }} />
+            ))}
+          </div>
+          <div style={{ height:1, background:bg, marginTop:2 }} />
+        </div>
+      )
+
+    case 'feed':
+      return (
+        <div className={styles.mockup}>
+          {[0,1,2].map(i => (
+            <div key={i} style={{ display:'flex', gap:6, marginBottom:6, alignItems:'flex-start' }}>
+              <div style={{ width:14, height:14, borderRadius:'50%', background:bg, flexShrink:0 }} />
+              <div style={{ flex:1 }}>
+                <div style={{ height:2, width:'60%', background:bg, borderRadius:1, marginBottom:3 }} />
+                <div style={{ height:2, width:'90%', background:bg2, borderRadius:1 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+
+    case 'form':
+      return (
+        <div className={styles.mockup}>
+          {[0,1,2].map(i => (
+            <div key={i} style={{ marginBottom:6 }}>
+              <div style={{ height:2, width:'30%', background:text, borderRadius:1, marginBottom:3 }} />
+              <div style={{ height:14, background:bg2, borderRadius:4, border:`1px solid ${bg}` }} />
+            </div>
+          ))}
+          <div style={{ height:14, width:'50%', background:'rgba(0,229,160,.2)', borderRadius:4, marginTop:2 }} />
+        </div>
+      )
+
+    case 'gauge':
+      return (
+        <div className={styles.mockup} style={{ alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:50, height:25, borderRadius:'50px 50px 0 0', border:`3px solid ${bg}`, borderBottom:'none', position:'relative', marginBottom:6 }}>
+            <div style={{ position:'absolute', bottom:0, left:'50%', width:2, height:20, background:'rgba(0,229,160,.6)', borderRadius:1, transformOrigin:'bottom center', transform:'translateX(-50%) rotate(-30deg)' }} />
+          </div>
+          <div style={{ height:3, width:'40%', background:bg, borderRadius:2, marginBottom:3 }} />
+          <div style={{ height:2, width:'25%', background:bg2, borderRadius:1 }} />
+        </div>
+      )
+
+    case 'board':
+      return (
+        <div className={styles.mockup}>
+          <div style={{ display:'flex', gap:4, flex:1 }}>
+            {[0,1,2].map(col => (
+              <div key={col} style={{ flex:1, display:'flex', flexDirection:'column', gap:3 }}>
+                <div style={{ height:3, background:bg, borderRadius:2, marginBottom:2 }} />
+                {Array.from({ length: 3 - col }).map((_, j) => (
+                  <div key={j} style={{ height:16, background:bg2, borderRadius:3 }} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+
+    case 'game':
+      return (
+        <div className={styles.mockup} style={{ alignItems:'center', justifyContent:'center' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:2, width:'70%' }}>
+            {Array.from({ length: 16 }).map((_, i) => (
+              <div key={i} style={{ aspectRatio:'1', background: i % 3 === 0 ? 'rgba(0,229,160,.25)' : i % 5 === 0 ? 'rgba(255,180,60,.25)' : bg2, borderRadius:2 }} />
+            ))}
+          </div>
+        </div>
+      )
+
+    case 'cards':
+      return (
+        <div className={styles.mockup}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:5, flex:1 }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ background:bg2, borderRadius:5, padding:4, display:'flex', flexDirection:'column', gap:3 }}>
+                <div style={{ height:14, background:bg, borderRadius:3 }} />
+                <div style={{ height:2, width:'80%', background:text, borderRadius:1 }} />
+                <div style={{ height:2, width:'50%', background:bg2, borderRadius:1 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+
+    default:
+      return (
+        <div className={styles.mockup}>
+          <div style={{ height:3, width:'80%', background:bg, borderRadius:2, marginBottom:5 }} />
+          <div style={{ height:3, width:'60%', background:bg, borderRadius:2, marginBottom:5 }} />
+          <div style={{ height:3, width:'70%', background:bg, borderRadius:2 }} />
+        </div>
+      )
   }
 }
 
@@ -63,7 +260,7 @@ export default function AppDetail() {
   const [showReport, setShowReport] = useState(false)
 
   const app = APPS.find(a => a.id === id) || APPS[0]
-  const [installed, setInstalled] = useState(() => getInstalledApps().includes(app.id))
+  const { installed, install } = useInstallState(app.id)
 
   // Track page view
   useState(() => { trackView(app.id) })
@@ -74,8 +271,7 @@ export default function AppDetail() {
 
   function handleInstallAccepted() {
     setShowDisclaimer(false)
-    markAppInstalled(app.id)
-    setInstalled(true)
+    install()
     trackInstall(app.id)
     toast(`${app.name} installed successfully!`)
     if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
@@ -87,6 +283,7 @@ export default function AppDetail() {
 
   const avgRating = app.averageRating || (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1)
   const badges = (app.badges || []).map(b => BADGE_MAP[b]).filter(Boolean)
+  const developer = app.developer || 'Independent Developer'
 
   // JSON-LD for SoftwareApplication
   const jsonLd = {
@@ -129,7 +326,7 @@ export default function AppDetail() {
           <div className={styles.left}>
             <div className={styles.iconLg}>{app.icon}</div>
             <h1 className={`display ${styles.title}`}>{app.name}</h1>
-            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>Dev Studio</a> · Developer Trust: <strong style={{ color: 'var(--accent)' }}>{app.developerTrust || 70}/100</strong></div>
+            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>{developer}</a> · Developer Trust: <strong style={{ color: 'var(--accent)' }}>{app.developerTrust || 70}/100</strong></div>
             <div className={styles.metaRow}>
               {badges.map(b => (
                 <span key={b.label} className="badge badge-pass">{b.icon} {b.label}</span>
@@ -138,11 +335,11 @@ export default function AppDetail() {
               <span className="badge badge-muted">v2.3.1</span>
               <span className="badge badge-muted">Risk: {app.score}</span>
               <span className="badge badge-muted">{app.installs} installs</span>
+              {app.size && <span className="badge badge-muted">{app.size}</span>}
               {isPaid && <span className="badge badge-warn">${price}</span>}
             </div>
             <p className={styles.desc}>
-              {app.name} is a fully offline-first PWA with no account required and no data collection.
-              All data is stored locally in your browser. Available for install on any modern device.
+              {app.longDesc || app.desc}
             </p>
 
             {/* Screenshots */}
@@ -154,14 +351,7 @@ export default function AppDetail() {
                     <span className={styles.ssTitle}>{s.title}</span>
                   </div>
                   <div className={styles.ssBody}>
-                    <div className={styles.ssLine} style={{ width: '80%' }} />
-                    <div className={styles.ssLine} style={{ width: '60%' }} />
-                    <div className={styles.ssLine} style={{ width: '70%' }} />
-                    <div className={styles.ssDots}>
-                      <div className={styles.ssDot} />
-                      <div className={styles.ssDot} />
-                      <div className={styles.ssDot} />
-                    </div>
+                    <ScreenshotMockup type={s.mockup || 'default'} color={s.color} />
                   </div>
                   <div className={styles.ssCaption}>{s.caption}</div>
                 </div>
@@ -178,12 +368,26 @@ export default function AppDetail() {
             {/* Overview */}
             {tab === 0 && (
               <div className={styles.tabBody}>
-                <h3 style={{ marginBottom: 10 }}>What's New in v2.3.1</h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>Dark/light theme toggle. Fixed timer drift on background tabs. Improved keyboard navigation. Bundle size reduced by 18%.</p>
+                {app.whatsNew && (
+                  <>
+                    <h3 style={{ marginBottom: 10 }}>What's New</h3>
+                    <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>{app.whatsNew}</p>
+                  </>
+                )}
                 <h3 style={{ marginBottom: 10 }}>Permissions</h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>None. This app requests no device permissions and makes no network calls.</p>
+                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>
+                  {app.permissions && app.permissions.length > 0
+                    ? app.permissions.join(' · ')
+                    : 'None. This app requests no device permissions and makes no network calls.'}
+                </p>
                 <h3 style={{ marginBottom: 10 }}>Privacy</h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7 }}>All data stored in your browser's localStorage. Nothing is ever sent to any server. <Link to="/privacy" style={{ color: 'var(--accent)' }}>View Privacy Policy →</Link></p>
+                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7 }}>
+                  {app.permissions && app.permissions.some(p => p.toLowerCase().includes('internet'))
+                    ? `${app.name} connects to the internet to provide its core functionality. Review the developer's privacy policy for details on data handling.`
+                    : `All data stored in your browser's localStorage. Nothing is ever sent to any server.`
+                  }
+                  {' '}<Link to="/privacy" style={{ color: 'var(--accent)' }}>View Privacy Policy →</Link>
+                </p>
               </div>
             )}
 
@@ -291,14 +495,16 @@ export default function AppDetail() {
 
             <div className={styles.installMeta}>
               {[
+                ['Developer', developer],
                 ['Version', '2.3.1'],
                 ['Safety Score', `${app.safetyScore || 'N/A'}/100`],
                 ['Last scanned', '14 Jan 2026'],
                 ['Build hash', 'a4f2c91'],
+                ['Size', app.size || 'N/A'],
                 ['Installs', `${app.installs}`],
                 ['Rating', `${avgRating} (${app.totalReviews || REVIEWS.length})`],
                 ['Developer Trust', `${app.developerTrust || 'N/A'}/100`],
-                ['Offline support', '✓ Yes'],
+                ['Offline support', app.permissions && app.permissions.some(p => p.toLowerCase().includes('none') || p.toLowerCase().includes('offline')) ? '✓ Yes' : '~ Partial'],
                 ['PWA installable', '✓ Yes'],
                 ['Price', isPaid ? `$${price}` : 'Free'],
               ].map(([k, v]) => (
@@ -308,6 +514,21 @@ export default function AppDetail() {
                 </div>
               ))}
             </div>
+
+            {/* Permissions list */}
+            {app.permissions && app.permissions.length > 0 && (
+              <div className={styles.permissionsList}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 700, marginBottom: 6 }}>Permissions</div>
+                {app.permissions.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: 'var(--text)', marginBottom: 3 }}>
+                    <span style={{ color: p.toLowerCase().includes('none') || p.toLowerCase().includes('offline') ? 'var(--accent)' : 'var(--warn)', fontSize: '0.7rem' }}>
+                      {p.toLowerCase().includes('none') || p.toLowerCase().includes('offline') ? '✓' : '•'}
+                    </span>
+                    {p}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Report App button */}
             <button

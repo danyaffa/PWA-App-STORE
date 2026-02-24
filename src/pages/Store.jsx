@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
@@ -49,7 +49,9 @@ export default function Store() {
   const [search, setSearch] = useState(searchParams.get('q') || '')
   const [sort, setSort]     = useState('ranking')
   const [userApps, setUserApps] = useState(getPublishedApps)
+  const [featuredApp, setFeaturedApp] = useState(null)
   const { toast, ToastContainer } = useToast()
+  const featuredRef = useRef(null)
 
   // Refresh user-published apps when tab becomes visible (e.g. after publishing)
   useEffect(() => {
@@ -74,7 +76,9 @@ export default function Store() {
   const NEW_APPS    = [...allApps].sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
   const VERIFIED    = allApps.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
   const RISING_FAST = [...allApps].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
-  const FEATURED    = TRENDING[0]
+
+  // Featured app: user-selected or default to top trending
+  const FEATURED = featuredApp || TRENDING[0]
 
   // Sync search from URL query param (e.g. /store?q=focus)
   useEffect(() => {
@@ -92,6 +96,14 @@ export default function Store() {
     const q = e.target.value
     setSearch(q)
     if (q.length >= 3) trackSearch(q)
+  }
+
+  function handleFeature(app) {
+    setFeaturedApp(app)
+    // Scroll featured box into view
+    if (featuredRef.current) {
+      featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
   }
 
   const showSections = !search && filter === 'All'
@@ -134,14 +146,18 @@ export default function Store() {
           </div>
         </div>
 
-        {/* Featured strip — algorithm selected */}
+        {/* Featured strip — dynamic: updates when you click an app's Details */}
         {showSections && FEATURED && (
-          <div className={styles.featured}>
+          <div ref={featuredRef} className={`${styles.featured} ${featuredApp ? styles.featuredActive : ''}`}>
             <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
             <div className={styles.featuredInfo}>
-              <div className={styles.featuredLabel}>Featured App</div>
+              <div className={styles.featuredLabel}>{featuredApp ? 'Selected App' : 'Featured App'}</div>
               <div className={styles.featuredName}>{FEATURED.name}</div>
-              <div className={styles.featuredDesc}>{FEATURED.desc} Safety: {FEATURED.safetyScore}/100 · {FEATURED.averageRating} stars · {FEATURED.installs} installs</div>
+              <div className={styles.featuredDesc}>
+                {FEATURED.desc}
+                {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer} · </span>}
+                Safety: {FEATURED.safetyScore}/100 · {FEATURED.averageRating} stars · {FEATURED.installs} installs
+              </div>
             </div>
             <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View App</Link>
           </div>
@@ -153,35 +169,35 @@ export default function Store() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Trending Now</h2>
               <div className={styles.scrollRow}>
-                {TRENDING.map(a => <AppCard key={a.id} app={a} />)}
+                {TRENDING.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Top Rated</h2>
               <div className={styles.scrollRow}>
-                {TOP_RATED.map(a => <AppCard key={a.id} app={a} />)}
+                {TOP_RATED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>New Apps</h2>
               <div className={styles.scrollRow}>
-                {NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}
+                {NEW_APPS.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Verified Safe</h2>
               <div className={styles.scrollRow}>
-                {VERIFIED.map(a => <AppCard key={a.id} app={a} />)}
+                {VERIFIED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Rising Fast</h2>
               <div className={styles.scrollRow}>
-                {RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}
+                {RISING_FAST.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
               </div>
             </section>
           </>
@@ -197,7 +213,7 @@ export default function Store() {
 
         {visible.length === 0
           ? <div className={styles.empty}>No apps found. Try a different filter or search term.</div>
-          : <div className={styles.grid}>{visible.map(a => <AppCard key={a.id} app={a} />)}</div>
+          : <div className={styles.grid}>{visible.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}</div>
         }
 
         {/* Stats bar */}

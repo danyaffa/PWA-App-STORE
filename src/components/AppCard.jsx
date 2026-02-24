@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useToast } from './Toast.jsx'
+import { useInstallState } from '../hooks/useInstallState.js'
 import styles from './AppCard.module.css'
 
 const BADGE_MAP = {
@@ -11,26 +11,10 @@ const BADGE_MAP = {
   rising:    { icon: '📈', label: 'Rising' },
 }
 
-function getInstalledApps() {
-  try { return JSON.parse(localStorage.getItem('installedApps') || '[]') } catch { return [] }
-}
-
-function isAppInstalled(appId) {
-  return getInstalledApps().includes(appId)
-}
-
-function markAppInstalled(appId) {
-  const installed = getInstalledApps()
-  if (!installed.includes(appId)) {
-    installed.push(appId)
-    localStorage.setItem('installedApps', JSON.stringify(installed))
-  }
-}
-
-export default function AppCard({ app }) {
+export default function AppCard({ app, onFeature }) {
   const toast = useToast()
   const appId = app.id || app.name.toLowerCase().replace(/\s+/g, '-')
-  const [installed, setInstalled] = useState(() => isAppInstalled(appId))
+  const { installed, install } = useInstallState(appId)
 
   const badges = (app.badges || []).slice(0, 2)
 
@@ -51,6 +35,7 @@ export default function AppCard({ app }) {
         <div className={styles.name}>{app.name}</div>
         <span className={styles.priceTag}>{app.price === 'Free' || !app.price ? 'Free App' : app.price}</span>
       </div>
+      {app.developer && <div className={styles.developer}>by {app.developer}</div>}
       <div className={styles.desc}>{app.desc}</div>
 
       {/* Trust signals */}
@@ -76,14 +61,25 @@ export default function AppCard({ app }) {
         </div>
       )}
 
+      {/* App details row */}
+      {(app.size || app.permissions) && (
+        <div className={styles.detailsRow}>
+          {app.size && <span className={styles.detailChip}>{app.size}</span>}
+          {app.permissions && app.permissions[0] && <span className={styles.detailChip}>{app.permissions[0]}</span>}
+        </div>
+      )}
+
       <div className={styles.actions}>
-        <Link to={`/app/${appId}`} className={`btn btn-ghost btn-sm ${styles.detailBtn}`}>Details</Link>
+        <Link
+          to={`/app/${appId}`}
+          className={`btn btn-ghost btn-sm ${styles.detailBtn}`}
+          onClick={() => onFeature && onFeature(app)}
+        >Details</Link>
         {installed ? (
           <a href={app.url} target="_blank" rel="noopener noreferrer" className={`btn btn-sm ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
         ) : (
           <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
-            markAppInstalled(appId)
-            setInstalled(true)
+            install()
             toast(`📲 ${app.name} installed successfully!`)
             if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
           }}>Install App</button>
