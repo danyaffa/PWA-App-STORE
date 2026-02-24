@@ -139,6 +139,43 @@
 .colorPicker::-webkit-color-swatch-wrapper { padding: 2px; }
 .colorPicker::-webkit-color-swatch { border: none; border-radius: 4px; }
 
+/* ── Pricing Toggle ── */
+.pricingToggle {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;
+}
+.pricingOption {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 24px 16px; border-radius: var(--radius-md);
+  background: var(--bg); border: 2px solid var(--border);
+  cursor: pointer; transition: all .2s; text-align: center;
+  font-family: inherit;
+}
+.pricingOption:hover { border-color: var(--accent); background: rgba(0,229,160,.03); }
+.pricingActive {
+  border-color: var(--accent) !important;
+  background: rgba(0,229,160,.08) !important;
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.pricingIcon { font-size: 1.6rem; }
+.pricingLabel { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.pricingDesc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.priceInputRow { margin-top: 20px; }
+.priceInputRow label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+.priceInputWrap {
+  display: flex; align-items: center; gap: 0; max-width: 200px;
+}
+.priceCurrency {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 44px; flex-shrink: 0;
+  background: var(--bg); border: 1px solid var(--border);
+  border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  font-size: 1rem; font-weight: 700; color: var(--text);
+}
+.priceInputWrap .input {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 1.1rem; font-weight: 600;
+}
+
 /* ── Existing Styles ── */
 .scanSection { margin-bottom: 60px; }
 .progressHeader { display: flex; justify-content: space-between; margin-bottom: 8px; }
@@ -183,6 +220,7 @@
 @media (max-width: 768px) {
   .formGrid { grid-template-columns: 1fr; }
   .screenshotGrid { grid-template-columns: 1fr; }
+  .pricingToggle { grid-template-columns: 1fr; }
   .steps { overflow-x: auto; }
   .stepLabel { display: none; }
   .detailsHeader { padding: 20px 20px 0; }
