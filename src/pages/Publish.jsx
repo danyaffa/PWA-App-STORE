@@ -47,6 +47,8 @@ export default function Publish() {
   const [tags,          setTags]          = useState('')
   const [permissions,   setPermissions]   = useState('')
   const [appSize,       setAppSize]       = useState('')
+  const [pricingType,   setPricingType]   = useState('free')
+  const [priceAmount,   setPriceAmount]   = useState('')
   const [screenshots,   setScreenshots]   = useState([
     { title: '', caption: '', color: '#6c5ce7', mockup: 'editor' },
     { title: '', caption: '', color: '#00b894', mockup: 'list' },
@@ -102,6 +104,16 @@ export default function Publish() {
     }
     if (websiteUrl.trim() && !/^https?:\/\/.+\..+/.test(websiteUrl.trim())) {
       next.websiteUrl = 'Enter a valid URL (e.g. https://yourapp.com)'
+    }
+    if (pricingType === 'paid') {
+      const p = parseFloat(priceAmount)
+      if (!priceAmount.trim() || isNaN(p)) {
+        next.priceAmount = 'Price is required for paid apps'
+      } else if (p < 0.99) {
+        next.priceAmount = 'Minimum price is $0.99'
+      } else if (p > 999.99) {
+        next.priceAmount = 'Maximum price is $999.99'
+      }
     }
     setErrors(next)
     return Object.keys(next).length === 0
@@ -319,6 +331,52 @@ export default function Publish() {
             </div>
           </div>
 
+          {/* Pricing */}
+          <div className={styles.detailsSection}>
+            <h3 className={styles.sectionHead}>Pricing</h3>
+            <p className={styles.sectionHint}>Choose whether your app is free or paid. Paid apps will show the price on the store listing and require payment before install.</p>
+            <div className={styles.pricingToggle}>
+              <button
+                type="button"
+                className={`${styles.pricingOption} ${pricingType === 'free' ? styles.pricingActive : ''}`}
+                onClick={() => { setPricingType('free'); setPriceAmount('') }}
+              >
+                <span className={styles.pricingIcon}>🆓</span>
+                <span className={styles.pricingLabel}>Free</span>
+                <span className={styles.pricingDesc}>Users can install at no cost</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.pricingOption} ${pricingType === 'paid' ? styles.pricingActive : ''}`}
+                onClick={() => setPricingType('paid')}
+              >
+                <span className={styles.pricingIcon}>💰</span>
+                <span className={styles.pricingLabel}>Paid</span>
+                <span className={styles.pricingDesc}>Set a one-time purchase price</span>
+              </button>
+            </div>
+            {pricingType === 'paid' && (
+              <div className={styles.priceInputRow}>
+                <label>Price (USD) <span className={styles.required}>*</span></label>
+                <div className={styles.priceInputWrap}>
+                  <span className={styles.priceCurrency}>$</span>
+                  <input
+                    className={`input ${errors.priceAmount ? styles.inputError : ''}`}
+                    type="number"
+                    min="0.99"
+                    max="999.99"
+                    step="0.01"
+                    placeholder="4.99"
+                    value={priceAmount}
+                    onChange={e => { setPriceAmount(e.target.value); clearError('priceAmount') }}
+                  />
+                </div>
+                {errors.priceAmount && <span className={styles.fieldError}>{errors.priceAmount}</span>}
+                <span className={styles.fieldHint}>Minimum $0.99. Payments are processed via PayPal on the app detail page.</span>
+              </div>
+            )}
+          </div>
+
           {/* Contact & Compliance */}
           <div className={styles.detailsSection}>
             <h3 className={styles.sectionHead}>Contact & Compliance</h3>
@@ -430,6 +488,7 @@ export default function Publish() {
                         desc: shortDesc.trim() || `${appName.trim()} — published via SafeLaunch.`,
                         longDesc: fullDesc.trim(),
                         category: category,
+                        price: pricingType === 'paid' ? parseFloat(priceAmount).toFixed(2) : 'Free',
                         developer: developerName.trim(),
                         url: websiteUrl.trim() || '',
                         size: appSize.trim() || 'N/A',

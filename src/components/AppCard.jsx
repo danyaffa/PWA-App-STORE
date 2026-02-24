@@ -33,7 +33,7 @@ export default function AppCard({ app, onFeature }) {
       <div className={styles.icon}>{app.icon}</div>
       <div className={styles.nameRow}>
         <div className={styles.name}>{app.name}</div>
-        <span className={styles.priceTag}>{app.price === 'Free' || !app.price ? 'Free App' : app.price}</span>
+        <span className={styles.priceTag}>{app.price === 'Free' || !app.price ? 'Free App' : `$${app.price}`}</span>
       </div>
       {app.developer && <div className={styles.developer}>by {app.developer}</div>}
       <div className={styles.desc}>{app.desc}</div>
