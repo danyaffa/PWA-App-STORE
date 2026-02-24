@@ -43,6 +43,18 @@ const VERSIONS = [
   { ver: '2.2.0', date: '18 Dec 2025', score: 7,  build: 'c3d9f44', current: false },
 ]
 
+function getInstalledApps() {
+  try { return JSON.parse(localStorage.getItem('installedApps') || '[]') } catch { return [] }
+}
+
+function markAppInstalled(appId) {
+  const installed = getInstalledApps()
+  if (!installed.includes(appId)) {
+    installed.push(appId)
+    localStorage.setItem('installedApps', JSON.stringify(installed))
+  }
+}
+
 export default function AppDetail() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
@@ -51,6 +63,7 @@ export default function AppDetail() {
   const [showReport, setShowReport] = useState(false)
 
   const app = APPS.find(a => a.id === id) || APPS[0]
+  const [installed, setInstalled] = useState(() => getInstalledApps().includes(app.id))
 
   // Track page view
   useState(() => { trackView(app.id) })
@@ -61,8 +74,10 @@ export default function AppDetail() {
 
   function handleInstallAccepted() {
     setShowDisclaimer(false)
+    markAppInstalled(app.id)
+    setInstalled(true)
     trackInstall(app.id)
-    toast(`Installing ${app.name}...`)
+    toast(`${app.name} installed successfully!`)
   }
 
   // Use price field from app data — all current apps are Free
@@ -246,6 +261,8 @@ export default function AppDetail() {
                   onError={() => toast('Payment failed. Please try again.')}
                 />
               </div>
+            ) : installed ? (
+              <button className={`btn ${styles.installBtn} ${styles.installedBtn}`} disabled>Installed</button>
             ) : (
               <button className={`btn btn-primary ${styles.installBtn}`} onClick={handleInstallClick}>Install Free</button>
             )}
