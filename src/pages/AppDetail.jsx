@@ -146,8 +146,24 @@ export default function AppDetail() {
 
             {/* Screenshots */}
             <div className={styles.screenshots}>
-              {[1, 2, 3, 4].map(n => (
-                <div key={n} className={styles.screenshot}>Screenshot {n}</div>
+              {(app.screenshots || []).map((s, i) => (
+                <div key={i} className={styles.screenshot} style={{ background: `linear-gradient(135deg, ${s.color}, ${s.color}dd)` }}>
+                  <div className={styles.ssHeader}>
+                    <span className={styles.ssIcon}>{app.icon}</span>
+                    <span className={styles.ssTitle}>{s.title}</span>
+                  </div>
+                  <div className={styles.ssBody}>
+                    <div className={styles.ssLine} style={{ width: '80%' }} />
+                    <div className={styles.ssLine} style={{ width: '60%' }} />
+                    <div className={styles.ssLine} style={{ width: '70%' }} />
+                    <div className={styles.ssDots}>
+                      <div className={styles.ssDot} />
+                      <div className={styles.ssDot} />
+                      <div className={styles.ssDot} />
+                    </div>
+                  </div>
+                  <div className={styles.ssCaption}>{s.caption}</div>
+                </div>
               ))}
             </div>
 
