@@ -78,6 +78,7 @@ export default function AppDetail() {
     setInstalled(true)
     trackInstall(app.id)
     toast(`${app.name} installed successfully!`)
+    if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
   }
 
   // Use price field from app data — all current apps are Free
@@ -278,7 +279,7 @@ export default function AppDetail() {
                 />
               </div>
             ) : installed ? (
-              <button className={`btn ${styles.installBtn} ${styles.installedBtn}`} disabled>Installed</button>
+              <a href={app.url} target="_blank" rel="noopener noreferrer" className={`btn ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
             ) : (
               <button className={`btn btn-primary ${styles.installBtn}`} onClick={handleInstallClick}>Install Free</button>
             )}

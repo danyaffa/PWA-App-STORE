@@ -79,12 +79,13 @@ export default function AppCard({ app }) {
       <div className={styles.actions}>
         <Link to={`/app/${appId}`} className={`btn btn-ghost btn-sm ${styles.detailBtn}`}>Details</Link>
         {installed ? (
-          <button className={`btn btn-sm ${styles.installBtn} ${styles.installedBtn}`} disabled>Installed</button>
+          <a href={app.url} target="_blank" rel="noopener noreferrer" className={`btn btn-sm ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
         ) : (
           <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
             markAppInstalled(appId)
             setInstalled(true)
             toast(`📲 ${app.name} installed successfully!`)
+            if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
           }}>Install App</button>
         )}
       </div>
