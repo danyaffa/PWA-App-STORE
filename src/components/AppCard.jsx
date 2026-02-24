@@ -56,7 +56,7 @@ export default function AppCard({ app }) {
 
       <div className={styles.actions}>
         <Link to={`/app/${app.id || app.name.toLowerCase().replace(/\s+/g,'-')}`} className={`btn btn-ghost btn-sm ${styles.detailBtn}`}>Details</Link>
-        <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => toast(`📲 Installing ${app.name}...`)}>Install PWA</button>
+        <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => toast(`📲 Installing ${app.name}...`)}>Install App</button>
       </div>
     </div>
   )
