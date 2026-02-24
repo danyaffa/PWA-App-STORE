@@ -18,6 +18,7 @@ import DeveloperAgreement from './pages/DeveloperAgreement.jsx'
 import DMCA         from './pages/DMCA.jsx'
 import HowSafetyWorks from './pages/HowSafetyWorks.jsx'
 import Promote      from './pages/Promote.jsx'
+import Tutorial     from './pages/Tutorial.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
       <Route path="/dmca"         element={<DMCA />} />
       <Route path="/how-safety-works" element={<HowSafetyWorks />} />
       <Route path="/app/:id/promote"  element={<Promote />} />
+      <Route path="/tutorial"     element={<Tutorial />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
   )

@@ -8,6 +8,7 @@ const LINKS = [
   { to: '/publish',   label: 'Publish' },
   { to: '/safety',    label: 'Safety' },
   { to: '/pricing',   label: 'Pricing' },
+  { to: '/tutorial',  label: 'Tutorial' },
   { to: '/app-store', label: 'Install' },
 ]
 
