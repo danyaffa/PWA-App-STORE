@@ -29,6 +29,7 @@
 .heroSearchClear:hover { color: var(--text); }
 .heroFilters {
   display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  max-width: 100%; padding: 0 8px;
 }
 
 /* All Apps header with sort */

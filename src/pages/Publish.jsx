@@ -4,7 +4,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import { SCAN_STEPS } from '../utils/data.js'
+import { SCAN_STEPS, CATEGORIES } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Publish.module.css'
 
@@ -32,6 +32,7 @@ export default function Publish() {
   const [privacyUrl, setPrivacyUrl] = useState('')
   const [contactEmail, setContactEmail] = useState('')
   const [errors,     setErrors]     = useState({})
+  const [published,  setPublished]  = useState(false)
   const { toast, ToastContainer } = useToast()
   const { user, isConfigured } = useAuth()
   const navigate = useNavigate()
@@ -153,7 +154,7 @@ export default function Publish() {
                     <label>Category <span className={styles.required}>*</span></label>
                     <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
                       <option value="">Select a category…</option>
-                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                      {CATEGORIES.filter(c => c !== 'All').map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
                     {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
                   </div>
@@ -228,7 +229,7 @@ export default function Publish() {
                     <label>Category <span className={styles.required}>*</span></label>
                     <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
                       <option value="">Select a category…</option>
-                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                      {CATEGORIES.filter(c => c !== 'All').map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
                     {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
                   </div>
@@ -265,7 +266,7 @@ export default function Publish() {
                     <label>Category <span className={styles.required}>*</span></label>
                     <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
                       <option value="">Select a category…</option>
-                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                      {CATEGORIES.filter(c => c !== 'All').map(c=><option key={c} value={c}>{c}</option>)}
                     </select>
                     {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
                   </div>
@@ -310,7 +311,41 @@ export default function Publish() {
                 </div>
                 <div style={{display:'flex',gap:12}}>
                   <Link to="/report/focusflow" className="btn btn-ghost">View Full Report</Link>
-                  <button className="btn btn-primary" onClick={() => toast('🎉 Your app is live on SafeLaunch!')}>Publish Now</button>
+                  <button
+                    className="btn btn-primary"
+                    disabled={published}
+                    style={published ? { background: '#22c55e', borderColor: '#22c55e', color: '#fff', opacity: 1 } : {}}
+                    onClick={() => {
+                      // Build the app object
+                      const slug = appName.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+                      const newApp = {
+                        id: slug || `app-${Date.now()}`,
+                        icon: '📦',
+                        name: appName.trim(),
+                        desc: `${appName.trim()} — published via SafeLaunch.`,
+                        category: category,
+                        score: 12,
+                        trust: 'green',
+                        installs: '0',
+                        rankingScore: 50,
+                        safetyScore: 88,
+                        averageRating: 0,
+                        totalReviews: 0,
+                        publishedAt: new Date().toISOString().split('T')[0],
+                        developerTrust: 60,
+                        installVelocity: 0,
+                        badges: ['new', 'verified'],
+                      }
+                      // Save to localStorage
+                      try {
+                        const existing = JSON.parse(localStorage.getItem('sl_published_apps') || '[]')
+                        existing.push(newApp)
+                        localStorage.setItem('sl_published_apps', JSON.stringify(existing))
+                      } catch (e) { /* ignore */ }
+                      setPublished(true)
+                      toast('🎉 Your app is live on SafeLaunch!')
+                    }}
+                  >{published ? '✓ Published' : 'Publish Now'}</button>
                 </div>
               </div>
             )}
