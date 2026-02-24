@@ -14,6 +14,8 @@ import InstallGuide from './pages/InstallGuide.jsx'
 import Privacy      from './pages/Privacy.jsx'
 import Terms        from './pages/Terms.jsx'
 import Support      from './pages/Support.jsx'
+import DeveloperAgreement from './pages/DeveloperAgreement.jsx'
+import DMCA         from './pages/DMCA.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -33,6 +35,8 @@ export default function App() {
       <Route path="/privacy"      element={<Privacy />} />
       <Route path="/terms"        element={<Terms />} />
       <Route path="/support"      element={<Support />} />
+      <Route path="/developer-agreement" element={<DeveloperAgreement />} />
+      <Route path="/dmca"         element={<DMCA />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
   )

@@ -4,8 +4,10 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
+import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
+import { trackView, trackInstall } from '../lib/analytics.js'
 import styles from './AppDetail.module.css'
 
 const TABS = ['Overview', 'Safety Report', 'Reviews', 'Versions']
@@ -36,8 +38,22 @@ export default function AppDetail() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
   const [tab, setTab] = useState(0)
+  const [showDisclaimer, setShowDisclaimer] = useState(false)
 
   const app = APPS.find(a => a.id === id) || APPS[0]
+
+  // Track page view
+  useState(() => { trackView(app.id) })
+
+  function handleInstallClick() {
+    setShowDisclaimer(true)
+  }
+
+  function handleInstallAccepted() {
+    setShowDisclaimer(false)
+    trackInstall(app.id)
+    toast(`Installing ${app.name}...`)
+  }
 
   // Simulate some apps being paid
   const isPaid = app.id === 'stockpulse' || app.id === 'datadash'
@@ -209,12 +225,12 @@ export default function AppDetail() {
                 <PayPalButton
                   amount={price}
                   description={`Purchase ${app.name}`}
-                  onSuccess={() => toast(`${app.name} purchased and installed!`)}
+                  onSuccess={() => { trackInstall(app.id); toast(`${app.name} purchased and installed!`) }}
                   onError={() => toast('Payment failed. Please try again.')}
                 />
               </div>
             ) : (
-              <button className={`btn btn-primary ${styles.installBtn}`} onClick={() => toast(`Installing ${app.name}...`)}>Install Free</button>
+              <button className={`btn btn-primary ${styles.installBtn}`} onClick={handleInstallClick}>Install Free</button>
             )}
 
             <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report →</Link>
@@ -237,7 +253,24 @@ export default function AppDetail() {
           </div>
         </div>
       </div>
+      {/* Independent developer disclaimer banner */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 40px' }}>
+        <div style={{ padding: '14px 20px', background: 'rgba(255,184,77,.06)', border: '1px solid rgba(255,184,77,.15)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.6 }}>
+          Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/terms" style={{ color: 'var(--accent)' }}>Learn more</Link>
+        </div>
+      </div>
+
       <Footer />
+
+      {showDisclaimer && (
+        <InstallDisclaimer
+          appName={app.name}
+          appId={app.id}
+          onAccept={handleInstallAccepted}
+          onCancel={() => setShowDisclaimer(false)}
+        />
+      )}
+
       <ToastContainer />
     </>
   )
