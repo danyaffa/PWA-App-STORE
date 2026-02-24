@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useToast } from './Toast.jsx'
 import styles from './AppCard.module.css'
@@ -10,8 +11,26 @@ const BADGE_MAP = {
   rising:    { icon: '📈', label: 'Rising' },
 }
 
+function getInstalledApps() {
+  try { return JSON.parse(localStorage.getItem('installedApps') || '[]') } catch { return [] }
+}
+
+function isAppInstalled(appId) {
+  return getInstalledApps().includes(appId)
+}
+
+function markAppInstalled(appId) {
+  const installed = getInstalledApps()
+  if (!installed.includes(appId)) {
+    installed.push(appId)
+    localStorage.setItem('installedApps', JSON.stringify(installed))
+  }
+}
+
 export default function AppCard({ app }) {
   const toast = useToast()
+  const appId = app.id || app.name.toLowerCase().replace(/\s+/g, '-')
+  const [installed, setInstalled] = useState(() => isAppInstalled(appId))
 
   const badges = (app.badges || []).slice(0, 2)
 
@@ -55,8 +74,16 @@ export default function AppCard({ app }) {
       )}
 
       <div className={styles.actions}>
-        <Link to={`/app/${app.id || app.name.toLowerCase().replace(/\s+/g,'-')}`} className={`btn btn-ghost btn-sm ${styles.detailBtn}`}>Details</Link>
-        <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => toast(`📲 Installing ${app.name}...`)}>Install App</button>
+        <Link to={`/app/${appId}`} className={`btn btn-ghost btn-sm ${styles.detailBtn}`}>Details</Link>
+        {installed ? (
+          <button className={`btn btn-sm ${styles.installBtn} ${styles.installedBtn}`} disabled>Installed</button>
+        ) : (
+          <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
+            markAppInstalled(appId)
+            setInstalled(true)
+            toast(`📲 ${app.name} installed successfully!`)
+          }}>Install App</button>
+        )}
       </div>
     </div>
   )
