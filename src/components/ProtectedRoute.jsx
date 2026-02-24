@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 
 export default function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
+  const { user, loading, isConfigured } = useAuth()
 
   if (loading) {
     return (
@@ -14,6 +14,9 @@ export default function ProtectedRoute({ children }) {
       </div>
     )
   }
+
+  // When Firebase is not configured, allow access so the demo works
+  if (!isConfigured) return children
 
   if (!user) return <Navigate to="/signin" replace />
 
