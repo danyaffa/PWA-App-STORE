@@ -27,6 +27,11 @@ export default function Publish() {
   const [logs,       setLogs]       = useState([])
   const [done,       setDone]       = useState(false)
   const [selfCert,   setSelfCert]   = useState({ noMalware: false, copyright: false, legal: false })
+  const [appName,    setAppName]    = useState('')
+  const [category,   setCategory]   = useState('')
+  const [privacyUrl, setPrivacyUrl] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
+  const [errors,     setErrors]     = useState({})
   const { toast, ToastContainer } = useToast()
   const { user, isConfigured } = useAuth()
   const navigate = useNavigate()
@@ -50,7 +55,29 @@ export default function Publish() {
     }
   }
 
+  function validateFields() {
+    const next = {}
+    if (!appName.trim()) next.appName = 'App Name is required'
+    if (!category) next.category = 'Category is required'
+    if (!privacyUrl.trim()) {
+      next.privacyUrl = 'Privacy Policy URL is required'
+    } else if (!/^https?:\/\/.+\..+/.test(privacyUrl.trim())) {
+      next.privacyUrl = 'Enter a valid URL (e.g. https://yoursite.com/privacy)'
+    }
+    if (!contactEmail.trim()) {
+      next.contactEmail = 'Contact Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim())) {
+      next.contactEmail = 'Enter a valid email address'
+    }
+    setErrors(next)
+    return Object.keys(next).length === 0
+  }
+
   function startScan() {
+    if (!validateFields()) {
+      toast('Please fill in all required fields before scanning.')
+      return
+    }
     setScanning(true); setLogs([]); setDone(false); setScanIdx(0); setStep(3)
     runStep(0)
   }
@@ -117,14 +144,29 @@ export default function Publish() {
                   <p>Supports .zip, .tar.gz — max 200MB<br />Auto-detects React, Vue, Svelte, Vanilla</p>
                 </div>
                 <div className={styles.formGrid}>
-                  <div className="form-group"><label>App Name</label><input className="input" placeholder="My Awesome App" /></div>
-                  <div className="form-group"><label>Category</label>
-                    <select className="input">
-                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c}>{c}</option>)}
-                    </select>
+                  <div className="form-group">
+                    <label>App Name <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.appName ? styles.inputError : ''}`} placeholder="My Awesome App" value={appName} onChange={e => { setAppName(e.target.value); if (errors.appName) setErrors(prev => ({ ...prev, appName: undefined })) }} />
+                    {errors.appName && <span className={styles.fieldError}>{errors.appName}</span>}
                   </div>
-                  <div className="form-group"><label>Privacy Policy URL</label><input className="input" type="url" placeholder="https://yoursite.com/privacy" /></div>
-                  <div className="form-group"><label>Contact Email</label><input className="input" type="email" placeholder="hello@yourapp.com" /></div>
+                  <div className="form-group">
+                    <label>Category <span className={styles.required}>*</span></label>
+                    <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
+                      <option value="">Select a category…</option>
+                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                    </select>
+                    {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Privacy Policy URL <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.privacyUrl ? styles.inputError : ''}`} type="url" placeholder="https://yoursite.com/privacy" value={privacyUrl} onChange={e => { setPrivacyUrl(e.target.value); if (errors.privacyUrl) setErrors(prev => ({ ...prev, privacyUrl: undefined })) }} />
+                    {errors.privacyUrl && <span className={styles.fieldError}>{errors.privacyUrl}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Contact Email <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.contactEmail ? styles.inputError : ''}`} type="email" placeholder="hello@yourapp.com" value={contactEmail} onChange={e => { setContactEmail(e.target.value); if (errors.contactEmail) setErrors(prev => ({ ...prev, contactEmail: undefined })) }} />
+                    {errors.contactEmail && <span className={styles.fieldError}>{errors.contactEmail}</span>}
+                  </div>
                 </div>
                 {/* Self-certification */}
                 <div className={styles.selfCert}>
@@ -177,6 +219,29 @@ export default function Publish() {
                 <div className={styles.formGrid}>
                   <div className="form-group"><label>Branch</label><select className="input"><option>main</option><option>master</option><option>prod</option></select></div>
                   <div className="form-group"><label>Build Command (optional)</label><input className="input" placeholder="npm run build (auto-detected)" /></div>
+                  <div className="form-group">
+                    <label>App Name <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.appName ? styles.inputError : ''}`} placeholder="My Awesome App" value={appName} onChange={e => { setAppName(e.target.value); if (errors.appName) setErrors(prev => ({ ...prev, appName: undefined })) }} />
+                    {errors.appName && <span className={styles.fieldError}>{errors.appName}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Category <span className={styles.required}>*</span></label>
+                    <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
+                      <option value="">Select a category…</option>
+                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                    </select>
+                    {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Privacy Policy URL <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.privacyUrl ? styles.inputError : ''}`} type="url" placeholder="https://yoursite.com/privacy" value={privacyUrl} onChange={e => { setPrivacyUrl(e.target.value); if (errors.privacyUrl) setErrors(prev => ({ ...prev, privacyUrl: undefined })) }} />
+                    {errors.privacyUrl && <span className={styles.fieldError}>{errors.privacyUrl}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Contact Email <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.contactEmail ? styles.inputError : ''}`} type="email" placeholder="hello@yourapp.com" value={contactEmail} onChange={e => { setContactEmail(e.target.value); if (errors.contactEmail) setErrors(prev => ({ ...prev, contactEmail: undefined })) }} />
+                    {errors.contactEmail && <span className={styles.fieldError}>{errors.contactEmail}</span>}
+                  </div>
                 </div>
                 <button className="btn btn-primary" style={{marginTop:24}} onClick={startScan}>🚀 Build & Scan</button>
               </div>
@@ -190,7 +255,32 @@ export default function Publish() {
                   <input className="input" type="url" placeholder="https://mypwa.app" />
                 </div>
                 <p style={{color:'var(--muted)',fontSize:'0.87rem',lineHeight:1.7,margin:'16px 0 24px'}}>We'll crawl your PWA, verify the manifest and service worker, scan all loaded scripts, and create your store listing with a full trust report.</p>
-                <button className="btn btn-primary" onClick={startScan}>🔍 Scan & List</button>
+                <div className={styles.formGrid}>
+                  <div className="form-group">
+                    <label>App Name <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.appName ? styles.inputError : ''}`} placeholder="My Awesome App" value={appName} onChange={e => { setAppName(e.target.value); if (errors.appName) setErrors(prev => ({ ...prev, appName: undefined })) }} />
+                    {errors.appName && <span className={styles.fieldError}>{errors.appName}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Category <span className={styles.required}>*</span></label>
+                    <select className={`input ${errors.category ? styles.inputError : ''}`} value={category} onChange={e => { setCategory(e.target.value); if (errors.category) setErrors(prev => ({ ...prev, category: undefined })) }}>
+                      <option value="">Select a category…</option>
+                      {['Productivity','Finance','Health','Entertainment','Developer Tools','Education'].map(c=><option key={c} value={c}>{c}</option>)}
+                    </select>
+                    {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Privacy Policy URL <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.privacyUrl ? styles.inputError : ''}`} type="url" placeholder="https://yoursite.com/privacy" value={privacyUrl} onChange={e => { setPrivacyUrl(e.target.value); if (errors.privacyUrl) setErrors(prev => ({ ...prev, privacyUrl: undefined })) }} />
+                    {errors.privacyUrl && <span className={styles.fieldError}>{errors.privacyUrl}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label>Contact Email <span className={styles.required}>*</span></label>
+                    <input className={`input ${errors.contactEmail ? styles.inputError : ''}`} type="email" placeholder="hello@yourapp.com" value={contactEmail} onChange={e => { setContactEmail(e.target.value); if (errors.contactEmail) setErrors(prev => ({ ...prev, contactEmail: undefined })) }} />
+                    {errors.contactEmail && <span className={styles.fieldError}>{errors.contactEmail}</span>}
+                  </div>
+                </div>
+                <button className="btn btn-primary" style={{marginTop:24}} onClick={startScan}>🔍 Scan & List</button>
               </div>
             )}
           </div>
