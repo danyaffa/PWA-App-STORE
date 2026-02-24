@@ -20,10 +20,10 @@ export default function Footer() {
           </div>
           <div className={styles.col}>
             <h4>Resources</h4>
+            <Link to="/tutorial">Build with Claude Code</Link>
             <Link to="/app-store">Install Guide</Link>
             <Link to="/how-safety-works">How Safety Works</Link>
             <Link to="/support">Help Center</Link>
-            <a href="#">API Docs</a>
           </div>
           <div className={styles.col}>
             <h4>Legal</h4>
