@@ -1,7 +1,46 @@
+/* Hero search bar */
+.heroSearch {
+  margin: 32px 0 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+.heroSearchInner {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; max-width: 640px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 20px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.heroSearchInner:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,229,160,.15);
+}
+.heroSearchIcon { font-size: 1.1rem; flex-shrink: 0; }
+.heroSearchInput {
+  flex: 1; border: none; background: transparent; outline: none;
+  color: var(--text); font-size: 1rem; padding: 12px 0;
+  font-family: var(--font-body);
+}
+.heroSearchInput::placeholder { color: var(--muted); }
+.heroSearchClear {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  font-size: 1rem; padding: 4px 8px; border-radius: 50%;
+  transition: color .2s;
+}
+.heroSearchClear:hover { color: var(--text); }
+.heroFilters {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+}
+
+/* All Apps header with sort */
+.allAppsHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; margin-top: 48px; flex-wrap: wrap; gap: 16px;
+}
+
 .featured {
   background: linear-gradient(135deg, var(--surface), rgba(0,229,160,.05));
   border: 1px solid rgba(0,229,160,.2); border-radius: var(--radius-lg);
-  padding: 32px 36px; margin: 40px 0 48px;
+  padding: 32px 36px; margin: 0 0 48px;
   display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
 }
 .featuredEmoji { font-size: 3rem; }
@@ -17,8 +56,6 @@
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
 }
 
-.controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
-.controlsRight { display: flex; gap: 12px; align-items: center; }
 .filters  { display: flex; gap: 10px; flex-wrap: wrap; }
 .filterBtn {
   padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
@@ -27,7 +64,6 @@
   cursor: pointer; transition: all .2s; letter-spacing: 0.04em;
 }
 .filterBtn:hover, .active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,.05); }
-.search { width: 220px; }
 .sortSelect { width: 160px; padding: 10px 12px; font-size: 0.82rem; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -43,8 +79,9 @@
 @media (max-width: 768px) {
   .scrollRow { grid-template-columns: repeat(2, 1fr); }
   .storeStats { flex-direction: column; align-items: center; gap: 12px; }
-  .controlsRight { width: 100%; }
-  .search { flex: 1; width: auto; }
+  .heroSearchInner { padding: 4px 16px; }
+  .heroSearchInput { font-size: 0.92rem; }
+  .allAppsHeader { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 480px) {
   .scrollRow { grid-template-columns: 1fr; }

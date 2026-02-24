@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import styles from './Nav.module.css'
 
@@ -14,7 +14,17 @@ const LINKS = [
 export default function Nav() {
   const { pathname } = useLocation()
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [navSearch, setNavSearch] = useState('')
+
+  function handleNavSearch(e) {
+    if (e.key === 'Enter' && navSearch.trim()) {
+      navigate(`/store?q=${encodeURIComponent(navSearch.trim())}`)
+      setNavSearch('')
+      setMenuOpen(false)
+    }
+  }
 
   return (
     <nav className={styles.nav}>
@@ -43,6 +53,18 @@ export default function Nav() {
           </li>
         ))}
       </ul>
+
+      <div className={`${styles.navSearch} ${menuOpen ? styles.menuOpen : ''}`}>
+        <span className={styles.navSearchIcon}>🔍</span>
+        <input
+          className={styles.navSearchInput}
+          type="search"
+          placeholder="Search apps..."
+          value={navSearch}
+          onChange={e => setNavSearch(e.target.value)}
+          onKeyDown={handleNavSearch}
+        />
+      </div>
 
       <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
         {user ? (
