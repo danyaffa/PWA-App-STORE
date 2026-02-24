@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
 import { PIPELINE_STAGES } from '../utils/data.js'
 
 const SEV_COLOR = { pass:'var(--accent)', medium:'var(--warn)', critical:'var(--danger)', high:'#ff8c4d' }
@@ -17,6 +18,11 @@ export default function Safety() {
 
   return (
     <>
+      <SEO
+        title="AI Safety Pipeline — SafeLaunch"
+        description="Learn how SafeLaunch's 6-layer AI safety pipeline scans every app for malware, CVEs, secrets, network behavior, and policy compliance."
+        canonical="https://agentslock.com/safety"
+      />
       <Nav />
       <div className="page-wrap">
         <div className="section-label">How It Works</div>

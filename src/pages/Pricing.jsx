@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Pricing.module.css'
 
@@ -78,6 +79,11 @@ export default function Pricing() {
 
   return (
     <>
+      <SEO
+        title="Pricing — SafeLaunch PWA App Store"
+        description="Simple, flat pricing with no revenue cuts. Publish PWAs from $9/month. Every plan includes a full 6-layer AI safety scan."
+        canonical="https://agentslock.com/pricing"
+      />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 1100 }}>
 

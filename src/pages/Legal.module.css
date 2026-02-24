@@ -1,0 +1,29 @@
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 8px;
+}
+.updated {
+  color: var(--muted); font-size: 0.85rem; margin-bottom: 48px;
+  font-family: var(--font-mono);
+}
+.section {
+  margin-bottom: 36px;
+}
+.section h2 {
+  font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;
+  color: var(--text);
+}
+.section h3 {
+  font-size: 0.95rem; font-weight: 700; margin: 16px 0 8px;
+  color: var(--text);
+}
+.section p {
+  color: var(--muted); font-size: 0.9rem; line-height: 1.75;
+  margin-bottom: 8px;
+}
+.section ul {
+  color: var(--muted); font-size: 0.9rem; line-height: 1.75;
+  padding-left: 24px; margin-bottom: 8px;
+}
+.section li { margin-bottom: 4px; }
+.section a { color: var(--accent); }

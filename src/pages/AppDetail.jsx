@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
+import PayPalButton from '../components/PayPalButton.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './AppDetail.module.css'
@@ -37,8 +39,44 @@ export default function AppDetail() {
 
   const app = APPS.find(a => a.id === id) || APPS[0]
 
+  // Simulate some apps being paid
+  const isPaid = app.id === 'stockpulse' || app.id === 'datadash'
+  const price = isPaid ? '4.99' : null
+
+  const avgRating = (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1)
+
+  // JSON-LD for SoftwareApplication
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: app.name,
+    description: app.desc,
+    applicationCategory: app.category,
+    operatingSystem: 'Web, iOS, Android',
+    url: `https://agentslock.com/app/${app.id}`,
+    offers: {
+      '@type': 'Offer',
+      price: price || '0',
+      priceCurrency: 'USD',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: avgRating,
+      ratingCount: REVIEWS.length,
+      bestRating: '5',
+      worstRating: '1',
+    },
+  }
+
   return (
     <>
+      <SEO
+        title={`${app.name} — SafeLaunch App Store`}
+        description={`${app.desc} AI-verified safe with a risk score of ${app.score}/100. Install now on SafeLaunch.`}
+        canonical={`https://agentslock.com/app/${app.id}`}
+        type="product"
+        jsonLd={jsonLd}
+      />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 1100 }}>
         <Link to="/store" style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>← Back to Store</Link>
@@ -50,11 +88,12 @@ export default function AppDetail() {
             <h1 className={`display ${styles.title}`}>{app.name}</h1>
             <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>Dev Studio</a> · Published 14 Jan 2026</div>
             <div className={styles.metaRow}>
-              <span className="badge badge-pass">🛡️ AI Verified Safe</span>
+              <span className="badge badge-pass">AI Verified Safe</span>
               <span className="badge badge-muted">{app.category}</span>
               <span className="badge badge-muted">v2.3.1</span>
               <span className="badge badge-muted">Risk: {app.score}</span>
               <span className="badge badge-muted">{app.installs} installs</span>
+              {isPaid && <span className="badge badge-warn">${price}</span>}
             </div>
             <p className={styles.desc}>
               {app.name} is a fully offline-first PWA with no account required and no data collection.
@@ -83,7 +122,7 @@ export default function AppDetail() {
                 <h3 style={{ marginBottom: 10 }}>Permissions</h3>
                 <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>None. This app requests no device permissions and makes no network calls.</p>
                 <h3 style={{ marginBottom: 10 }}>Privacy</h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7 }}>All data stored in your browser's localStorage. Nothing is ever sent to any server. <a href="#" style={{ color: 'var(--accent)' }}>View Privacy Policy →</a></p>
+                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7 }}>All data stored in your browser's localStorage. Nothing is ever sent to any server. <Link to="/privacy" style={{ color: 'var(--accent)' }}>View Privacy Policy →</Link></p>
               </div>
             )}
 
@@ -114,6 +153,13 @@ export default function AppDetail() {
             {/* Reviews */}
             {tab === 2 && (
               <div className={styles.tabBody}>
+                <div className={styles.ratingOverview}>
+                  <div className={styles.ratingBig}>
+                    <span className="display" style={{fontSize:'2.5rem'}}>{avgRating}</span>
+                    <span style={{ color: 'var(--accent)', letterSpacing: 2, fontSize: '1.2rem' }}>{'★'.repeat(Math.round(avgRating))}</span>
+                  </div>
+                  <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>{REVIEWS.length} reviews</span>
+                </div>
                 {REVIEWS.map((r, i) => (
                   <div key={i} className={styles.review}>
                     <div className={styles.reviewHeader}>
@@ -124,7 +170,7 @@ export default function AppDetail() {
                     <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: 8, fontFamily: 'var(--font-mono)' }}>{r.date}</div>
                   </div>
                 ))}
-                <button className="btn btn-ghost" style={{ marginTop: 8 }} onClick={() => toast('📝 Review form coming soon')}>Write a Review</button>
+                <button className="btn btn-ghost" style={{ marginTop: 8 }} onClick={() => toast('Review form coming soon')}>Write a Review</button>
               </div>
             )}
 
@@ -155,11 +201,33 @@ export default function AppDetail() {
               </div>
               <div className={styles.scoreZones}><span>ALLOW</span><span>REVIEW</span><span>BLOCK</span></div>
             </div>
-            <div className={styles.trustBadge}>🛡️ AI Verified Safe · v2.3.1</div>
-            <button className={`btn btn-primary ${styles.installBtn}`} onClick={() => toast(`📲 Installing ${app.name}...`)}>📲 Install PWA</button>
+            <div className={styles.trustBadge}>AI Verified Safe · v2.3.1</div>
+
+            {isPaid ? (
+              <div className={styles.paySection}>
+                <div className={styles.priceTag}>${price}</div>
+                <PayPalButton
+                  amount={price}
+                  description={`Purchase ${app.name}`}
+                  onSuccess={() => toast(`${app.name} purchased and installed!`)}
+                  onError={() => toast('Payment failed. Please try again.')}
+                />
+              </div>
+            ) : (
+              <button className={`btn btn-primary ${styles.installBtn}`} onClick={() => toast(`Installing ${app.name}...`)}>Install Free</button>
+            )}
+
             <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report →</Link>
             <div className={styles.installMeta}>
-              {[['Version', '2.3.1'], ['Last scanned', '14 Jan 2026'], ['Build hash', 'a4f2c91'], ['Installs', `${app.installs}`], ['Offline support', '✓ Yes'], ['PWA installable', '✓ Yes']].map(([k, v]) => (
+              {[
+                ['Version', '2.3.1'],
+                ['Last scanned', '14 Jan 2026'],
+                ['Build hash', 'a4f2c91'],
+                ['Installs', `${app.installs}`],
+                ['Offline support', '✓ Yes'],
+                ['PWA installable', '✓ Yes'],
+                ['Price', isPaid ? `$${price}` : 'Free'],
+              ].map(([k, v]) => (
                 <div key={k} className={styles.metaRow2}>
                   <span style={{ color: 'var(--muted)' }}>{k}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: v.startsWith('✓') ? 'var(--accent)' : 'var(--text)' }}>{v}</span>

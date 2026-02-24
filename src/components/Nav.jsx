@@ -1,15 +1,20 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
 import styles from './Nav.module.css'
 
 const LINKS = [
-  { to: '/store',   label: 'Store' },
-  { to: '/publish', label: 'Publish' },
-  { to: '/safety',  label: 'Safety' },
-  { to: '/pricing', label: 'Pricing' },
+  { to: '/store',     label: 'Store' },
+  { to: '/publish',   label: 'Publish' },
+  { to: '/safety',    label: 'Safety' },
+  { to: '/pricing',   label: 'Pricing' },
+  { to: '/app-store', label: 'Install' },
 ]
 
 export default function Nav() {
   const { pathname } = useLocation()
+  const { user } = useAuth()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <nav className={styles.nav}>
@@ -17,12 +22,21 @@ export default function Nav() {
         Safe<span>Launch</span>
       </Link>
 
-      <ul className={styles.links}>
+      <button
+        className={`${styles.hamburger} ${menuOpen ? styles.open : ''}`}
+        onClick={() => setMenuOpen(o => !o)}
+        aria-label="Toggle menu"
+      >
+        <span /><span /><span />
+      </button>
+
+      <ul className={`${styles.links} ${menuOpen ? styles.menuOpen : ''}`}>
         {LINKS.map(l => (
           <li key={l.to}>
             <Link
               to={l.to}
               className={`${styles.link} ${pathname.startsWith(l.to) ? styles.active : ''}`}
+              onClick={() => setMenuOpen(false)}
             >
               {l.label}
             </Link>
@@ -30,9 +44,18 @@ export default function Nav() {
         ))}
       </ul>
 
-      <div className={styles.actions}>
-        <Link to="/signin"  className="btn btn-ghost">Sign In</Link>
-        <Link to="/publish" className="btn btn-primary">Submit App</Link>
+      <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
+        {user ? (
+          <>
+            <Link to="/dashboard" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            <Link to="/publish"   className="btn btn-primary" onClick={() => setMenuOpen(false)}>Submit App</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/signin"  className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Sign In</Link>
+            <Link to="/publish" className="btn btn-primary" onClick={() => setMenuOpen(false)}>Submit App</Link>
+          </>
+        )}
       </div>
     </nav>
   )

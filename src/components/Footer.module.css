@@ -1,19 +1,31 @@
 .footer {
   border-top: 1px solid var(--border);
-  padding: 40px;
-  display: flex; align-items: center; justify-content: space-between;
   max-width: 1200px; margin: 0 auto;
   color: var(--muted); font-size: 0.85rem;
-  flex-wrap: wrap; gap: 16px;
 }
+.top {
+  display: flex; justify-content: space-between; gap: 60px;
+  padding: 60px 40px 40px; flex-wrap: wrap;
+}
+.brand { max-width: 280px; }
 .logo {
   font-family: var(--font-display); font-size: 1.2rem;
-  color: var(--text);
+  color: var(--text); display: block; margin-bottom: 12px;
 }
 .logo span { color: var(--accent); }
-.links { display: flex; gap: 24px; }
-.links a { color: var(--muted); transition: color .2s; }
-.links a:hover { color: var(--accent); }
+.tagline { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+.columns { display: flex; gap: 60px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 10px; }
+.col h4 { color: var(--text); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.col a { color: var(--muted); transition: color .2s; font-size: 0.88rem; }
+.col a:hover { color: var(--accent); }
+.bottom {
+  padding: 24px 40px; border-top: 1px solid var(--border);
+}
+.copy { color: var(--muted); font-size: 0.8rem; }
+
 @media (max-width: 768px) {
-  .footer { flex-direction: column; text-align: center; }
+  .top { flex-direction: column; padding: 40px 20px 24px; gap: 32px; }
+  .columns { gap: 32px; }
+  .bottom { padding: 20px; }
 }

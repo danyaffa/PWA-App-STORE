@@ -11,8 +11,9 @@
 .navActive  { background: rgba(0,229,160,.1) !important; color: var(--accent) !important; }
 .navIcon    { font-size: 1rem; width: 20px; text-align: center; }
 .navBadge   { background: var(--danger); color: #fff; border-radius: 100px; padding: 1px 7px; font-size: 0.65rem; margin-left: auto; }
-.sidebarBottom { margin-top: auto; padding: 16px 12px; border-top: 1px solid var(--border); }
+.sidebarBottom { margin-top: auto; padding: 16px 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
 .pubCard    { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface2); }
+.signOutBtn { width: 100%; justify-content: center; }
 .avatar     { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #0a0a0f; font-size: 0.8rem; flex-shrink: 0; }
 .pubName    { font-size: 0.85rem; font-weight: 700; }
 .pubPlan    { font-size: 0.72rem; color: var(--muted); }

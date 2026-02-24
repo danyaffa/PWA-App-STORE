@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
 import { SCAN_STEPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Publish.module.css'
@@ -52,6 +53,11 @@ export default function Publish() {
 
   return (
     <>
+      <SEO
+        title="Publish Your App — SafeLaunch"
+        description="Publish your PWA to SafeLaunch in minutes. Upload a ZIP, connect GitHub, or paste a URL. AI safety scanning included."
+        canonical="https://agentslock.com/publish"
+      />
       <Nav />
       <div className="page-wrap page-wrap--narrow">
         <div className="section-label">Publish Your App</div>
