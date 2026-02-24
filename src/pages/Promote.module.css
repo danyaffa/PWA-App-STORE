@@ -1,0 +1,32 @@
+.icon {
+  width: 64px; height: 64px; border-radius: 16px; background: var(--surface2);
+  border: 1px solid var(--border); display: flex; align-items: center;
+  justify-content: center; font-size: 2rem; flex-shrink: 0;
+}
+.title { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 4px; }
+.section { margin-bottom: 36px; }
+.section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+.desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 14px; }
+.codeBox {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.codeBox code {
+  flex: 1; font-family: var(--font-mono); font-size: 0.82rem;
+  color: var(--accent); word-break: break-all; line-height: 1.4;
+}
+.qrBox { margin-bottom: 16px; }
+.badgePreview { margin-bottom: 14px; }
+.socialCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px;
+}
+.socialHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; font-weight: 700; font-size: 0.9rem;
+}
+.socialText {
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+  white-space: pre-wrap; line-height: 1.6; margin: 0;
+}

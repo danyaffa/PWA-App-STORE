@@ -16,6 +16,8 @@ import Terms        from './pages/Terms.jsx'
 import Support      from './pages/Support.jsx'
 import DeveloperAgreement from './pages/DeveloperAgreement.jsx'
 import DMCA         from './pages/DMCA.jsx'
+import HowSafetyWorks from './pages/HowSafetyWorks.jsx'
+import Promote      from './pages/Promote.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -37,6 +39,8 @@ export default function App() {
       <Route path="/support"      element={<Support />} />
       <Route path="/developer-agreement" element={<DeveloperAgreement />} />
       <Route path="/dmca"         element={<DMCA />} />
+      <Route path="/how-safety-works" element={<HowSafetyWorks />} />
+      <Route path="/app/:id/promote"  element={<Promote />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
   )

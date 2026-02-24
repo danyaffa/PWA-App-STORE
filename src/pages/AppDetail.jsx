@@ -5,12 +5,21 @@ import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
 import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
+import ReportApp from '../components/ReportApp.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import { trackView, trackInstall } from '../lib/analytics.js'
 import styles from './AppDetail.module.css'
 
 const TABS = ['Overview', 'Safety Report', 'Reviews', 'Versions']
+
+const BADGE_MAP = {
+  trending:  { icon: '🔥', label: 'Trending' },
+  verified:  { icon: '🛡', label: 'Verified Safe' },
+  top_rated: { icon: '⭐', label: 'Top Rated' },
+  new:       { icon: '🚀', label: 'New' },
+  rising:    { icon: '📈', label: 'Rising Fast' },
+}
 
 const FINDINGS = [
   { sev: 'pass', msg: 'No secrets or API keys detected in source' },
@@ -39,6 +48,7 @@ export default function AppDetail() {
   const { toast, ToastContainer } = useToast()
   const [tab, setTab] = useState(0)
   const [showDisclaimer, setShowDisclaimer] = useState(false)
+  const [showReport, setShowReport] = useState(false)
 
   const app = APPS.find(a => a.id === id) || APPS[0]
 
@@ -59,7 +69,8 @@ export default function AppDetail() {
   const isPaid = app.id === 'stockpulse' || app.id === 'datadash'
   const price = isPaid ? '4.99' : null
 
-  const avgRating = (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1)
+  const avgRating = app.averageRating || (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1)
+  const badges = (app.badges || []).map(b => BADGE_MAP[b]).filter(Boolean)
 
   // JSON-LD for SoftwareApplication
   const jsonLd = {
@@ -78,7 +89,7 @@ export default function AppDetail() {
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: avgRating,
-      ratingCount: REVIEWS.length,
+      ratingCount: app.totalReviews || REVIEWS.length,
       bestRating: '5',
       worstRating: '1',
     },
@@ -102,9 +113,11 @@ export default function AppDetail() {
           <div className={styles.left}>
             <div className={styles.iconLg}>{app.icon}</div>
             <h1 className={`display ${styles.title}`}>{app.name}</h1>
-            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>Dev Studio</a> · Published 14 Jan 2026</div>
+            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>Dev Studio</a> · Developer Trust: <strong style={{ color: 'var(--accent)' }}>{app.developerTrust || 70}/100</strong></div>
             <div className={styles.metaRow}>
-              <span className="badge badge-pass">AI Verified Safe</span>
+              {badges.map(b => (
+                <span key={b.label} className="badge badge-pass">{b.icon} {b.label}</span>
+              ))}
               <span className="badge badge-muted">{app.category}</span>
               <span className="badge badge-muted">v2.3.1</span>
               <span className="badge badge-muted">Risk: {app.score}</span>
@@ -174,7 +187,7 @@ export default function AppDetail() {
                     <span className="display" style={{fontSize:'2.5rem'}}>{avgRating}</span>
                     <span style={{ color: 'var(--accent)', letterSpacing: 2, fontSize: '1.2rem' }}>{'★'.repeat(Math.round(avgRating))}</span>
                   </div>
-                  <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>{REVIEWS.length} reviews</span>
+                  <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>{app.totalReviews || REVIEWS.length} reviews</span>
                 </div>
                 {REVIEWS.map((r, i) => (
                   <div key={i} className={styles.review}>
@@ -217,7 +230,11 @@ export default function AppDetail() {
               </div>
               <div className={styles.scoreZones}><span>ALLOW</span><span>REVIEW</span><span>BLOCK</span></div>
             </div>
-            <div className={styles.trustBadge}>AI Verified Safe · v2.3.1</div>
+
+            {/* Safety badge with score */}
+            <div className={styles.trustBadge}>
+              {app.safetyScore >= 85 ? 'Safety Verified' : 'Safety Reviewed'} ({app.safetyScore || 'N/A'}/100) · v2.3.1
+            </div>
 
             {isPaid ? (
               <div className={styles.paySection}>
@@ -234,29 +251,46 @@ export default function AppDetail() {
             )}
 
             <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report →</Link>
+
+            {/* Promote link */}
+            <Link to={`/app/${app.id}/promote`} className={styles.reportLink} style={{ color: 'var(--accent2)' }}>Promote this app →</Link>
+
             <div className={styles.installMeta}>
               {[
                 ['Version', '2.3.1'],
+                ['Safety Score', `${app.safetyScore || 'N/A'}/100`],
                 ['Last scanned', '14 Jan 2026'],
                 ['Build hash', 'a4f2c91'],
                 ['Installs', `${app.installs}`],
+                ['Rating', `${avgRating} (${app.totalReviews || REVIEWS.length})`],
+                ['Developer Trust', `${app.developerTrust || 'N/A'}/100`],
                 ['Offline support', '✓ Yes'],
                 ['PWA installable', '✓ Yes'],
                 ['Price', isPaid ? `$${price}` : 'Free'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.metaRow2}>
                   <span style={{ color: 'var(--muted)' }}>{k}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: v.startsWith('✓') ? 'var(--accent)' : 'var(--text)' }}>{v}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: String(v).startsWith('✓') ? 'var(--accent)' : 'var(--text)' }}>{v}</span>
                 </div>
               ))}
             </div>
+
+            {/* Report App button */}
+            <button
+              className="btn btn-ghost btn-sm"
+              onClick={() => setShowReport(true)}
+              style={{ width: '100%', justifyContent: 'center', marginTop: 14, color: 'var(--muted)', fontSize: '0.82rem' }}
+            >
+              Report App
+            </button>
           </div>
         </div>
       </div>
+
       {/* Independent developer disclaimer banner */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 40px' }}>
         <div style={{ padding: '14px 20px', background: 'rgba(255,184,77,.06)', border: '1px solid rgba(255,184,77,.15)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.6 }}>
-          Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/terms" style={{ color: 'var(--accent)' }}>Learn more</Link>
+          Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/how-safety-works" style={{ color: 'var(--accent)' }}>How safety works</Link> · <Link to="/terms" style={{ color: 'var(--accent)' }}>Terms</Link>
         </div>
       </div>
 
@@ -268,6 +302,14 @@ export default function AppDetail() {
           appId={app.id}
           onAccept={handleInstallAccepted}
           onCancel={() => setShowDisclaimer(false)}
+        />
+      )}
+
+      {showReport && (
+        <ReportApp
+          appId={app.id}
+          appName={app.name}
+          onClose={() => setShowReport(false)}
         />
       )}
 

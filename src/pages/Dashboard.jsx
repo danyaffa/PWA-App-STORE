@@ -8,7 +8,7 @@ const STATS = [
   { label: 'Total Installs', value: '24,891', sub: '↑ 12% this month',     subColor: 'var(--accent)' },
   { label: 'Active Apps',    value: '4',       sub: '1 pending review',     subColor: 'var(--warn)' },
   { label: 'Avg Risk Score', value: '9',       sub: 'All clean',            subColor: 'var(--accent)', valueColor: 'var(--accent)' },
-  { label: 'Abuse Reports',  value: '0',       sub: 'No reports',           subColor: 'var(--accent)' },
+  { label: 'Trust Score',    value: '92',      sub: 'Trusted developer',    subColor: 'var(--accent)', valueColor: 'var(--accent)' },
 ]
 
 const APPS = [
@@ -134,6 +134,27 @@ export default function Dashboard() {
                 <Link to={`/report/${a.id}`} className={styles.iconBtn} title="Report">📋</Link>
                 <button className={styles.iconBtn} onClick={() => toast(`Edit ${a.name}`)}>✏️</button>
                 <button className={styles.iconBtn} onClick={() => toast('Submit update')}>📤</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Developer Metrics */}
+        <div className={styles.sectionHead}>
+          <span style={{ fontWeight:700 }}>Developer Metrics</span>
+        </div>
+        <div className={styles.statsRow} style={{ marginBottom: 32 }}>
+          {[
+            { label: 'Ranking Score', value: '88', bar: 88, color: 'var(--accent)' },
+            { label: 'Safety Score', value: '95', bar: 95, color: 'var(--accent)' },
+            { label: 'Install Velocity', value: '85', bar: 85, color: 'var(--accent2)' },
+            { label: 'Retention', value: '72%', bar: 72, color: 'var(--accent)' },
+          ].map(m => (
+            <div key={m.label} className={`card ${styles.statCard}`}>
+              <div className={styles.statLabel}>{m.label}</div>
+              <div className={`display ${styles.statValue}`} style={{ color: m.color }}>{m.value}</div>
+              <div style={{ height: 4, background: 'var(--bg)', borderRadius: 2, marginTop: 8 }}>
+                <div style={{ height: '100%', width: `${m.bar}%`, background: m.color, borderRadius: 2, transition: 'width .8s ease' }} />
               </div>
             </div>
           ))}
