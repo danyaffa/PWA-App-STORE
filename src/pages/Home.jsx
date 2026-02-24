@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
 import styles from './Home.module.css'
 
 const FEATURES = [
@@ -36,6 +37,11 @@ export default function Home() {
 
   return (
     <>
+      <SEO
+        title="SafeLaunch — Trusted PWA App Store | AI-Verified Web Apps"
+        description="SafeLaunch is the trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified progressive web apps with confidence. From $9/month."
+        canonical="https://agentslock.com/"
+      />
       <Nav />
 
       <section className={styles.hero}>
@@ -69,6 +75,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How it Works */}
+      <section className={styles.howItWorks}>
+        <div className="section-label">How It Works</div>
+        <h2 className="section-title display" style={{ textAlign: 'center', marginBottom: 48 }}>
+          From Upload to Live in Three Steps
+        </h2>
+        <div className={styles.stepsRow}>
+          <div className={styles.stepCard}>
+            <div className={styles.stepNum}>1</div>
+            <h3>Upload Your App</h3>
+            <p>Drop a ZIP, paste a GitHub URL, or link to a hosted PWA. We auto-detect your framework.</p>
+          </div>
+          <div className={styles.stepCard}>
+            <div className={styles.stepNum}>2</div>
+            <h3>AI Safety Scan</h3>
+            <p>Our 6-layer pipeline checks for malware, CVEs, secrets, network behavior, and policy compliance.</p>
+          </div>
+          <div className={styles.stepCard}>
+            <div className={styles.stepNum}>3</div>
+            <h3>Publish to Store</h3>
+            <p>Passed? Your app goes live with an AI Verified badge and public trust report.</p>
+          </div>
+        </div>
+      </section>
+
       <div className={styles.features}>
         {FEATURES.map(f => (
           <div key={f.title} className={`card ${styles.featCard}`}>
@@ -78,6 +109,16 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      {/* CTA strip */}
+      <section className={styles.ctaSection}>
+        <h2 className={`display ${styles.ctaTitle}`}>Ready to Ship with Confidence?</h2>
+        <p className={styles.ctaSub}>Join 4,200+ developers publishing PWAs people trust.</p>
+        <div className={styles.ctaActions}>
+          <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
+          <Link to="/app-store" className="btn btn-ghost btn-lg">Install the App</Link>
+        </div>
+      </section>
 
       <Footer />
     </>

@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
+import SEO from '../components/SEO.jsx'
 import styles from './Dashboard.module.css'
 
 const STATS = [
   { label: 'Total Installs', value: '24,891', sub: '↑ 12% this month',     subColor: 'var(--accent)' },
   { label: 'Active Apps',    value: '4',       sub: '1 pending review',     subColor: 'var(--warn)' },
-  { label: 'Avg Risk Score', value: '9',       sub: 'All clean ✓',          subColor: 'var(--accent)', valueColor: 'var(--accent)' },
+  { label: 'Avg Risk Score', value: '9',       sub: 'All clean',            subColor: 'var(--accent)', valueColor: 'var(--accent)' },
   { label: 'Abuse Reports',  value: '0',       sub: 'No reports',           subColor: 'var(--accent)' },
 ]
 
@@ -38,9 +40,26 @@ const NAV = [
 
 export default function Dashboard() {
   const { toast, ToastContainer } = useToast()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleSignOut() {
+    try {
+      await logout()
+      toast('Signed out')
+      navigate('/')
+    } catch {
+      toast('Error signing out')
+    }
+  }
+
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Publisher'
+  const initials = displayName.slice(0, 2).toUpperCase()
 
   return (
     <div className={styles.layout}>
+      <SEO title="Dashboard — SafeLaunch" description="Manage your published PWA apps, view analytics, and monitor safety scans." />
+
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <Link to="/" className={styles.logo}>Safe<span>Launch</span></Link>
@@ -60,9 +79,15 @@ export default function Dashboard() {
 
         <div className={styles.sidebarBottom}>
           <div className={styles.pubCard}>
-            <div className={styles.avatar}>DS</div>
-            <div><div className={styles.pubName}>Dev Studio</div><div className={styles.pubPlan}>Creator Pro</div></div>
+            <div className={styles.avatar}>{initials}</div>
+            <div>
+              <div className={styles.pubName}>{displayName}</div>
+              <div className={styles.pubPlan}>Creator Pro</div>
+            </div>
           </div>
+          <button className={`btn btn-ghost btn-sm ${styles.signOutBtn}`} onClick={handleSignOut}>
+            Sign Out
+          </button>
         </div>
       </aside>
 
@@ -70,7 +95,9 @@ export default function Dashboard() {
       <main className={styles.main}>
         <div className={styles.topBar}>
           <h1 className={`display ${styles.pageTitle}`}>Dashboard</h1>
-          <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
+          <div style={{display:'flex',gap:12}}>
+            <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
+          </div>
         </div>
 
         {/* Stats */}
@@ -105,8 +132,8 @@ export default function Dashboard() {
               <div style={{ color:'var(--muted)',fontSize:'0.85rem' }}>{a.installs}</div>
               <div className={styles.tblActions}>
                 <Link to={`/report/${a.id}`} className={styles.iconBtn} title="Report">📋</Link>
-                <button className={styles.iconBtn} onClick={() => toast(`✏️ Edit ${a.name}`)}>✏️</button>
-                <button className={styles.iconBtn} onClick={() => toast(`📤 Submit update`)}>📤</button>
+                <button className={styles.iconBtn} onClick={() => toast(`Edit ${a.name}`)}>✏️</button>
+                <button className={styles.iconBtn} onClick={() => toast('Submit update')}>📤</button>
               </div>
             </div>
           ))}
@@ -115,13 +142,13 @@ export default function Dashboard() {
         {/* Alerts + Activity */}
         <div className={styles.bottomGrid}>
           <div>
-            <div className={styles.sectionHead}><span style={{fontWeight:700}}>🔔 Alerts <span style={{background:'rgba(255,77,109,.15)',color:'var(--danger)',borderRadius:100,padding:'2px 8px',fontSize:'0.7rem'}}>2 new</span></span></div>
+            <div className={styles.sectionHead}><span style={{fontWeight:700}}>Alerts <span style={{background:'rgba(255,77,109,.15)',color:'var(--danger)',borderRadius:100,padding:'2px 8px',fontSize:'0.7rem'}}>2 new</span></span></div>
             <div className="card" style={{padding:20,display:'flex',flexDirection:'column',gap:10}}>
               <div className={styles.alertBox} style={{borderColor:'rgba(255,184,77,.3)',background:'rgba(255,184,77,.06)'}}>
-                <span style={{color:'var(--warn)',fontWeight:700}}>⚠ DataDash</span> — New CVE in axios@1.6.0. Review needed.
+                <span style={{color:'var(--warn)',fontWeight:700}}>DataDash</span> — New CVE in axios@1.6.0. Review needed.
               </div>
               <div className={styles.alertBox} style={{borderColor:'rgba(255,184,77,.3)',background:'rgba(255,184,77,.06)'}}>
-                <span style={{color:'var(--warn)',fontWeight:700}}>⚠ DataDash</span> — Awaiting Trust Ops review for 3 days.
+                <span style={{color:'var(--warn)',fontWeight:700}}>DataDash</span> — Awaiting Trust Ops review for 3 days.
               </div>
             </div>
           </div>

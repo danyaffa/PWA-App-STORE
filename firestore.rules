@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    function isOwner(resourceData) {
+      return signedIn() && resourceData.developerUid == request.auth.uid;
+    }
+
+    // ── USERS ──────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && request.auth.uid == uid
+        && !('role' in request.resource.data);
+      // Admin role assignment should be done manually in console or via admin-only tooling
+    }
+
+    // ── APPS ───────────────────────────────────────────────────────────────
+    match /apps/{appId} {
+
+      // Public can read only published apps; owner and admin can read all
+      allow read: if resource.data.status == "published"
+        || (signedIn() && (isOwner(resource.data) || isAdmin()));
+
+      // Create: signed-in developer creates their own app, must start as draft
+      allow create: if signedIn()
+        && request.resource.data.developerUid == request.auth.uid
+        && request.resource.data.status == "draft";
+
+      // Update:
+      // - Owner can edit their own draft apps (but cannot publish or set safetyScore)
+      // - Admin can edit anything including publishing/rejecting and safetyScore
+      allow update: if
+        (isAdmin())
+        ||
+        (signedIn()
+          && isOwner(resource.data)
+          && resource.data.status == "draft"
+          && request.resource.data.status == "draft"
+          && !('safetyScore' in request.resource.data));
+
+      // Delete: owner can delete draft; admin can delete anything
+      allow delete: if (isAdmin())
+        || (signedIn() && isOwner(resource.data) && resource.data.status == "draft");
+    }
+
+    // ── REVIEWS ────────────────────────────────────────────────────────────
+    match /reviews/{reviewId} {
+      allow read: if true;
+
+      // Create review only for self, rating between 1-5
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+
+      // Update/Delete only own review (or admin)
+      allow update, delete: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── SCANS ──────────────────────────────────────────────────────────────
+    match /scans/{scanId} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.submittedByUid == request.auth.uid);
+
+      allow create: if signedIn()
+        && request.resource.data.submittedByUid == request.auth.uid;
+
+      // Only admin can update scan results/reports
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Default deny ───────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
