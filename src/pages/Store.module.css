@@ -1,34 +1,58 @@
-/* Hero search bar */
+/* ─── Search-first hero ─── */
 .heroSearch {
-  margin: 32px 0 40px;
+  margin: 16px 0 48px;
   display: flex; flex-direction: column; align-items: center; gap: 20px;
+  padding: 32px 0 12px;
+}
+.heroLabel {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
 }
 .heroSearchInner {
-  display: flex; align-items: center; gap: 12px;
-  width: 100%; max-width: 640px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; padding: 6px 20px;
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; max-width: 700px;
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 100px; padding: 8px 24px;
   transition: border-color .2s, box-shadow .2s;
 }
 .heroSearchInner:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,229,160,.15);
+  box-shadow: 0 0 0 4px rgba(0,229,160,.12);
 }
-.heroSearchIcon { font-size: 1.1rem; flex-shrink: 0; }
+.heroSearchIcon { font-size: 1.25rem; flex-shrink: 0; }
 .heroSearchInput {
   flex: 1; border: none; background: transparent; outline: none;
-  color: var(--text); font-size: 1rem; padding: 12px 0;
+  color: var(--text); font-size: 1.1rem; padding: 14px 0;
   font-family: var(--font-body);
 }
 .heroSearchInput::placeholder { color: var(--muted); }
 .heroSearchClear {
   background: none; border: none; color: var(--muted); cursor: pointer;
-  font-size: 1rem; padding: 4px 8px; border-radius: 50%;
+  font-size: 1.1rem; padding: 4px 10px; border-radius: 50%;
   transition: color .2s;
 }
 .heroSearchClear:hover { color: var(--text); }
 .heroFilters {
   display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+}
+
+/* Suggested search tags */
+.suggestedTags {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  justify-content: center;
+}
+.suggestedLabel {
+  font-size: 0.78rem; color: var(--muted); font-weight: 600;
+}
+.suggestedTag {
+  padding: 5px 14px; border-radius: 100px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  font-family: var(--font-body); font-size: 0.76rem; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+}
+.suggestedTag:hover {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,229,160,.05);
 }
 
 /* All Apps header with sort */

@@ -310,7 +310,10 @@ export default function Publish() {
                 </div>
                 <div style={{display:'flex',gap:12}}>
                   <Link to="/report/focusflow" className="btn btn-ghost">View Full Report</Link>
-                  <button className="btn btn-primary" onClick={() => toast('🎉 Your app is live on SafeLaunch!')}>Publish Now</button>
+                  <button className="btn btn-primary" onClick={() => {
+                    toast('🎉 Your app is live on SafeLaunch! Redirecting to store...')
+                    setTimeout(() => navigate(`/store?q=${encodeURIComponent(appName.trim())}`), 1500)
+                  }}>Publish Now</button>
                 </div>
               </div>
             )}

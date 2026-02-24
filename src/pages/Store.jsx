@@ -83,11 +83,10 @@ export default function Store() {
       />
       <Nav />
       <div className="page-wrap">
-        <div className="section-label">The SafeLaunch Store</div>
-        <h1 className="section-title display">AI-Verified Apps.<br />Every Single One.</h1>
 
-        {/* Hero search bar — always visible at top */}
+        {/* Search-first hero — Google Play style */}
         <div className={styles.heroSearch}>
+          <div className={styles.heroLabel}>Search the SafeLaunch Store</div>
           <div className={styles.heroSearchInner}>
             <span className={styles.heroSearchIcon}>🔍</span>
             <input
@@ -96,11 +95,14 @@ export default function Store() {
               placeholder="Search by app name, category, or keyword..."
               value={search}
               onChange={handleSearch}
+              autoFocus
             />
             {search && (
               <button className={styles.heroSearchClear} onClick={() => setSearch('')} aria-label="Clear search">✕</button>
             )}
           </div>
+
+          {/* Category filter pills */}
           <div className={styles.heroFilters}>
             {CATEGORIES.map(c => (
               <button
@@ -110,6 +112,16 @@ export default function Store() {
               >{c}</button>
             ))}
           </div>
+
+          {/* Suggested search tags */}
+          {!search && filter === 'All' && (
+            <div className={styles.suggestedTags}>
+              <span className={styles.suggestedLabel}>Popular:</span>
+              {['task manager', 'finance', 'offline', 'privacy', 'game', 'notes'].map(tag => (
+                <button key={tag} className={styles.suggestedTag} onClick={() => setSearch(tag)}>{tag}</button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Featured strip — algorithm selected */}

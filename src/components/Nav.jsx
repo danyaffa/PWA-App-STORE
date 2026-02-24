@@ -40,6 +40,22 @@ export default function Nav() {
         <span /><span /><span />
       </button>
 
+      {/* Central search bar — dominant element like Google Play */}
+      <div className={`${styles.navSearch} ${menuOpen ? styles.menuOpen : ''}`}>
+        <span className={styles.navSearchIcon}>🔍</span>
+        <input
+          className={styles.navSearchInput}
+          type="search"
+          placeholder="Search apps, categories, developers..."
+          value={navSearch}
+          onChange={e => setNavSearch(e.target.value)}
+          onKeyDown={handleNavSearch}
+        />
+        {navSearch && (
+          <button className={styles.navSearchClear} onClick={() => setNavSearch('')} aria-label="Clear">✕</button>
+        )}
+      </div>
+
       <ul className={`${styles.links} ${menuOpen ? styles.menuOpen : ''}`}>
         {LINKS.map(l => (
           <li key={l.to}>
@@ -53,18 +69,6 @@ export default function Nav() {
           </li>
         ))}
       </ul>
-
-      <div className={`${styles.navSearch} ${menuOpen ? styles.menuOpen : ''}`}>
-        <span className={styles.navSearchIcon}>🔍</span>
-        <input
-          className={styles.navSearchInput}
-          type="search"
-          placeholder="Search apps..."
-          value={navSearch}
-          onChange={e => setNavSearch(e.target.value)}
-          onKeyDown={handleNavSearch}
-        />
-      </div>
 
       <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
         {user ? (
