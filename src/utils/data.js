@@ -11,9 +11,58 @@ export const APPS = [
   { id: 'caltrack',    icon:'🍎', name:'CalTrack',        desc:'Simple calorie and macro tracker. No ads, no account.',                         category:'Health',          score:13, trust:'green',  installs:'9.1k', rankingScore:78, safetyScore:87, averageRating:4.6, totalReviews:98,  publishedAt:'2025-05-30', developerTrust:88, installVelocity:62, badges:['trending','verified'] },
   { id: 'fincalc',     icon:'🧮', name:'FinCalc Pro',     desc:'Financial calculator suite — mortgage, tax, compound interest.',               category:'Finance',         score:6,  trust:'green',  installs:'7.8k', rankingScore:74, safetyScore:94, averageRating:4.7, totalReviews:86,  publishedAt:'2025-06-22', developerTrust:85, installVelocity:55, badges:['verified','top_rated'] },
   { id: 'pixelrunner', icon:'🎮', name:'PixelRunner',     desc:'Endless runner game. PWA, installable, fully offline.',                        category:'Entertainment',   score:3,  trust:'green',  installs:'14k',  rankingScore:91, safetyScore:97, averageRating:4.9, totalReviews:210, publishedAt:'2025-04-10', developerTrust:95, installVelocity:90, badges:['trending','verified','top_rated'] },
+
+  // Games
+  { id: 'puzzlequest',  icon:'🧩', name:'PuzzleQuest',    desc:'Daily brain puzzles — crosswords, sudoku, and logic games. Fully offline.',       category:'Games',           score:5,  trust:'green',  installs:'18k',  rankingScore:89, safetyScore:96, averageRating:4.8, totalReviews:245, publishedAt:'2025-05-20', developerTrust:93, installVelocity:88, badges:['trending','verified','top_rated'] },
+  { id: 'chesslite',    icon:'♟️', name:'ChessLite',       desc:'Play chess offline or challenge friends over P2P. No servers needed.',              category:'Games',           score:4,  trust:'green',  installs:'9.2k', rankingScore:76, safetyScore:94, averageRating:4.7, totalReviews:130, publishedAt:'2025-07-15', developerTrust:87, installVelocity:72, badges:['verified','top_rated'] },
+
+  // Security
+  { id: 'shieldguard',  icon:'🛡️', name:'ShieldGuard',     desc:'Real-time virus and malware scanner for your device. Privacy-first protection.',  category:'Security',        score:6,  trust:'green',  installs:'22k',  rankingScore:92, safetyScore:98, averageRating:4.9, totalReviews:310, publishedAt:'2025-03-18', developerTrust:96, installVelocity:91, badges:['trending','verified','top_rated'] },
+  { id: 'privacywall',  icon:'🔒', name:'PrivacyWall',     desc:'Block trackers, ads, and fingerprinting across all your browsing. Open source.',  category:'Security',        score:8,  trust:'green',  installs:'15k',  rankingScore:84, safetyScore:95, averageRating:4.7, totalReviews:198, publishedAt:'2025-06-02', developerTrust:90, installVelocity:78, badges:['trending','verified'] },
+
+  // Business
+  { id: 'invoicepro',   icon:'📋', name:'InvoicePro',      desc:'Create, send, and track invoices. PDF export, no subscription required.',         category:'Business',        score:7,  trust:'green',  installs:'11k',  rankingScore:79, safetyScore:93, averageRating:4.6, totalReviews:156, publishedAt:'2025-04-25', developerTrust:88, installVelocity:65, badges:['verified','top_rated'] },
+  { id: 'teamboard',    icon:'📌', name:'TeamBoard',       desc:'Kanban project board for small teams. Real-time sync, works offline.',             category:'Business',        score:9,  trust:'green',  installs:'7.5k', rankingScore:71, safetyScore:90, averageRating:4.4, totalReviews:94,  publishedAt:'2025-08-10', developerTrust:82, installVelocity:58, badges:['verified'] },
+
+  // Food & Cooking
+  { id: 'chefpal',      icon:'👨‍🍳', name:'ChefPal',         desc:'10,000+ recipes with step-by-step guides. Meal planner and grocery lists.',      category:'Food & Cooking',  score:5,  trust:'green',  installs:'16k',  rankingScore:86, safetyScore:95, averageRating:4.8, totalReviews:220, publishedAt:'2025-05-08', developerTrust:91, installVelocity:82, badges:['trending','verified','top_rated'] },
+  { id: 'mealprep',     icon:'🥗', name:'MealPrep Weekly', desc:'Plan your weekly meals, auto-generate shopping lists, track nutrition.',          category:'Food & Cooking',  score:8,  trust:'green',  installs:'6.3k', rankingScore:68, safetyScore:91, averageRating:4.5, totalReviews:78,  publishedAt:'2025-09-22', developerTrust:76, installVelocity:55, badges:['verified'] },
+
+  // Social
+  { id: 'circlechat',   icon:'💬', name:'CircleChat',      desc:'End-to-end encrypted group chat. No data collection, no ads.',                    category:'Social',          score:10, trust:'green',  installs:'13k',  rankingScore:82, safetyScore:92, averageRating:4.5, totalReviews:175, publishedAt:'2025-06-30', developerTrust:85, installVelocity:74, badges:['verified'] },
+
+  // Shopping
+  { id: 'dealfinder',   icon:'🏷️', name:'DealFinder',      desc:'Compare prices across stores. Get alerts when prices drop on your wishlist.',     category:'Shopping',         score:12, trust:'green',  installs:'10k',  rankingScore:77, safetyScore:88, averageRating:4.4, totalReviews:135, publishedAt:'2025-07-05', developerTrust:80, installVelocity:68, badges:['verified'] },
+
+  // Travel
+  { id: 'tripplan',     icon:'✈️', name:'TripPlan',        desc:'Plan trips, save maps offline, and track expenses while traveling.',               category:'Travel',          score:7,  trust:'green',  installs:'8.8k', rankingScore:75, safetyScore:93, averageRating:4.6, totalReviews:112, publishedAt:'2025-08-18', developerTrust:84, installVelocity:63, badges:['verified','top_rated'] },
+
+  // Music
+  { id: 'beatmaker',    icon:'🎹', name:'BeatMaker',       desc:'Create beats and loops right in your browser. Export to WAV and MP3.',             category:'Music',           score:6,  trust:'green',  installs:'7.1k', rankingScore:73, safetyScore:94, averageRating:4.6, totalReviews:88,  publishedAt:'2025-09-01', developerTrust:81, installVelocity:66, badges:['verified'] },
+
+  // Photography
+  { id: 'snapedit',     icon:'📸', name:'SnapEdit',        desc:'Photo editor with filters, crop, resize, and batch processing. No uploads.',      category:'Photography',     score:4,  trust:'green',  installs:'12k',  rankingScore:83, safetyScore:96, averageRating:4.7, totalReviews:168, publishedAt:'2025-05-15', developerTrust:89, installVelocity:79, badges:['trending','verified'] },
+
+  // Weather
+  { id: 'skycast',      icon:'🌤️', name:'SkyCast',         desc:'Hyperlocal weather forecasts. 7-day outlook with rain alerts.',                    category:'Weather',         score:9,  trust:'green',  installs:'9.5k', rankingScore:74, safetyScore:91, averageRating:4.5, totalReviews:140, publishedAt:'2025-06-12', developerTrust:83, installVelocity:61, badges:['verified'] },
+
+  // News
+  { id: 'newsdigest',   icon:'📰', name:'NewsDigest',      desc:'AI-curated news from 500+ sources. No ads, no tracking, just news.',               category:'News',            score:11, trust:'green',  installs:'11k',  rankingScore:80, safetyScore:89, averageRating:4.4, totalReviews:152, publishedAt:'2025-07-20', developerTrust:79, installVelocity:70, badges:['verified'] },
+
+  // Sports
+  { id: 'fittrack',     icon:'🏋️', name:'FitTrack',        desc:'Track workouts, set goals, and monitor progress. Works offline at the gym.',      category:'Sports',          score:6,  trust:'green',  installs:'14k',  rankingScore:85, safetyScore:94, averageRating:4.7, totalReviews:195, publishedAt:'2025-04-28', developerTrust:90, installVelocity:80, badges:['trending','verified','top_rated'] },
+
+  // Utilities
+  { id: 'unitconvert',  icon:'🔧', name:'UniConvert',      desc:'Convert any unit — length, weight, temperature, currency. Works offline.',         category:'Utilities',       score:3,  trust:'green',  installs:'8.5k', rankingScore:72, safetyScore:97, averageRating:4.8, totalReviews:110, publishedAt:'2025-08-05', developerTrust:86, installVelocity:56, badges:['verified','top_rated'] },
+
+  // Communication
+  { id: 'quickmail',    icon:'📧', name:'QuickMail',       desc:'Lightweight email client with smart sorting and offline mode.',                    category:'Communication',   score:10, trust:'green',  installs:'6.8k', rankingScore:69, safetyScore:90, averageRating:4.3, totalReviews:82,  publishedAt:'2025-10-02', developerTrust:77, installVelocity:52, badges:['verified'] },
+
+  // Lifestyle
+  { id: 'habitloop',    icon:'🔄', name:'HabitLoop',       desc:'Build good habits with streaks, reminders, and visual progress charts.',           category:'Lifestyle',       score:5,  trust:'green',  installs:'10k',  rankingScore:81, safetyScore:95, averageRating:4.7, totalReviews:145, publishedAt:'2025-06-25', developerTrust:88, installVelocity:73, badges:['verified','top_rated'] },
 ]
 
-export const CATEGORIES = ['All', 'Productivity', 'Finance', 'Health', 'Developer Tools', 'Entertainment', 'Education']
+export const CATEGORIES = ['All', 'Productivity', 'Finance', 'Health', 'Developer Tools', 'Entertainment', 'Education', 'Games', 'Security', 'Business', 'Food & Cooking', 'Social', 'Shopping', 'Travel', 'Music', 'Photography', 'Weather', 'News', 'Sports', 'Utilities', 'Communication', 'Lifestyle']
 
 export const SCAN_STEPS = [
   { pct:8,  label:'Initializing sandbox',       cls:'info', text:'[init] Pulling node:20-alpine...' },

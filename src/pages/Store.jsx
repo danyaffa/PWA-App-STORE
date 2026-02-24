@@ -37,22 +37,44 @@ function sortApps(apps, sortBy) {
   }
 }
 
-// Algorithm-driven sections (like Google Play / Apple App Store)
-const TRENDING    = [...APPS].sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0)).slice(0, 4)
-const TOP_RATED   = [...APPS].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4)
-const NEW_APPS    = [...APPS].sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
-const VERIFIED    = APPS.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
-const RISING_FAST = [...APPS].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
-
-// Featured app: highest ranking score
-const FEATURED = TRENDING[0]
+function getPublishedApps() {
+  try {
+    return JSON.parse(localStorage.getItem('sl_published_apps') || '[]')
+  } catch { return [] }
+}
 
 export default function Store() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState('All')
   const [search, setSearch] = useState(searchParams.get('q') || '')
   const [sort, setSort]     = useState('ranking')
+  const [userApps, setUserApps] = useState(getPublishedApps)
   const { toast, ToastContainer } = useToast()
+
+  // Refresh user-published apps when tab becomes visible (e.g. after publishing)
+  useEffect(() => {
+    function onFocus() { setUserApps(getPublishedApps()) }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [])
+
+  // Also refresh on mount and storage changes
+  useEffect(() => {
+    function onStorage(e) { if (e.key === 'sl_published_apps') setUserApps(getPublishedApps()) }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
+  // Merge hardcoded sample apps with user-published apps
+  const allApps = [...APPS, ...userApps]
+
+  // Algorithm-driven sections
+  const TRENDING    = [...allApps].sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0)).slice(0, 4)
+  const TOP_RATED   = [...allApps].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4)
+  const NEW_APPS    = [...allApps].sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
+  const VERIFIED    = allApps.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
+  const RISING_FAST = [...allApps].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
+  const FEATURED    = TRENDING[0]
 
   // Sync search from URL query param (e.g. /store?q=focus)
   useEffect(() => {
@@ -60,7 +82,7 @@ export default function Store() {
     if (q && q !== search) setSearch(q)
   }, [searchParams])
 
-  const filtered = APPS.filter(a =>
+  const filtered = allApps.filter(a =>
     (filter === 'All' || a.category === filter) &&
     (!search || a.name.toLowerCase().includes(search.toLowerCase()) || a.desc.toLowerCase().includes(search.toLowerCase()))
   )
@@ -180,7 +202,7 @@ export default function Store() {
 
         {/* Stats bar */}
         <div className={styles.storeStats}>
-          <span>{APPS.length} verified apps</span>
+          <span>{allApps.length} verified apps</span>
           <span>6-layer AI safety scan</span>
           <span>Algorithm-ranked daily</span>
         </div>

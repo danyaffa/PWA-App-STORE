@@ -84,6 +84,12 @@
   display: block; margin-top: 4px;
   font-size: 0.78rem; color: var(--danger, #f44); line-height: 1.4;
 }
+.publishedBtn {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+  color: #fff !important;
+  cursor: default !important;
+}
 @media (max-width: 768px) {
   .formGrid { grid-template-columns: 1fr; }
   .steps { overflow-x: auto; }
