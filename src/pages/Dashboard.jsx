@@ -12,18 +12,18 @@ const STATS = [
 ]
 
 const APPS = [
-  { icon:'✅', name:'FocusFlow',  ver:'v2.3.1', date:'14 Jan 2026', status:'live',   score:5,  installs:'12,048', id:'focusflow' },
-  { icon:'🔐', name:'VaultPass',  ver:'v1.8.0', date:'8 Jan 2026',  status:'live',   score:22, installs:'8,421',  id:'vaultpass' },
-  { icon:'📊', name:'DataDash',   ver:'v3.1.0', date:'2 Feb 2026',  status:'review', score:38, installs:'2,104',  id:'datadash' },
-  { icon:'🗂️', name:'NoteVault', ver:'v1.0.0', date:'Draft',       status:'draft',  score:null,installs:'—',    id:'notevault' },
+  { icon:'🎨', name:'Excalidraw',  ver:'v2.3.1', date:'14 Jan 2026', status:'live',   score:3,  installs:'2,100,000', id:'excalidraw' },
+  { icon:'🔐', name:'Bitwarden',   ver:'v1.8.0', date:'8 Jan 2026',  status:'live',   score:3,  installs:'1,500,000', id:'bitwarden' },
+  { icon:'⚡', name:'StackBlitz',  ver:'v3.1.0', date:'2 Feb 2026',  status:'review', score:4,  installs:'1,200,000', id:'stackblitz' },
+  { icon:'📝', name:'Notion',      ver:'v1.0.0', date:'Draft',       status:'draft',  score:null,installs:'—',       id:'notion' },
 ]
 
 const ACTIVITY = [
-  { color:'var(--accent)',  text:<><strong>FocusFlow</strong> — Continuous rescan passed. Risk: 5. No new findings.</>,       time:'22 Feb 2026' },
-  { color:'var(--warn)',    text:<><strong>DataDash v3.1.0</strong> — Sent to Trust Ops review queue. Risk score: 38.</>,     time:'20 Feb 2026' },
-  { color:'var(--accent)',  text:<><strong>VaultPass v1.8.0</strong> — Rescan passed. No new vulnerabilities.</>,             time:'20 Feb 2026' },
-  { color:'var(--accent2)', text:<><strong>DataDash v3.1.0</strong> — Build completed in 41s. Scan triggered.</>,            time:'19 Feb 2026' },
-  { color:'var(--accent)',  text:<><strong>FocusFlow v2.3.1</strong> — Published live. 0 critical findings.</>,              time:'14 Jan 2026' },
+  { color:'var(--accent)',  text:<><strong>Excalidraw</strong> — Continuous rescan passed. Risk: 3. No new findings.</>,       time:'22 Feb 2026' },
+  { color:'var(--warn)',    text:<><strong>StackBlitz v3.1.0</strong> — Sent to Trust Ops review queue. Risk score: 4.</>,     time:'20 Feb 2026' },
+  { color:'var(--accent)',  text:<><strong>Bitwarden v1.8.0</strong> — Rescan passed. No new vulnerabilities.</>,              time:'20 Feb 2026' },
+  { color:'var(--accent2)', text:<><strong>StackBlitz v3.1.0</strong> — Build completed in 41s. Scan triggered.</>,            time:'19 Feb 2026' },
+  { color:'var(--accent)',  text:<><strong>Excalidraw v2.3.1</strong> — Published live. 0 critical findings.</>,               time:'14 Jan 2026' },
 ]
 
 const NAV = [
