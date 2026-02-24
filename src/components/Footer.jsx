@@ -21,9 +21,9 @@ export default function Footer() {
           <div className={styles.col}>
             <h4>Resources</h4>
             <Link to="/app-store">Install Guide</Link>
+            <Link to="/how-safety-works">How Safety Works</Link>
             <Link to="/support">Help Center</Link>
             <a href="#">API Docs</a>
-            <a href="#">Status</a>
           </div>
           <div className={styles.col}>
             <h4>Legal</h4>
@@ -37,7 +37,7 @@ export default function Footer() {
       </div>
 
       <div className={styles.bottom}>
-        <div className={styles.copy}>&copy; 2026 SafeLaunch. The trusted PWA store.</div>
+        <div className={styles.copy}>&copy; 2026 SafeLaunch. Applications are submitted by independent developers. The platform provides hosting and discovery services only and does not create or guarantee third-party applications.</div>
       </div>
     </footer>
   )

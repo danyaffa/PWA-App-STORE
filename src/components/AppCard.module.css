@@ -13,6 +13,14 @@
 .card:hover { border-color: rgba(0,229,160,.3); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
 .card:hover::before { opacity: 1; }
 
+.badges { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
+.badge {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 8px; border-radius: 100px;
+  background: rgba(0,229,160,.1); color: var(--accent);
+  border: 1px solid rgba(0,229,160,.2);
+}
+
 .icon { width: 56px; height: 56px; border-radius: 14px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 16px; }
 .name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
 .desc { font-size: 0.83rem; color: var(--muted); line-height: 1.5; margin-bottom: 16px; flex: 1; }
@@ -24,6 +32,13 @@
 .yellow .dot { background: var(--warn); }
 .yellow { color: var(--warn); }
 .category { font-size: 0.72rem; color: var(--muted); background: var(--bg); padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); }
-.stats { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 14px; font-family: var(--font-mono); }
+.stats { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; font-family: var(--font-mono); }
+
+.trustBar {
+  display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted);
+  padding: 6px 0; margin-bottom: 10px; border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+
 .actions { display: flex; gap: 8px; }
 .detailBtn, .installBtn { flex: 1; justify-content: center; }

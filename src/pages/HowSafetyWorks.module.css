@@ -1,0 +1,62 @@
+.pipeline { display: flex; flex-direction: column; gap: 16px; margin-bottom: 56px; }
+.layer {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 24px;
+  transition: border-color .2s;
+}
+.layer:hover { border-color: rgba(0,229,160,.3); }
+.layerNum {
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); background: rgba(0,229,160,.1);
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.layerIcon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.layerContent h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.layerContent p { color: var(--muted); font-size: 0.88rem; line-height: 1.65; margin: 0; }
+
+.sectionTitle { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+.sectionDesc { color: var(--muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 24px; }
+
+.scoreSection { margin-bottom: 56px; }
+.formula {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;
+}
+.formulaRow {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.formulaRow:last-child { border-bottom: none; }
+.weight {
+  font-family: var(--font-mono); font-weight: 700; color: var(--accent);
+  width: 48px; text-align: right;
+}
+
+.decisionGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.decisionCard {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px; text-align: center;
+}
+.decisionScore { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+.decisionLabel { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.continuousGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.continuousCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px;
+}
+
+.disclaimer {
+  background: rgba(255,184,77,.06); border: 1px solid rgba(255,184,77,.15);
+  border-radius: var(--radius-md); padding: 20px; margin-bottom: 48px;
+}
+.disclaimer p { color: var(--muted); font-size: 0.88rem; line-height: 1.65; margin: 0; }
+
+@media (max-width: 768px) {
+  .decisionGrid { grid-template-columns: 1fr; }
+  .continuousGrid { grid-template-columns: 1fr; }
+  .layer { flex-wrap: wrap; }
+}
