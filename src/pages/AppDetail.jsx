@@ -65,9 +65,9 @@ export default function AppDetail() {
     toast(`Installing ${app.name}...`)
   }
 
-  // Simulate some apps being paid
-  const isPaid = app.id === 'stockpulse' || app.id === 'datadash'
-  const price = isPaid ? '4.99' : null
+  // Use price field from app data — all current apps are Free
+  const isPaid = app.price && app.price !== 'Free'
+  const price = isPaid ? app.price : null
 
   const avgRating = app.averageRating || (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1)
   const badges = (app.badges || []).map(b => BADGE_MAP[b]).filter(Boolean)

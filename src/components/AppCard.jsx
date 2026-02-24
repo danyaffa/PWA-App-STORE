@@ -47,7 +47,10 @@ export default function AppCard({ app }) {
       )}
 
       <div className={styles.icon}>{app.icon}</div>
-      <div className={styles.name}>{app.name}</div>
+      <div className={styles.nameRow}>
+        <div className={styles.name}>{app.name}</div>
+        <span className={styles.priceTag}>{app.price || 'Free'}</span>
+      </div>
       <div className={styles.desc}>{app.desc}</div>
 
       {/* Trust signals */}
