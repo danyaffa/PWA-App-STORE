@@ -10,7 +10,7 @@ const BADGE_MAP = {
   rising:    { icon: '📈', label: 'Rising' },
 }
 
-export default function AppCard({ app }) {
+export default function AppCard({ app, onFeature }) {
   const badges = (app.badges || []).slice(0, 2)
 
   return (
@@ -52,7 +52,15 @@ export default function AppCard({ app }) {
       </div>
 
       <div className={styles.actions}>
-        <Link to={`/app/${app.id}`} className={`btn btn-primary btn-sm ${styles.installBtn}`}>View App</Link>
+        <button
+          className={`btn btn-primary btn-sm ${styles.installBtn}`}
+          onClick={() => { if (onFeature) onFeature(app) }}
+        >
+          View App
+        </button>
+        <Link to={`/app/${app.id}`} className={`btn btn-ghost btn-sm ${styles.installBtn}`}>
+          Details
+        </Link>
       </div>
     </div>
   )
