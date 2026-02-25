@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { useToast } from './Toast.jsx'
 import { useInstallState } from '../hooks/useInstallState.js'
 import { TrustBadge } from './TrustScore.jsx'
@@ -58,18 +57,15 @@ export default function AppCard({ app, onFeature }) {
       </div>
 
       <div className={styles.actions}>
-        <Link
-          to={`/app/${appId}`}
-          className={`btn btn-ghost btn-sm ${styles.detailBtn}`}
-          onClick={() => onFeature && onFeature(app)}
-        >Details</Link>
         {installed ? (
-          <a href={app.url} target="_blank" rel="noopener noreferrer" className={`btn btn-sm ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
+          <button className={`btn btn-sm ${styles.installBtn} ${styles.openBtn}`} onClick={() => {
+            if (onFeature) onFeature(app)
+          }}>Open App</button>
         ) : (
           <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
             install()
             toast(`${app.name} installed successfully!`)
-            if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
+            if (onFeature) onFeature(app)
           }}>Install App</button>
         )}
       </div>
