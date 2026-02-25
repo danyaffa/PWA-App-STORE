@@ -6,10 +6,10 @@ export const APPS = [
     whatsNew:'Added dark mode toggle, improved shape snapping, new arrow styles, and reduced bundle size by 18%.',
     permissions:['None — fully offline'],
     screenshots:[
-      { title:'Canvas', caption:'Infinite whiteboard with hand-drawn style shapes', color:'#6c5ce7', mockup:'editor' },
-      { title:'Shapes & Tools', caption:'Rectangles, arrows, text, and freehand drawing', color:'#a29bfe', mockup:'grid' },
-      { title:'Collaboration', caption:'Real-time multiplayer editing with shared links', color:'#74b9ff', mockup:'editor' },
-      { title:'Export Options', caption:'Export to PNG, SVG, or share via live link', color:'#55efc4', mockup:'list' },
+      { title:'Canvas', caption:'Infinite whiteboard with hand-drawn style shapes', color:'#6c5ce7', mockup:'editor', link:'https://excalidraw.com' },
+      { title:'Shapes & Tools', caption:'Rectangles, arrows, text, and freehand drawing', color:'#a29bfe', mockup:'grid', link:'https://excalidraw.com' },
+      { title:'Collaboration', caption:'Real-time multiplayer editing with shared links', color:'#74b9ff', mockup:'editor', link:'https://excalidraw.com/#room' },
+      { title:'Export Options', caption:'Export to PNG, SVG, or share via live link', color:'#55efc4', mockup:'list', link:'https://excalidraw.com' },
     ] },
   { id: 'todoist',      icon:'✅', name:'Todoist',          desc:'Powerful task manager with projects, labels, filters, and natural language input.',  category:'Productivity',    price:'Free', url:'https://todoist.com', score:5,  trust:'green',  installs:'1.8M', rankingScore:93, safetyScore:97, averageRating:4.8, totalReviews:3800, publishedAt:'2024-03-10', developerTrust:96, installVelocity:90, badges:['trending','verified','top_rated'],
     developer:'Doist', size:'3.2 MB',
@@ -17,10 +17,10 @@ export const APPS = [
     whatsNew:'New board view for projects, improved natural language parsing, collaborative task comments, and notification improvements.',
     permissions:['Internet access', 'Notifications'],
     screenshots:[
-      { title:'Task Inbox', caption:'Quick-add tasks with natural language dates', color:'#e17055', mockup:'list' },
-      { title:'Projects', caption:'Organize tasks into projects with sections', color:'#d63031', mockup:'list' },
-      { title:'Filters & Labels', caption:'Custom filters to find tasks instantly', color:'#e84393', mockup:'grid' },
-      { title:'Upcoming View', caption:'See all tasks across projects by date', color:'#fd79a8', mockup:'list' },
+      { title:'Task Inbox', caption:'Quick-add tasks with natural language dates', color:'#e17055', mockup:'list', link:'https://todoist.com/app/inbox' },
+      { title:'Projects', caption:'Organize tasks into projects with sections', color:'#d63031', mockup:'list', link:'https://todoist.com/app/projects' },
+      { title:'Filters & Labels', caption:'Custom filters to find tasks instantly', color:'#e84393', mockup:'grid', link:'https://todoist.com/app/filters-labels' },
+      { title:'Upcoming View', caption:'See all tasks across projects by date', color:'#fd79a8', mockup:'list', link:'https://todoist.com/app/upcoming' },
     ] },
   { id: 'notion',       icon:'📝', name:'Notion',           desc:'All-in-one workspace for notes, docs, wikis, and project management.',              category:'Productivity',    price:'Free', url:'https://www.notion.so', score:4,  trust:'green',  installs:'3.5M', rankingScore:97, safetyScore:98, averageRating:4.8, totalReviews:5100, publishedAt:'2024-02-20', developerTrust:97, installVelocity:93, badges:['trending','verified','top_rated'],
     developer:'Notion Labs', size:'4.1 MB',
@@ -28,10 +28,10 @@ export const APPS = [
     whatsNew:'Notion AI assistant improvements, new calendar database view, improved mobile editor, and faster page load times.',
     permissions:['Internet access', 'Clipboard'],
     screenshots:[
-      { title:'Workspace', caption:'Pages, databases, and wikis in one place', color:'#2d3436', mockup:'cards' },
-      { title:'Databases', caption:'Tables, boards, calendars, and gallery views', color:'#636e72', mockup:'grid' },
-      { title:'Templates', caption:'Start from 1000+ community templates', color:'#b2bec3', mockup:'cards' },
-      { title:'AI Assistant', caption:'Write, summarize, and brainstorm with AI', color:'#74b9ff', mockup:'chat' },
+      { title:'Workspace', caption:'Pages, databases, and wikis in one place', color:'#2d3436', mockup:'cards', link:'https://www.notion.so' },
+      { title:'Databases', caption:'Tables, boards, calendars, and gallery views', color:'#636e72', mockup:'grid', link:'https://www.notion.so/product/databases' },
+      { title:'Templates', caption:'Start from 1000+ community templates', color:'#b2bec3', mockup:'cards', link:'https://www.notion.so/templates' },
+      { title:'AI Assistant', caption:'Write, summarize, and brainstorm with AI', color:'#74b9ff', mockup:'chat', link:'https://www.notion.so/product/ai' },
     ] },
 
   // Finance
@@ -41,10 +41,10 @@ export const APPS = [
     whatsNew:'New spending reports with category breakdowns, improved import from bank CSV files, and dark mode support.',
     permissions:['None — local storage only'],
     screenshots:[
-      { title:'Budget Overview', caption:'Envelope-style budgeting with monthly totals', color:'#00b894', mockup:'chart' },
-      { title:'Transactions', caption:'Import bank transactions or add manually', color:'#00cec9', mockup:'list' },
-      { title:'Reports', caption:'Spending charts and cash flow analysis', color:'#0984e3', mockup:'chart' },
-      { title:'Accounts', caption:'Track checking, savings, and credit cards', color:'#6c5ce7', mockup:'list' },
+      { title:'Budget Overview', caption:'Envelope-style budgeting with monthly totals', color:'#00b894', mockup:'chart', link:'https://actualbudget.org' },
+      { title:'Transactions', caption:'Import bank transactions or add manually', color:'#00cec9', mockup:'list', link:'https://actualbudget.org' },
+      { title:'Reports', caption:'Spending charts and cash flow analysis', color:'#0984e3', mockup:'chart', link:'https://actualbudget.org' },
+      { title:'Accounts', caption:'Track checking, savings, and credit cards', color:'#6c5ce7', mockup:'list', link:'https://actualbudget.org' },
     ] },
   { id: 'wise',         icon:'💸', name:'Wise',             desc:'Send money internationally with real exchange rates and low fees.',                 category:'Finance',         price:'Free', url:'https://wise.com', score:8,  trust:'green',  installs:'950k', rankingScore:88, safetyScore:94, averageRating:4.7, totalReviews:2800, publishedAt:'2024-04-08', developerTrust:94, installVelocity:82, badges:['trending','verified'],
     developer:'Wise (TransferWise)', size:'3.8 MB',
@@ -52,10 +52,10 @@ export const APPS = [
     whatsNew:'Added real-time rate alerts, improved multi-currency account dashboard, and faster transfer tracking.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Send Money', caption:'Transfer to 80+ countries with real rates', color:'#00b894', mockup:'form' },
-      { title:'Multi-Currency', caption:'Hold and convert 50+ currencies instantly', color:'#a3cb38', mockup:'grid' },
-      { title:'Rate Alerts', caption:'Get notified when exchange rates hit your target', color:'#ffeaa7', mockup:'chart' },
-      { title:'Activity', caption:'Track all transfers with real-time status', color:'#74b9ff', mockup:'feed' },
+      { title:'Send Money', caption:'Transfer to 80+ countries with real rates', color:'#00b894', mockup:'form', link:'https://wise.com/send' },
+      { title:'Multi-Currency', caption:'Hold and convert 50+ currencies instantly', color:'#a3cb38', mockup:'grid', link:'https://wise.com/multi-currency-account' },
+      { title:'Rate Alerts', caption:'Get notified when exchange rates hit your target', color:'#ffeaa7', mockup:'chart', link:'https://wise.com/rate-alerts' },
+      { title:'Activity', caption:'Track all transfers with real-time status', color:'#74b9ff', mockup:'feed', link:'https://wise.com' },
     ] },
 
   // Health
@@ -65,10 +65,10 @@ export const APPS = [
     whatsNew:'New exercise search with muscle group filters, improved workout timer, and rest period reminders.',
     permissions:['None — local storage only'],
     screenshots:[
-      { title:'Workout Log', caption:'Log exercises with sets, reps, and weight', color:'#e17055', mockup:'list' },
-      { title:'Routines', caption:'Create and schedule weekly workout plans', color:'#d63031', mockup:'list' },
-      { title:'Nutrition', caption:'Track calories, protein, carbs, and fats', color:'#00b894', mockup:'chart' },
-      { title:'Progress', caption:'Charts showing strength and body measurements', color:'#0984e3', mockup:'chart' },
+      { title:'Workout Log', caption:'Log exercises with sets, reps, and weight', color:'#e17055', mockup:'list', link:'https://wger.de/en/workout/overview' },
+      { title:'Routines', caption:'Create and schedule weekly workout plans', color:'#d63031', mockup:'list', link:'https://wger.de/en/routine/overview' },
+      { title:'Nutrition', caption:'Track calories, protein, carbs, and fats', color:'#00b894', mockup:'chart', link:'https://wger.de/en/nutrition/api/nutritionplan/' },
+      { title:'Progress', caption:'Charts showing strength and body measurements', color:'#0984e3', mockup:'chart', link:'https://wger.de/en/weight/overview/' },
     ] },
 
   // Developer Tools
@@ -78,10 +78,10 @@ export const APPS = [
     whatsNew:'Added Svelte 5 and Astro templates, improved TypeScript IntelliSense, and faster cold boot times.',
     permissions:['Service Worker'],
     screenshots:[
-      { title:'Code Editor', caption:'VS Code-powered editor with IntelliSense', color:'#1e90ff', mockup:'editor' },
-      { title:'Live Preview', caption:'Instant hot-reload preview as you type', color:'#2d3436', mockup:'editor' },
-      { title:'Terminal', caption:'Full terminal with npm, node, and git', color:'#636e72', mockup:'editor' },
-      { title:'Templates', caption:'Start from React, Vue, Angular, or Next.js', color:'#6c5ce7', mockup:'grid' },
+      { title:'Code Editor', caption:'VS Code-powered editor with IntelliSense', color:'#1e90ff', mockup:'editor', link:'https://stackblitz.com' },
+      { title:'Live Preview', caption:'Instant hot-reload preview as you type', color:'#2d3436', mockup:'editor', link:'https://stackblitz.com' },
+      { title:'Terminal', caption:'Full terminal with npm, node, and git', color:'#636e72', mockup:'editor', link:'https://stackblitz.com' },
+      { title:'Templates', caption:'Start from React, Vue, Angular, or Next.js', color:'#6c5ce7', mockup:'grid', link:'https://stackblitz.com/?starters=frontend' },
     ] },
   { id: 'codesandbox',  icon:'📦', name:'CodeSandbox',      desc:'Online code editor and prototyping tool. Instant previews and collaboration.',      category:'Developer Tools', price:'Free', url:'https://codesandbox.io', score:5,  trust:'green',  installs:'890k', rankingScore:90, safetyScore:96, averageRating:4.7, totalReviews:2600, publishedAt:'2024-02-15', developerTrust:95, installVelocity:85, badges:['trending','verified','top_rated'],
     developer:'CodeSandbox B.V.', size:'4.8 MB',
@@ -89,10 +89,10 @@ export const APPS = [
     whatsNew:'New DevBox environments with GPU support, improved collaboration cursor sharing, and faster preview loading.',
     permissions:['Internet access', 'Service Worker'],
     screenshots:[
-      { title:'Sandbox Editor', caption:'Write code with real-time preview panel', color:'#2d3436', mockup:'editor' },
-      { title:'DevBoxes', caption:'Full Linux VM environments in the cloud', color:'#151515', mockup:'editor' },
-      { title:'Collaboration', caption:'Share sandboxes and code together live', color:'#6c5ce7', mockup:'editor' },
-      { title:'Deploy', caption:'One-click deploy to Vercel or Netlify', color:'#0984e3', mockup:'form' },
+      { title:'Sandbox Editor', caption:'Write code with real-time preview panel', color:'#2d3436', mockup:'editor', link:'https://codesandbox.io/s' },
+      { title:'DevBoxes', caption:'Full Linux VM environments in the cloud', color:'#151515', mockup:'editor', link:'https://codesandbox.io/dashboard' },
+      { title:'Collaboration', caption:'Share sandboxes and code together live', color:'#6c5ce7', mockup:'editor', link:'https://codesandbox.io' },
+      { title:'Deploy', caption:'One-click deploy to Vercel or Netlify', color:'#0984e3', mockup:'form', link:'https://codesandbox.io' },
     ] },
 
   // Entertainment
@@ -102,10 +102,10 @@ export const APPS = [
     whatsNew:'Improved DJ AI feature, new audiobook browsing, redesigned Now Playing screen, and Spotify Wrapped updates.',
     permissions:['Internet access', 'Media playback'],
     screenshots:[
-      { title:'Home Feed', caption:'Personalized playlists and daily mixes', color:'#1DB954', mockup:'cards' },
-      { title:'Now Playing', caption:'Full-screen player with lyrics and queue', color:'#191414', mockup:'player' },
-      { title:'Search', caption:'Browse by genre, mood, charts, and new releases', color:'#535353', mockup:'grid' },
-      { title:'Library', caption:'Your saved songs, albums, and playlists', color:'#282828', mockup:'list' },
+      { title:'Home Feed', caption:'Personalized playlists and daily mixes', color:'#1DB954', mockup:'cards', link:'https://open.spotify.com' },
+      { title:'Now Playing', caption:'Full-screen player with lyrics and queue', color:'#191414', mockup:'player', link:'https://open.spotify.com' },
+      { title:'Search', caption:'Browse by genre, mood, charts, and new releases', color:'#535353', mockup:'grid', link:'https://open.spotify.com/search' },
+      { title:'Library', caption:'Your saved songs, albums, and playlists', color:'#282828', mockup:'list', link:'https://open.spotify.com/collection' },
     ] },
   { id: 'youtube-music',icon:'🎶', name:'YouTube Music',    desc:'Official music streaming from YouTube. Free with ads, background play.',            category:'Entertainment',   price:'Free', url:'https://music.youtube.com', score:4,  trust:'green',  installs:'4.1M', rankingScore:96, safetyScore:97, averageRating:4.6, totalReviews:6200, publishedAt:'2024-01-10', developerTrust:99, installVelocity:95, badges:['trending','verified','top_rated'],
     developer:'Google LLC', size:'5.4 MB',
@@ -113,10 +113,10 @@ export const APPS = [
     whatsNew:'New mood-based radio stations, improved offline mixtape, redesigned artist pages, and better queue management.',
     permissions:['Internet access', 'Media playback'],
     screenshots:[
-      { title:'Home', caption:'Trending music and personalized recommendations', color:'#FF0000', mockup:'cards' },
-      { title:'Player', caption:'Video and audio modes with background play', color:'#282828', mockup:'player' },
-      { title:'Explore', caption:'Charts, new releases, and moods & genres', color:'#212121', mockup:'grid' },
-      { title:'Library', caption:'Downloads, playlists, and subscriptions', color:'#181818', mockup:'list' },
+      { title:'Home', caption:'Trending music and personalized recommendations', color:'#FF0000', mockup:'cards', link:'https://music.youtube.com' },
+      { title:'Player', caption:'Video and audio modes with background play', color:'#282828', mockup:'player', link:'https://music.youtube.com' },
+      { title:'Explore', caption:'Charts, new releases, and moods & genres', color:'#212121', mockup:'grid', link:'https://music.youtube.com/explore' },
+      { title:'Library', caption:'Downloads, playlists, and subscriptions', color:'#181818', mockup:'list', link:'https://music.youtube.com/library' },
     ] },
 
   // Education
@@ -126,10 +126,10 @@ export const APPS = [
     whatsNew:'New math and music courses, improved speech recognition, redesigned lesson interface, and Duolingo Max with AI roleplay.',
     permissions:['Internet access', 'Microphone (optional, for speaking exercises)'],
     screenshots:[
-      { title:'Lesson Tree', caption:'Skill tree with progressive difficulty levels', color:'#58CC02', mockup:'grid' },
-      { title:'Practice', caption:'Interactive exercises — match, translate, speak', color:'#89E219', mockup:'form' },
-      { title:'Leaderboards', caption:'Compete with friends and earn XP streaks', color:'#FF9600', mockup:'feed' },
-      { title:'Stories', caption:'Read and listen to interactive short stories', color:'#CE82FF', mockup:'cards' },
+      { title:'Lesson Tree', caption:'Skill tree with progressive difficulty levels', color:'#58CC02', mockup:'grid', link:'https://www.duolingo.com/learn' },
+      { title:'Practice', caption:'Interactive exercises — match, translate, speak', color:'#89E219', mockup:'form', link:'https://www.duolingo.com/practice' },
+      { title:'Leaderboards', caption:'Compete with friends and earn XP streaks', color:'#FF9600', mockup:'feed', link:'https://www.duolingo.com/leaderboard' },
+      { title:'Stories', caption:'Read and listen to interactive short stories', color:'#CE82FF', mockup:'cards', link:'https://www.duolingo.com/stories' },
     ] },
   { id: 'khan-academy', icon:'🎓', name:'Khan Academy',     desc:'Free world-class education. Math, science, computing, and more.',                   category:'Education',       price:'Free', url:'https://www.khanacademy.org', score:2,  trust:'green',  installs:'2.6M', rankingScore:95, safetyScore:99, averageRating:4.9, totalReviews:5500, publishedAt:'2024-02-01', developerTrust:99, installVelocity:88, badges:['verified','top_rated'],
     developer:'Khan Academy', size:'3.9 MB',
@@ -137,10 +137,10 @@ export const APPS = [
     whatsNew:'AI tutor Khanmigo integration, new AP course prep materials, improved progress dashboard, and offline video support.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Course Library', caption:'Math, science, computing, economics & more', color:'#1865f2', mockup:'grid' },
-      { title:'Video Lessons', caption:'Expert-led videos with interactive transcripts', color:'#14bf96', mockup:'player' },
-      { title:'Practice', caption:'Step-by-step problem solving with hints', color:'#ff914d', mockup:'form' },
-      { title:'Progress', caption:'Mastery system tracking your learning journey', color:'#9b59b6', mockup:'chart' },
+      { title:'Course Library', caption:'Math, science, computing, economics & more', color:'#1865f2', mockup:'grid', link:'https://www.khanacademy.org/subjects' },
+      { title:'Video Lessons', caption:'Expert-led videos with interactive transcripts', color:'#14bf96', mockup:'player', link:'https://www.khanacademy.org' },
+      { title:'Practice', caption:'Step-by-step problem solving with hints', color:'#ff914d', mockup:'form', link:'https://www.khanacademy.org/math' },
+      { title:'Progress', caption:'Mastery system tracking your learning journey', color:'#9b59b6', mockup:'chart', link:'https://www.khanacademy.org/profile' },
     ] },
 
   // Games
@@ -150,10 +150,10 @@ export const APPS = [
     whatsNew:'Added hard mode, new accessibility features, improved statistics sharing, and dark/high-contrast themes.',
     permissions:['None — fully offline'],
     screenshots:[
-      { title:'Game Board', caption:'6 rows of 5 tiles — guess the daily word', color:'#538d4e', mockup:'game' },
-      { title:'Keyboard', caption:'Color-coded keyboard shows used letters', color:'#3a3a3c', mockup:'game' },
-      { title:'Statistics', caption:'Track your streak and guess distribution', color:'#818384', mockup:'chart' },
-      { title:'Share Results', caption:'Share your spoiler-free result grid', color:'#b59f3b', mockup:'grid' },
+      { title:'Game Board', caption:'6 rows of 5 tiles — guess the daily word', color:'#538d4e', mockup:'game', link:'https://www.nytimes.com/games/wordle' },
+      { title:'Keyboard', caption:'Color-coded keyboard shows used letters', color:'#3a3a3c', mockup:'game', link:'https://www.nytimes.com/games/wordle' },
+      { title:'Statistics', caption:'Track your streak and guess distribution', color:'#818384', mockup:'chart', link:'https://www.nytimes.com/games/wordle' },
+      { title:'Share Results', caption:'Share your spoiler-free result grid', color:'#b59f3b', mockup:'grid', link:'https://www.nytimes.com/games/wordle' },
     ] },
   { id: '2048',         icon:'🔢', name:'2048',             desc:'Slide numbered tiles on a grid to combine them and reach 2048. Addictive classic.', category:'Games',           price:'Free', url:'https://play2048.co', score:2,  trust:'green',  installs:'1.9M', rankingScore:90, safetyScore:99, averageRating:4.8, totalReviews:4800, publishedAt:'2024-03-05', developerTrust:95, installVelocity:78, badges:['verified','top_rated'],
     developer:'Gabriele Cirulli', size:'0.3 MB',
@@ -161,10 +161,10 @@ export const APPS = [
     whatsNew:'Added undo button, new color themes, improved swipe gestures, and persistent high score tracking.',
     permissions:['None — fully offline'],
     screenshots:[
-      { title:'Game Grid', caption:'4x4 grid — swipe to merge matching tiles', color:'#edc22e', mockup:'game' },
-      { title:'High Scores', caption:'Track your best tile and high score', color:'#f2b179', mockup:'chart' },
-      { title:'Gameplay', caption:'Strategize to reach 2048 and beyond', color:'#f67c5f', mockup:'game' },
-      { title:'Game Over', caption:'Final score with option to try again', color:'#edc53f', mockup:'gauge' },
+      { title:'Game Grid', caption:'4x4 grid — swipe to merge matching tiles', color:'#edc22e', mockup:'game', link:'https://play2048.co' },
+      { title:'High Scores', caption:'Track your best tile and high score', color:'#f2b179', mockup:'chart', link:'https://play2048.co' },
+      { title:'Gameplay', caption:'Strategize to reach 2048 and beyond', color:'#f67c5f', mockup:'game', link:'https://play2048.co' },
+      { title:'Game Over', caption:'Final score with option to try again', color:'#edc53f', mockup:'gauge', link:'https://play2048.co' },
     ] },
 
   // Security
@@ -174,10 +174,10 @@ export const APPS = [
     whatsNew:'Added passkey support, improved auto-fill accuracy, new security report dashboard, and emergency access feature.',
     permissions:['Internet access', 'Clipboard'],
     screenshots:[
-      { title:'Vault', caption:'All your passwords organized in one vault', color:'#175DDC', mockup:'list' },
-      { title:'Password Generator', caption:'Create strong unique passwords instantly', color:'#1a3d7c', mockup:'form' },
-      { title:'Auto-Fill', caption:'One-click login on any website or app', color:'#339af0', mockup:'form' },
-      { title:'Security Report', caption:'Check for weak, reused, or breached passwords', color:'#0d47a1', mockup:'chart' },
+      { title:'Vault', caption:'All your passwords organized in one vault', color:'#175DDC', mockup:'list', link:'https://vault.bitwarden.com/#/vault' },
+      { title:'Password Generator', caption:'Create strong unique passwords instantly', color:'#1a3d7c', mockup:'form', link:'https://vault.bitwarden.com/#/generator' },
+      { title:'Auto-Fill', caption:'One-click login on any website or app', color:'#339af0', mockup:'form', link:'https://vault.bitwarden.com' },
+      { title:'Security Report', caption:'Check for weak, reused, or breached passwords', color:'#0d47a1', mockup:'chart', link:'https://vault.bitwarden.com/#/reports' },
     ] },
   { id: 'protonpass',   icon:'🛡️', name:'Proton Pass',      desc:'End-to-end encrypted password manager from the makers of ProtonMail.',              category:'Security',        price:'Free', url:'https://pass.proton.me', score:4,  trust:'green',  installs:'620k', rankingScore:86, safetyScore:98, averageRating:4.7, totalReviews:1800, publishedAt:'2024-04-15', developerTrust:96, installVelocity:82, badges:['trending','verified'],
     developer:'Proton AG', size:'2.9 MB',
@@ -185,10 +185,10 @@ export const APPS = [
     whatsNew:'New email alias management, passkey login support, improved vault sharing, and integrated 2FA code generator.',
     permissions:['Internet access', 'Clipboard'],
     screenshots:[
-      { title:'Logins', caption:'Store and organize all your login credentials', color:'#6d4aff', mockup:'list' },
-      { title:'Aliases', caption:'Generate email aliases to protect your inbox', color:'#8b5cf6', mockup:'list' },
-      { title:'Secure Notes', caption:'Encrypted notes for sensitive information', color:'#7c3aed', mockup:'form' },
-      { title:'Passkeys', caption:'Passwordless login with passkey support', color:'#a78bfa', mockup:'form' },
+      { title:'Logins', caption:'Store and organize all your login credentials', color:'#6d4aff', mockup:'list', link:'https://pass.proton.me' },
+      { title:'Aliases', caption:'Generate email aliases to protect your inbox', color:'#8b5cf6', mockup:'list', link:'https://pass.proton.me' },
+      { title:'Secure Notes', caption:'Encrypted notes for sensitive information', color:'#7c3aed', mockup:'form', link:'https://pass.proton.me' },
+      { title:'Passkeys', caption:'Passwordless login with passkey support', color:'#a78bfa', mockup:'form', link:'https://pass.proton.me' },
     ] },
 
   // Business
@@ -198,10 +198,10 @@ export const APPS = [
     whatsNew:'New timeline view, improved card templates, better mobile drag-and-drop, and enhanced Butler automation.',
     permissions:['Internet access', 'Notifications'],
     screenshots:[
-      { title:'Board View', caption:'Drag-and-drop cards across lists', color:'#0079BF', mockup:'board' },
-      { title:'Card Detail', caption:'Checklists, due dates, attachments, and labels', color:'#00C2E0', mockup:'form' },
-      { title:'Calendar', caption:'See all due dates in a calendar view', color:'#51E898', mockup:'grid' },
-      { title:'Team Boards', caption:'Collaborate with your team in real time', color:'#FF9F1A', mockup:'board' },
+      { title:'Board View', caption:'Drag-and-drop cards across lists', color:'#0079BF', mockup:'board', link:'https://trello.com' },
+      { title:'Card Detail', caption:'Checklists, due dates, attachments, and labels', color:'#00C2E0', mockup:'form', link:'https://trello.com' },
+      { title:'Calendar', caption:'See all due dates in a calendar view', color:'#51E898', mockup:'grid', link:'https://trello.com' },
+      { title:'Team Boards', caption:'Collaborate with your team in real time', color:'#FF9F1A', mockup:'board', link:'https://trello.com' },
     ] },
   { id: 'slack',        icon:'💬', name:'Slack',            desc:'Team messaging and collaboration hub. Channels, threads, and integrations.',        category:'Business',        price:'Free', url:'https://app.slack.com', score:5,  trust:'green',  installs:'3.2M', rankingScore:96, safetyScore:97, averageRating:4.6, totalReviews:6800, publishedAt:'2024-01-08', developerTrust:98, installVelocity:92, badges:['trending','verified','top_rated'],
     developer:'Salesforce (Slack)', size:'5.7 MB',
@@ -209,10 +209,10 @@ export const APPS = [
     whatsNew:'New Slack AI for message summaries, improved huddle video quality, canvas documents, and workflow builder updates.',
     permissions:['Internet access', 'Notifications', 'Microphone (optional)'],
     screenshots:[
-      { title:'Channels', caption:'Organized conversations by team and topic', color:'#4A154B', mockup:'chat' },
-      { title:'Threads', caption:'Keep discussions focused with threaded replies', color:'#611f69', mockup:'chat' },
-      { title:'Search', caption:'Find any message, file, or person instantly', color:'#36C5F0', mockup:'form' },
-      { title:'Huddles', caption:'Quick audio calls without leaving Slack', color:'#2EB67D', mockup:'chat' },
+      { title:'Channels', caption:'Organized conversations by team and topic', color:'#4A154B', mockup:'chat', link:'https://app.slack.com' },
+      { title:'Threads', caption:'Keep discussions focused with threaded replies', color:'#611f69', mockup:'chat', link:'https://app.slack.com' },
+      { title:'Search', caption:'Find any message, file, or person instantly', color:'#36C5F0', mockup:'form', link:'https://app.slack.com' },
+      { title:'Huddles', caption:'Quick audio calls without leaving Slack', color:'#2EB67D', mockup:'chat', link:'https://app.slack.com' },
     ] },
 
   // Food & Cooking
@@ -222,10 +222,10 @@ export const APPS = [
     whatsNew:'Added 200+ new recipes, improved grocery list organization by store aisle, and better serving size adjustments.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Meal Plan', caption:'Drag recipes into your weekly meal plan', color:'#27ae60', mockup:'list' },
-      { title:'Recipes', caption:'Step-by-step cooking instructions with photos', color:'#2ecc71', mockup:'cards' },
-      { title:'Grocery List', caption:'Auto-generated shopping list from your plan', color:'#f39c12', mockup:'list' },
-      { title:'Preferences', caption:'Set dietary needs — vegan, keto, gluten-free', color:'#e74c3c', mockup:'form' },
+      { title:'Meal Plan', caption:'Drag recipes into your weekly meal plan', color:'#27ae60', mockup:'list', link:'https://www.mealime.com' },
+      { title:'Recipes', caption:'Step-by-step cooking instructions with photos', color:'#2ecc71', mockup:'cards', link:'https://www.mealime.com/recipes' },
+      { title:'Grocery List', caption:'Auto-generated shopping list from your plan', color:'#f39c12', mockup:'list', link:'https://www.mealime.com' },
+      { title:'Preferences', caption:'Set dietary needs — vegan, keto, gluten-free', color:'#e74c3c', mockup:'form', link:'https://www.mealime.com' },
     ] },
   { id: 'cookpad',      icon:'👨‍🍳', name:'Cookpad',          desc:'Community-driven recipe sharing. Millions of home-cooked recipes from real cooks.', category:'Food & Cooking',  price:'Free', url:'https://cookpad.com', score:6,  trust:'green',  installs:'520k', rankingScore:80, safetyScore:93, averageRating:4.5, totalReviews:1500, publishedAt:'2024-05-18', developerTrust:86, installVelocity:68, badges:['verified'],
     developer:'Cookpad Inc.', size:'3.1 MB',
@@ -233,10 +233,10 @@ export const APPS = [
     whatsNew:'New cooking mode with hands-free voice commands, improved recipe search, and video recipe support.',
     permissions:['Internet access', 'Microphone (optional, for voice control)'],
     screenshots:[
-      { title:'Recipe Feed', caption:'Browse recipes shared by home cooks worldwide', color:'#f57f17', mockup:'feed' },
-      { title:'Cooking Mode', caption:'Step-by-step with timers and voice control', color:'#e65100', mockup:'list' },
-      { title:'My Cookbooks', caption:'Save and organize your favorite recipes', color:'#ff8f00', mockup:'grid' },
-      { title:'Share Recipe', caption:'Upload your own recipes with photos', color:'#ef6c00', mockup:'form' },
+      { title:'Recipe Feed', caption:'Browse recipes shared by home cooks worldwide', color:'#f57f17', mockup:'feed', link:'https://cookpad.com/search' },
+      { title:'Cooking Mode', caption:'Step-by-step with timers and voice control', color:'#e65100', mockup:'list', link:'https://cookpad.com' },
+      { title:'My Cookbooks', caption:'Save and organize your favorite recipes', color:'#ff8f00', mockup:'grid', link:'https://cookpad.com/collections' },
+      { title:'Share Recipe', caption:'Upload your own recipes with photos', color:'#ef6c00', mockup:'form', link:'https://cookpad.com/recipe/new' },
     ] },
 
   // Social
@@ -246,10 +246,10 @@ export const APPS = [
     whatsNew:'Improved onboarding flow, new quote posts feature, better content moderation tools, and faster federation.',
     permissions:['Internet access', 'Notifications'],
     screenshots:[
-      { title:'Home Timeline', caption:'Posts from people you follow, chronologically', color:'#6364FF', mockup:'feed' },
-      { title:'Explore', caption:'Trending posts, hashtags, and news', color:'#563ACC', mockup:'feed' },
-      { title:'Notifications', caption:'Mentions, boosts, and new followers', color:'#858AFA', mockup:'list' },
-      { title:'Profile', caption:'Your posts, media, and followers list', color:'#2F0C7A', mockup:'cards' },
+      { title:'Home Timeline', caption:'Posts from people you follow, chronologically', color:'#6364FF', mockup:'feed', link:'https://mastodon.social/home' },
+      { title:'Explore', caption:'Trending posts, hashtags, and news', color:'#563ACC', mockup:'feed', link:'https://mastodon.social/explore' },
+      { title:'Notifications', caption:'Mentions, boosts, and new followers', color:'#858AFA', mockup:'list', link:'https://mastodon.social/notifications' },
+      { title:'Profile', caption:'Your posts, media, and followers list', color:'#2F0C7A', mockup:'cards', link:'https://mastodon.social/profile' },
     ] },
 
   // Shopping
@@ -259,10 +259,10 @@ export const APPS = [
     whatsNew:'Expanded store coverage, improved coupon success rate, new price history charts, and faster checkout integration.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Apply Coupons', caption:'Automatically tests all available codes', color:'#FF6801', mockup:'list' },
-      { title:'Savings', caption:'Track total savings across all your purchases', color:'#f59e0b', mockup:'chart' },
-      { title:'Droplist', caption:'Track price drops on items you want', color:'#ec4899', mockup:'feed' },
-      { title:'Rewards', caption:'Earn Honey Gold for cash back on purchases', color:'#fbbf24', mockup:'grid' },
+      { title:'Apply Coupons', caption:'Automatically tests all available codes', color:'#FF6801', mockup:'list', link:'https://www.joinhoney.com' },
+      { title:'Savings', caption:'Track total savings across all your purchases', color:'#f59e0b', mockup:'chart', link:'https://www.joinhoney.com' },
+      { title:'Droplist', caption:'Track price drops on items you want', color:'#ec4899', mockup:'feed', link:'https://www.joinhoney.com/droplist' },
+      { title:'Rewards', caption:'Earn Honey Gold for cash back on purchases', color:'#fbbf24', mockup:'grid', link:'https://www.joinhoney.com' },
     ] },
 
   // Travel
@@ -272,10 +272,10 @@ export const APPS = [
     whatsNew:'Immersive View for routes, improved EV charging station info, enhanced cycling directions, and real-time transit crowd levels.',
     permissions:['Location (optional)', 'Internet access'],
     screenshots:[
-      { title:'Map View', caption:'Satellite, terrain, and street-level imagery', color:'#4285F4', mockup:'map' },
-      { title:'Navigation', caption:'Turn-by-turn driving, walking, and cycling', color:'#34A853', mockup:'map' },
-      { title:'Transit', caption:'Real-time bus, train, and subway schedules', color:'#FBBC04', mockup:'list' },
-      { title:'Explore', caption:'Find restaurants, shops, and attractions nearby', color:'#EA4335', mockup:'grid' },
+      { title:'Map View', caption:'Satellite, terrain, and street-level imagery', color:'#4285F4', mockup:'map', link:'https://www.google.com/maps/@0,0,3z' },
+      { title:'Navigation', caption:'Turn-by-turn driving, walking, and cycling', color:'#34A853', mockup:'map', link:'https://www.google.com/maps/dir/' },
+      { title:'Transit', caption:'Real-time bus, train, and subway schedules', color:'#FBBC04', mockup:'list', link:'https://www.google.com/maps/dir/?travelmode=transit' },
+      { title:'Explore', caption:'Find restaurants, shops, and attractions nearby', color:'#EA4335', mockup:'grid', link:'https://www.google.com/maps/search/restaurants+nearby' },
     ] },
 
   // Music
@@ -285,10 +285,10 @@ export const APPS = [
     whatsNew:'New AI beat maker, expanded loop library, improved MIDI keyboard support, and podcast editing tools.',
     permissions:['Internet access', 'Microphone'],
     screenshots:[
-      { title:'Studio', caption:'Multi-track editor with loops and instruments', color:'#1DB954', mockup:'editor' },
-      { title:'Instruments', caption:'Synths, drums, and virtual instruments', color:'#191414', mockup:'grid' },
-      { title:'Loops Library', caption:'Thousands of royalty-free loops and beats', color:'#535353', mockup:'grid' },
-      { title:'Collaborate', caption:'Invite friends to produce together in real time', color:'#282828', mockup:'chat' },
+      { title:'Studio', caption:'Multi-track editor with loops and instruments', color:'#1DB954', mockup:'editor', link:'https://www.soundtrap.com/studio' },
+      { title:'Instruments', caption:'Synths, drums, and virtual instruments', color:'#191414', mockup:'grid', link:'https://www.soundtrap.com' },
+      { title:'Loops Library', caption:'Thousands of royalty-free loops and beats', color:'#535353', mockup:'grid', link:'https://www.soundtrap.com' },
+      { title:'Collaborate', caption:'Invite friends to produce together in real time', color:'#282828', mockup:'chat', link:'https://www.soundtrap.com' },
     ] },
 
   // Photography
@@ -298,10 +298,10 @@ export const APPS = [
     whatsNew:'Added AI-powered background removal, new content-aware fill, improved pen tool, and faster PSD file loading.',
     permissions:['None — fully offline capable'],
     screenshots:[
-      { title:'Editor', caption:'Photoshop-like interface with layers and tools', color:'#18A0FB', mockup:'editor' },
-      { title:'Layers Panel', caption:'Full layer support with blending modes', color:'#2c3e50', mockup:'list' },
-      { title:'Filters', caption:'Blur, sharpen, color adjustments, and effects', color:'#8e44ad', mockup:'grid' },
-      { title:'Export', caption:'Save as PSD, PNG, JPG, SVG, GIF, and PDF', color:'#16a085', mockup:'form' },
+      { title:'Editor', caption:'Photoshop-like interface with layers and tools', color:'#18A0FB', mockup:'editor', link:'https://www.photopea.com' },
+      { title:'Layers Panel', caption:'Full layer support with blending modes', color:'#2c3e50', mockup:'list', link:'https://www.photopea.com' },
+      { title:'Filters', caption:'Blur, sharpen, color adjustments, and effects', color:'#8e44ad', mockup:'grid', link:'https://www.photopea.com' },
+      { title:'Export', caption:'Save as PSD, PNG, JPG, SVG, GIF, and PDF', color:'#16a085', mockup:'form', link:'https://www.photopea.com' },
     ] },
   { id: 'squoosh',      icon:'🖼️', name:'Squoosh',          desc:'Image compression app by Google. Resize and optimize images right in the browser.', category:'Photography',     price:'Free', url:'https://squoosh.app', score:2,  trust:'green',  installs:'680k', rankingScore:85, safetyScore:99, averageRating:4.8, totalReviews:2100, publishedAt:'2024-03-20', developerTrust:99, installVelocity:72, badges:['verified','top_rated'],
     developer:'Google Chrome Labs', size:'1.2 MB',
@@ -309,10 +309,10 @@ export const APPS = [
     whatsNew:'Added JPEG XL support, batch compression mode, improved AVIF quality, and faster encoding performance.',
     permissions:['None — fully offline'],
     screenshots:[
-      { title:'Compare', caption:'Side-by-side before/after quality comparison', color:'#4285F4', mockup:'editor' },
-      { title:'Compress', caption:'Choose WebP, AVIF, JPEG, or PNG output', color:'#34A853', mockup:'form' },
-      { title:'Resize', caption:'Resize with fit, fill, or exact dimensions', color:'#FBBC04', mockup:'form' },
-      { title:'Results', caption:'See file size reduction percentage instantly', color:'#EA4335', mockup:'gauge' },
+      { title:'Compare', caption:'Side-by-side before/after quality comparison', color:'#4285F4', mockup:'editor', link:'https://squoosh.app' },
+      { title:'Compress', caption:'Choose WebP, AVIF, JPEG, or PNG output', color:'#34A853', mockup:'form', link:'https://squoosh.app' },
+      { title:'Resize', caption:'Resize with fit, fill, or exact dimensions', color:'#FBBC04', mockup:'form', link:'https://squoosh.app' },
+      { title:'Results', caption:'See file size reduction percentage instantly', color:'#EA4335', mockup:'gauge', link:'https://squoosh.app' },
     ] },
 
   // Weather
@@ -322,10 +322,10 @@ export const APPS = [
     whatsNew:'New lightning detection layer, improved hurricane tracking, better webcam integration, and point forecast accuracy.',
     permissions:['Location (optional)', 'Internet access'],
     screenshots:[
-      { title:'Wind Map', caption:'Animated wind patterns across the globe', color:'#1565c0', mockup:'map' },
-      { title:'Radar', caption:'Rain, snow, temperature, and cloud layers', color:'#0d47a1', mockup:'map' },
-      { title:'Forecast', caption:'Hourly and 10-day detailed forecasts', color:'#42a5f5', mockup:'chart' },
-      { title:'Alerts', caption:'Severe weather warnings and notifications', color:'#ef5350', mockup:'list' },
+      { title:'Wind Map', caption:'Animated wind patterns across the globe', color:'#1565c0', mockup:'map', link:'https://www.windy.com/?wind' },
+      { title:'Radar', caption:'Rain, snow, temperature, and cloud layers', color:'#0d47a1', mockup:'map', link:'https://www.windy.com/?rain' },
+      { title:'Forecast', caption:'Hourly and 10-day detailed forecasts', color:'#42a5f5', mockup:'chart', link:'https://www.windy.com' },
+      { title:'Alerts', caption:'Severe weather warnings and notifications', color:'#ef5350', mockup:'list', link:'https://www.windy.com/alerts' },
     ] },
 
   // News
@@ -335,10 +335,10 @@ export const APPS = [
     whatsNew:'Improved comment threading, faster page loads, new dark mode, and better mobile reading experience.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Top Stories', caption:'Ranked tech news and startup discussions', color:'#FF6600', mockup:'feed' },
-      { title:'Comments', caption:'Threaded discussions with expert insights', color:'#f5f5dc', mockup:'feed' },
-      { title:'Ask HN', caption:'Community questions and advice threads', color:'#ff851b', mockup:'feed' },
-      { title:'Jobs', caption:'Startup job postings from YC companies', color:'#e67e22', mockup:'list' },
+      { title:'Top Stories', caption:'Ranked tech news and startup discussions', color:'#FF6600', mockup:'feed', link:'https://news.ycombinator.com' },
+      { title:'Comments', caption:'Threaded discussions with expert insights', color:'#f5f5dc', mockup:'feed', link:'https://news.ycombinator.com/newcomments' },
+      { title:'Ask HN', caption:'Community questions and advice threads', color:'#ff851b', mockup:'feed', link:'https://news.ycombinator.com/ask' },
+      { title:'Jobs', caption:'Startup job postings from YC companies', color:'#e67e22', mockup:'list', link:'https://news.ycombinator.com/jobs' },
     ] },
 
   // Sports
@@ -348,10 +348,10 @@ export const APPS = [
     whatsNew:'New route builder with terrain data, improved segment matching, dark mode support, and training log improvements.',
     permissions:['Location', 'Internet access'],
     screenshots:[
-      { title:'Activity Feed', caption:'See runs, rides, and workouts from friends', color:'#FC4C02', mockup:'feed' },
-      { title:'GPS Tracking', caption:'Map your route with pace and elevation', color:'#2d3436', mockup:'map' },
-      { title:'Segments', caption:'Compete on popular routes and earn crowns', color:'#e17055', mockup:'chart' },
-      { title:'Challenges', caption:'Monthly challenges and club competitions', color:'#ff7675', mockup:'list' },
+      { title:'Activity Feed', caption:'See runs, rides, and workouts from friends', color:'#FC4C02', mockup:'feed', link:'https://www.strava.com/dashboard' },
+      { title:'GPS Tracking', caption:'Map your route with pace and elevation', color:'#2d3436', mockup:'map', link:'https://www.strava.com/record' },
+      { title:'Segments', caption:'Compete on popular routes and earn crowns', color:'#e17055', mockup:'chart', link:'https://www.strava.com/segments/explore' },
+      { title:'Challenges', caption:'Monthly challenges and club competitions', color:'#ff7675', mockup:'list', link:'https://www.strava.com/challenges' },
     ] },
 
   // Utilities
@@ -361,10 +361,10 @@ export const APPS = [
     whatsNew:'New video speed test, improved server selection algorithm, result comparison graphs, and VPN detection indicator.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Speed Test', caption:'One-tap download and upload speed test', color:'#141526', mockup:'gauge' },
-      { title:'Results', caption:'Download, upload, ping, and jitter metrics', color:'#1c1d3b', mockup:'chart' },
-      { title:'History', caption:'Track speed over time with detailed logs', color:'#6c5ce7', mockup:'chart' },
-      { title:'Network Info', caption:'See ISP, server, and connection details', color:'#a29bfe', mockup:'list' },
+      { title:'Speed Test', caption:'One-tap download and upload speed test', color:'#141526', mockup:'gauge', link:'https://www.speedtest.net' },
+      { title:'Results', caption:'Download, upload, ping, and jitter metrics', color:'#1c1d3b', mockup:'chart', link:'https://www.speedtest.net/result' },
+      { title:'History', caption:'Track speed over time with detailed logs', color:'#6c5ce7', mockup:'chart', link:'https://www.speedtest.net' },
+      { title:'Network Info', caption:'See ISP, server, and connection details', color:'#a29bfe', mockup:'list', link:'https://www.speedtest.net' },
     ] },
   { id: 'clipdrop',     icon:'✂️', name:'Clipdrop',         desc:'AI-powered tool to remove backgrounds, upscale images, and clean up photos.',       category:'Utilities',       price:'Free', url:'https://clipdrop.co', score:5,  trust:'green',  installs:'580k', rankingScore:82, safetyScore:94, averageRating:4.6, totalReviews:1600, publishedAt:'2024-05-05', developerTrust:90, installVelocity:75, badges:['verified','top_rated'],
     developer:'Stability AI', size:'2.7 MB',
@@ -372,10 +372,10 @@ export const APPS = [
     whatsNew:'New text removal tool, improved background removal accuracy, batch processing mode, and API access for developers.',
     permissions:['Internet access'],
     screenshots:[
-      { title:'Remove BG', caption:'AI background removal in one click', color:'#7c3aed', mockup:'editor' },
-      { title:'Upscale', caption:'Enhance image resolution with AI upscaling', color:'#8b5cf6', mockup:'editor' },
-      { title:'Cleanup', caption:'Remove objects and blemishes from photos', color:'#a78bfa', mockup:'editor' },
-      { title:'Relight', caption:'AI relighting to change photo lighting', color:'#c4b5fd', mockup:'editor' },
+      { title:'Remove BG', caption:'AI background removal in one click', color:'#7c3aed', mockup:'editor', link:'https://clipdrop.co/remove-background' },
+      { title:'Upscale', caption:'Enhance image resolution with AI upscaling', color:'#8b5cf6', mockup:'editor', link:'https://clipdrop.co/image-upscaler' },
+      { title:'Cleanup', caption:'Remove objects and blemishes from photos', color:'#a78bfa', mockup:'editor', link:'https://clipdrop.co/cleanup' },
+      { title:'Relight', caption:'AI relighting to change photo lighting', color:'#c4b5fd', mockup:'editor', link:'https://clipdrop.co/relight' },
     ] },
 
   // Communication
@@ -385,10 +385,10 @@ export const APPS = [
     whatsNew:'New stories feature, improved voice chat quality, custom emoji packs, and enhanced bot mini-app platform.',
     permissions:['Internet access', 'Notifications', 'Microphone (optional)'],
     screenshots:[
-      { title:'Chats', caption:'All conversations with cloud sync across devices', color:'#0088cc', mockup:'chat' },
-      { title:'Channels', caption:'Subscribe to news, updates, and communities', color:'#179cde', mockup:'feed' },
-      { title:'Groups', caption:'Groups up to 200,000 members with admin tools', color:'#40b3e0', mockup:'chat' },
-      { title:'Stickers', caption:'Animated stickers, GIFs, and custom emoji', color:'#5cc3ed', mockup:'grid' },
+      { title:'Chats', caption:'All conversations with cloud sync across devices', color:'#0088cc', mockup:'chat', link:'https://web.telegram.org' },
+      { title:'Channels', caption:'Subscribe to news, updates, and communities', color:'#179cde', mockup:'feed', link:'https://web.telegram.org' },
+      { title:'Groups', caption:'Groups up to 200,000 members with admin tools', color:'#40b3e0', mockup:'chat', link:'https://web.telegram.org' },
+      { title:'Stickers', caption:'Animated stickers, GIFs, and custom emoji', color:'#5cc3ed', mockup:'grid', link:'https://web.telegram.org' },
     ] },
 
   // Lifestyle
@@ -398,10 +398,10 @@ export const APPS = [
     whatsNew:'New AI-powered collage feature, improved visual search accuracy, shopping integration updates, and creator analytics.',
     permissions:['Internet access', 'Camera (optional, for visual search)'],
     screenshots:[
-      { title:'Home Feed', caption:'Personalized pins based on your interests', color:'#E60023', mockup:'grid' },
-      { title:'Search', caption:'Visual search with camera lens and filters', color:'#c92a2a', mockup:'grid' },
-      { title:'Boards', caption:'Save and organize pins into themed boards', color:'#bd081c', mockup:'grid' },
-      { title:'Shopping', caption:'Shop products directly from pins you love', color:'#ad081c', mockup:'cards' },
+      { title:'Home Feed', caption:'Personalized pins based on your interests', color:'#E60023', mockup:'grid', link:'https://www.pinterest.com' },
+      { title:'Search', caption:'Visual search with camera lens and filters', color:'#c92a2a', mockup:'grid', link:'https://www.pinterest.com/search' },
+      { title:'Boards', caption:'Save and organize pins into themed boards', color:'#bd081c', mockup:'grid', link:'https://www.pinterest.com' },
+      { title:'Shopping', caption:'Shop products directly from pins you love', color:'#ad081c', mockup:'cards', link:'https://www.pinterest.com/shopping' },
     ] },
 ]
 
