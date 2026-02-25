@@ -1,0 +1,46 @@
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px; margin-top: 20px;
+}
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; gap: 8px;
+}
+.headerLeft { display: flex; align-items: center; gap: 8px; }
+.headerIcon { font-weight: 700; font-size: 0.85rem; color: var(--accent); }
+.headerTitle { font-weight: 700; font-size: 0.88rem; }
+.privacyScore {
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.section { margin-bottom: 14px; }
+.sectionLabel {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px;
+}
+
+.row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.83rem; padding: 4px 0; color: var(--text);
+}
+
+.icon { font-size: 0.75rem; font-weight: 700; width: 16px; text-align: center; flex-shrink: 0; }
+.safe      { color: var(--accent); }
+.sensitive { color: var(--warn); }
+.normal    { color: var(--muted); }
+.blocked   { color: var(--muted); opacity: 0.6; }
+
+.verifications {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding-top: 12px; border-top: 1px solid var(--border);
+}
+.verBadge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(0,229,160,.08); border: 1px solid rgba(0,229,160,.2);
+  font-size: 0.7rem; font-weight: 700; color: var(--accent);
+  letter-spacing: 0.04em;
+}

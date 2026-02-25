@@ -53,6 +53,56 @@
 .statNum { font-size: 2.5rem; color: var(--text); }
 .statLabel { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
 
+/* ── Discovery Engine (NEW) ── */
+.discovery {
+  padding: 80px 40px;
+  max-width: 1200px; margin: 0 auto;
+}
+.discSection {
+  margin-bottom: 48px;
+}
+.discHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.discTitle {
+  font-size: 1.15rem; font-weight: 700;
+}
+.discMore {
+  font-size: 0.82rem; font-weight: 700; color: var(--accent);
+  letter-spacing: 0.04em; transition: opacity .2s;
+}
+.discMore:hover { opacity: 0.7; }
+.discGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+
+/* ── Trust Score Explanation (NEW) ── */
+.trustExplain {
+  padding: 80px 40px;
+  max-width: 1200px; margin: 0 auto;
+}
+.trustGrid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 20px; max-width: 900px; margin: 0 auto;
+}
+.trustItem {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 24px 16px;
+  text-align: center; transition: border-color .2s;
+}
+.trustItem:hover { border-color: rgba(0,229,160,.3); }
+.trustPercent {
+  font-family: var(--font-display); font-size: 1.6rem;
+  color: var(--accent); margin-bottom: 8px;
+}
+.trustFactor {
+  font-weight: 700; font-size: 0.85rem; margin-bottom: 6px;
+}
+.trustDesc {
+  color: var(--muted); font-size: 0.75rem; line-height: 1.5;
+}
+
 /* How It Works */
 .howItWorks {
   text-align: center; padding: 80px 40px;
@@ -102,9 +152,17 @@
 @media (max-width: 768px) {
   .hero { padding: 80px 20px 40px; }
   .stats { gap: 30px; }
+  .discovery { padding: 60px 20px; }
+  .discGrid { grid-template-columns: repeat(2, 1fr); }
+  .trustExplain { padding: 60px 20px; }
+  .trustGrid { grid-template-columns: repeat(2, 1fr); }
   .howItWorks { padding: 60px 20px; }
   .stepsRow { grid-template-columns: 1fr; }
   .features { grid-template-columns: 1fr; padding: 0 20px 60px; }
   .ctaSection { padding: 60px 20px; }
   .ctaActions { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .discGrid { grid-template-columns: 1fr; }
+  .trustGrid { grid-template-columns: 1fr; }
 }

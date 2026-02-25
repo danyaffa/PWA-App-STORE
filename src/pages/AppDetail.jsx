@@ -6,10 +6,15 @@ import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
 import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
 import ReportApp from '../components/ReportApp.jsx'
+import TrustScore from '../components/TrustScore.jsx'
+import PermissionPanel from '../components/PermissionPanel.jsx'
+import PoweredBy from '../components/PoweredBy.jsx'
+import AppCard from '../components/AppCard.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import { useInstallState } from '../hooks/useInstallState.js'
 import { trackView, trackInstall } from '../lib/analytics.js'
+import { getSimilarApps } from '../lib/recommendations.js'
 import styles from './AppDetail.module.css'
 
 const TABS = ['Overview', 'Safety Report', 'Reviews', 'Versions']
@@ -133,16 +138,13 @@ function ScreenshotMockup({ type, color }) {
       return (
         <div className={styles.mockup} style={{ position:'relative' }}>
           <div style={{ flex:1, background:bg2, borderRadius:6, position:'relative', overflow:'hidden' }}>
-            {/* Map grid lines */}
             <div style={{ position:'absolute', top:'20%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
             <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
             <div style={{ position:'absolute', top:'80%', left:0, right:0, height:1, background:'rgba(255,255,255,.06)' }} />
             <div style={{ position:'absolute', left:'30%', top:0, bottom:0, width:1, background:'rgba(255,255,255,.06)' }} />
             <div style={{ position:'absolute', left:'65%', top:0, bottom:0, width:1, background:'rgba(255,255,255,.06)' }} />
-            {/* Map road */}
             <div style={{ position:'absolute', top:'35%', left:'10%', width:'80%', height:3, background:'rgba(255,255,255,.15)', borderRadius:2, transform:'rotate(-8deg)' }} />
             <div style={{ position:'absolute', top:'55%', left:'20%', width:'60%', height:3, background:'rgba(255,255,255,.15)', borderRadius:2, transform:'rotate(5deg)' }} />
-            {/* Pin */}
             <div style={{ position:'absolute', top:'30%', left:'50%', transform:'translate(-50%, -50%)', fontSize:14, filter:'drop-shadow(0 2px 3px rgba(0,0,0,.4))' }}>📍</div>
           </div>
         </div>
@@ -265,6 +267,9 @@ export default function AppDetail() {
   // Track page view
   useState(() => { trackView(app.id) })
 
+  // AI-powered similar apps
+  const similarApps = getSimilarApps(app, APPS, 4)
+
   function handleInstallClick() {
     setShowDisclaimer(true)
   }
@@ -312,28 +317,27 @@ export default function AppDetail() {
     <>
       <SEO
         title={`${app.name} — SafeLaunch App Store`}
-        description={`${app.desc} AI-verified safe with a risk score of ${app.score}/100. Install now on SafeLaunch.`}
+        description={`${app.desc} AI-verified safe with a trust score of ${app.safetyScore || 0}/100. Install now on SafeLaunch.`}
         canonical={`https://agentslock.com/app/${app.id}`}
         type="product"
         jsonLd={jsonLd}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 1100 }}>
-        <Link to="/store" style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>← Back to Store</Link>
+        <Link to="/store" style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>&larr; Back to Store</Link>
 
         <div className={styles.hero}>
           {/* Left col */}
           <div className={styles.left}>
             <div className={styles.iconLg}>{app.icon}</div>
             <h1 className={`display ${styles.title}`}>{app.name}</h1>
-            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>{developer}</a> · Developer Trust: <strong style={{ color: 'var(--accent)' }}>{app.developerTrust || 70}/100</strong></div>
+            <div className={styles.publisher}>by <a href="#" style={{ color: 'var(--accent)' }}>{developer}</a> &middot; Developer Trust: <strong style={{ color: 'var(--accent)' }}>{app.developerTrust || 70}/100</strong></div>
             <div className={styles.metaRow}>
               {badges.map(b => (
                 <span key={b.label} className="badge badge-pass">{b.icon} {b.label}</span>
               ))}
               <span className="badge badge-muted">{app.category}</span>
               <span className="badge badge-muted">v2.3.1</span>
-              <span className="badge badge-muted">Risk: {app.score}</span>
               <span className="badge badge-muted">{app.installs} installs</span>
               {app.size && <span className="badge badge-muted">{app.size}</span>}
               {isPaid && <span className="badge badge-warn">${price}</span>}
@@ -365,7 +369,7 @@ export default function AppDetail() {
               ))}
             </div>
 
-            {/* Overview */}
+            {/* Overview — now includes Permission Transparency */}
             {tab === 0 && (
               <div className={styles.tabBody}>
                 {app.whatsNew && (
@@ -374,19 +378,20 @@ export default function AppDetail() {
                     <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>{app.whatsNew}</p>
                   </>
                 )}
-                <h3 style={{ marginBottom: 10 }}>Permissions</h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 24 }}>
-                  {app.permissions && app.permissions.length > 0
-                    ? app.permissions.join(' · ')
-                    : 'None. This app requests no device permissions and makes no network calls.'}
-                </p>
-                <h3 style={{ marginBottom: 10 }}>Privacy</h3>
+
+                {/* Permission Transparency Panel — the clear "can / cannot" display */}
+                <PermissionPanel
+                  permissions={app.permissions || []}
+                  safetyScore={app.safetyScore || 0}
+                />
+
+                <h3 style={{ marginBottom: 10, marginTop: 24 }}>Privacy</h3>
                 <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: 1.7 }}>
                   {app.permissions && app.permissions.some(p => p.toLowerCase().includes('internet'))
                     ? `${app.name} connects to the internet to provide its core functionality. Review the developer's privacy policy for details on data handling.`
                     : `All data stored in your browser's localStorage. Nothing is ever sent to any server.`
                   }
-                  {' '}<Link to="/privacy" style={{ color: 'var(--accent)' }}>View Privacy Policy →</Link>
+                  {' '}<Link to="/privacy" style={{ color: 'var(--accent)' }}>View Privacy Policy &rarr;</Link>
                 </p>
               </div>
             )}
@@ -410,7 +415,7 @@ export default function AppDetail() {
                   </div>
                 ))}
                 <div style={{ marginTop: 20 }}>
-                  <Link to={`/report/${app.id}`} className="btn btn-ghost">View Full Scan Report →</Link>
+                  <Link to={`/report/${app.id}`} className="btn btn-ghost">View Full Scan Report &rarr;</Link>
                 </div>
               </div>
             )}
@@ -447,29 +452,38 @@ export default function AppDetail() {
                     <div>
                       <span style={{ fontWeight: 700 }}>v{v.ver}</span>
                       {v.current && <span className="badge badge-pass" style={{ marginLeft: 8 }}>CURRENT</span>}
-                      <div style={{ color: 'var(--muted)', fontSize: '0.78rem', marginTop: 4, fontFamily: 'var(--font-mono)' }}>{v.date} · Risk: {v.score} · Build: {v.build}</div>
+                      <div style={{ color: 'var(--muted)', fontSize: '0.78rem', marginTop: 4, fontFamily: 'var(--font-mono)' }}>{v.date} &middot; Risk: {v.score} &middot; Build: {v.build}</div>
                     </div>
-                    <Link to={`/report/${app.id}`} style={{ color: v.current ? 'var(--accent)' : 'var(--muted)', fontSize: '0.82rem' }}>Report →</Link>
+                    <Link to={`/report/${app.id}`} style={{ color: v.current ? 'var(--accent)' : 'var(--muted)', fontSize: '0.82rem' }}>Report &rarr;</Link>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Install card */}
+          {/* Install card — now with Trust Score gauge */}
           <div className={styles.installCard}>
-            <div className={styles.scoreDisplay}>
-              <div className={`display ${styles.scoreBig}`}>{app.score}</div>
-              <div className={styles.scoreLabel}>/ 100 Risk Score</div>
-              <div className={styles.scoreBar}>
-                <div className={styles.scoreFill} style={{ width: `${app.score}%` }} />
-              </div>
-              <div className={styles.scoreZones}><span>ALLOW</span><span>REVIEW</span><span>BLOCK</span></div>
+            {/* Universal Trust Score — the ONE number investors see */}
+            <div className={styles.trustScoreWrap}>
+              <TrustScore score={app.safetyScore || 0} size="lg" />
+            </div>
+
+            {/* Verification badges — visible trust signals */}
+            <div className={styles.certBadges}>
+              {(app.safetyScore || 0) >= 85 && (
+                <span className={styles.certBadge}>{'\u2713'} AI Security Checked</span>
+              )}
+              {(app.safetyScore || 0) >= 80 && (
+                <span className={styles.certBadge}>{'\u2713'} Privacy Verified</span>
+              )}
+              {(app.safetyScore || 0) >= 70 && (
+                <span className={styles.certBadge}>{'\u2713'} No Trackers</span>
+              )}
             </div>
 
             {/* Safety badge with score */}
             <div className={styles.trustBadge}>
-              {app.safetyScore >= 85 ? 'Safety Verified' : 'Safety Reviewed'} ({app.safetyScore || 'N/A'}/100) · v2.3.1
+              {app.safetyScore >= 85 ? 'Safety Verified' : 'Safety Reviewed'} ({app.safetyScore || 'N/A'}/100) &middot; v2.3.1
             </div>
 
             {isPaid ? (
@@ -488,47 +502,32 @@ export default function AppDetail() {
               <button className={`btn btn-primary ${styles.installBtn}`} onClick={handleInstallClick}>Install Free</button>
             )}
 
-            <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report →</Link>
+            <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report &rarr;</Link>
 
             {/* Promote link */}
-            <Link to={`/app/${app.id}/promote`} className={styles.reportLink} style={{ color: 'var(--accent2)' }}>Promote this app →</Link>
+            <Link to={`/app/${app.id}/promote`} className={styles.reportLink} style={{ color: 'var(--accent2)' }}>Promote this app &rarr;</Link>
 
             <div className={styles.installMeta}>
               {[
                 ['Developer', developer],
                 ['Version', '2.3.1'],
-                ['Safety Score', `${app.safetyScore || 'N/A'}/100`],
+                ['Trust Score', `${app.safetyScore || 'N/A'}/100`],
                 ['Last scanned', '14 Jan 2026'],
                 ['Build hash', 'a4f2c91'],
                 ['Size', app.size || 'N/A'],
                 ['Installs', `${app.installs}`],
                 ['Rating', `${avgRating} (${app.totalReviews || REVIEWS.length})`],
                 ['Developer Trust', `${app.developerTrust || 'N/A'}/100`],
-                ['Offline support', app.permissions && app.permissions.some(p => p.toLowerCase().includes('none') || p.toLowerCase().includes('offline')) ? '✓ Yes' : '~ Partial'],
-                ['PWA installable', '✓ Yes'],
+                ['Offline support', app.permissions && app.permissions.some(p => p.toLowerCase().includes('none') || p.toLowerCase().includes('offline')) ? '\u2713 Yes' : '~ Partial'],
+                ['PWA installable', '\u2713 Yes'],
                 ['Price', isPaid ? `$${price}` : 'Free'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.metaRow2}>
                   <span style={{ color: 'var(--muted)' }}>{k}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: String(v).startsWith('✓') ? 'var(--accent)' : 'var(--text)' }}>{v}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: String(v).startsWith('\u2713') ? 'var(--accent)' : 'var(--text)' }}>{v}</span>
                 </div>
               ))}
             </div>
-
-            {/* Permissions list */}
-            {app.permissions && app.permissions.length > 0 && (
-              <div className={styles.permissionsList}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 700, marginBottom: 6 }}>Permissions</div>
-                {app.permissions.map((p, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: 'var(--text)', marginBottom: 3 }}>
-                    <span style={{ color: p.toLowerCase().includes('none') || p.toLowerCase().includes('offline') ? 'var(--accent)' : 'var(--warn)', fontSize: '0.7rem' }}>
-                      {p.toLowerCase().includes('none') || p.toLowerCase().includes('offline') ? '✓' : '•'}
-                    </span>
-                    {p}
-                  </div>
-                ))}
-              </div>
-            )}
 
             {/* Report App button */}
             <button
@@ -542,12 +541,25 @@ export default function AppDetail() {
         </div>
       </div>
 
+      {/* Similar Apps — AI Recommendations */}
+      {similarApps.length > 0 && (
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 40px' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 16 }}>Apps You May Like</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+            {similarApps.map(a => <AppCard key={a.id} app={a} />)}
+          </div>
+        </div>
+      )}
+
       {/* Independent developer disclaimer banner */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 40px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 20px' }}>
         <div style={{ padding: '14px 20px', background: 'rgba(255,184,77,.06)', border: '1px solid rgba(255,184,77,.15)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.6 }}>
-          Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/how-safety-works" style={{ color: 'var(--accent)' }}>How safety works</Link> · <Link to="/terms" style={{ color: 'var(--accent)' }}>Terms</Link>
+          Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/how-safety-works" style={{ color: 'var(--accent)' }}>How safety works</Link> &middot; <Link to="/terms" style={{ color: 'var(--accent)' }}>Terms</Link>
         </div>
       </div>
+
+      {/* Powered by SafeLaunch — viral growth footer */}
+      <PoweredBy />
 
       <Footer />
 

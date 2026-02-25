@@ -53,6 +53,28 @@
 
 /* Install card */
 .installCard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; position: sticky; top: 90px; height: fit-content; }
+
+/* Trust Score gauge wrapper */
+.trustScoreWrap {
+  display: flex; justify-content: center;
+  padding: 16px 0 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Certification Badges — visible trust signals */
+.certBadges {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 14px;
+}
+.certBadge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px;
+  background: rgba(0,229,160,.06); border: 1px solid rgba(0,229,160,.15);
+  font-size: 0.75rem; font-weight: 700; color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
 .scoreDisplay { text-align: center; margin-bottom: 20px; }
 .scoreBig   { font-size: 4rem; color: var(--accent); line-height: 1; }
 .scoreLabel { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
