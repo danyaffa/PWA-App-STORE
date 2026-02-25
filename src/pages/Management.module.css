@@ -1,0 +1,101 @@
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:24px;
+  margin-bottom:24px;
+}
+.sub{ color: var(--muted); margin-top:8px; max-width: 560px; }
+.stats{ display:flex; gap:12px; }
+.stat{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 14px 16px;
+  min-width: 140px;
+}
+.statNum{ font-size: 1.35rem; font-weight: 800; }
+.statLbl{ color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+.grid{
+  display:grid;
+  gap:16px;
+  grid-template-columns: 1.1fr 0.9fr;
+}
+@media (max-width: 920px){
+  .grid{ grid-template-columns: 1fr; }
+  .stats{ width:100%; }
+}
+
+.card{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 16px;
+}
+.cardTitle{ margin:0 0 10px; font-size: 1rem; }
+.empty{ color: var(--muted); padding: 10px 2px; }
+
+.list{ display:flex; flex-direction:column; gap:10px; }
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(0,0,0,0.20);
+}
+.rowMain{ min-width: 0; }
+.rowTitle{ font-weight: 700; }
+.rowMeta{ color: var(--muted); font-size: 0.82rem; margin-top: 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 520px; }
+.rowActions{ display:flex; gap:8px; align-items:center; flex-shrink:0; }
+
+.suggest{ color: var(--muted); font-size: 0.92rem; line-height: 1.55; }
+.suggest p{ margin: 0 0 10px; }
+
+/* Modal */
+.modalOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+  z-index: 50;
+}
+.modal{
+  width: min(520px, 100%);
+  background: rgba(15,17,23,0.98);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.60);
+}
+.modalTitle{
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.codeBanner{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 10px 12px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.modalText{ color: var(--muted); margin-bottom: 12px; }
+.modalLabel{ display:block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+.modalInput{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  outline: none;
+}
+.modalBtns{ display:flex; gap:10px; justify-content:flex-end; margin-top: 14px; }
+.modalFoot{ color: var(--muted); font-size: 0.8rem; margin-top: 12px; }
