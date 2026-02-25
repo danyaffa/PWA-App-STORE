@@ -7,7 +7,6 @@ import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
 import { APPS } from '../utils/data.js'
 import styles from './Store.module.css'
-import { getPublishedApps } from '../lib/publish.js'
 
 const FILTERS = [
   'All', 'Productivity', 'Finance', 'Health', 'Developer Tools', 'Entertainment',
@@ -17,55 +16,64 @@ const FILTERS = [
 
 function sortApps(apps, by) {
   const arr = [...apps]
-  if (by === 'ranking') arr.sort((a,b) => (b.safetyScore || 0) - (a.safetyScore || 0))
-  if (by === 'installs') arr.sort((a,b) => {
-    const na = Number(String(a.installs || '0').replace(/[^\d.]/g,'')) || 0
-    const nb = Number(String(b.installs || '0').replace(/[^\d.]/g,'')) || 0
+  if (by === 'ranking') arr.sort((a, b) => (b.safetyScore || 0) - (a.safetyScore || 0))
+  if (by === 'installs') arr.sort((a, b) => {
+    const na = Number(String(a.installs || '0').replace(/[^\d.]/g, '')) || 0
+    const nb = Number(String(b.installs || '0').replace(/[^\d.]/g, '')) || 0
     return nb - na
   })
-  if (by === 'rating') arr.sort((a,b) => (b.averageRating || 0) - (a.averageRating || 0))
-  if (by === 'newest') arr.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0))
+  if (by === 'rating') arr.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+  if (by === 'newest') arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
   return arr
+}
+
+function getPublishedApps() {
+  try {
+    const raw = localStorage.getItem('sl_published_apps')
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
 }
 
 export default function Store() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState('All')
   const [search, setSearch] = useState(searchParams.get('q') || '')
-  const [sort, setSort]     = useState('ranking')
-  const [userApps, setUserApps] = useState(getPublishedApps)
-  const { toast, ToastContainer } = useToast()
+  const [sort, setSort] = useState('ranking')
+  const [userApps, setUserApps] = useState([])
+  const { ToastContainer } = useToast()
 
-  // Sync query param
-  useEffect(() => {
-    const q = search.trim()
-    if (q) setSearchParams({ q })
-    else setSearchParams({})
-  }, [search])
-
-  // Load user published apps on mount
   useEffect(() => {
     setUserApps(getPublishedApps())
   }, [])
 
-  // Merge built-in apps + user apps
+  useEffect(() => {
+    const q = search.trim()
+    if (q) setSearchParams({ q })
+    else setSearchParams({})
+  }, [search, setSearchParams])
+
   const ALL_APPS = [...APPS, ...userApps]
 
-  // Curated sections (from built-in)
   const TRENDING = APPS.filter(a => (a.badges || []).includes('trending'))
   const TOP_RATED = APPS.filter(a => (a.badges || []).includes('top_rated'))
   const NEW_APPS = APPS.filter(a => (a.badges || []).includes('new'))
   const VERIFIED = APPS.filter(a => (a.badges || []).includes('verified'))
   const RISING_FAST = APPS.filter(a => (a.badges || []).includes('rising'))
 
-  // Featured app: top trending
   const FEATURED = TRENDING[0]
 
   const visible = sortApps(
     ALL_APPS.filter(a => {
       const matchFilter = filter === 'All' || a.category === filter
       const q = search.toLowerCase()
-      const matchSearch = !q || a.name.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q) || (a.keywords || []).join(' ').toLowerCase().includes(q)
+      const matchSearch =
+        !q ||
+        a.name.toLowerCase().includes(q) ||
+        a.desc.toLowerCase().includes(q) ||
+        (a.keywords || []).join(' ').toLowerCase().includes(q)
       return matchFilter && matchSearch
     }),
     sort
@@ -78,15 +86,20 @@ export default function Store() {
       <SEO
         title="Store — SafeLaunch"
         description="AI-verified apps. Every single one. Browse trending, top-rated, and verified-safe apps."
-        canonical="https://agentslock.com/store"
+        canonical="https://pwa-app-store.com/store"
       />
       <Nav />
+
       <div className="page-wrap" style={{ maxWidth: 1200 }}>
         <div style={{ marginTop: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             <div>
-              <div style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.14em' }}>THE SAFELAUNCH STORE</div>
-              <h1 className="display" style={{ margin: '6px 0 0' }}>AI-Verified Apps.<br />Every Single One.</h1>
+              <div style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.14em' }}>
+                THE SAFELAUNCH STORE
+              </div>
+              <h1 className="display" style={{ margin: '6px 0 0' }}>
+                AI-Verified Apps.<br />Every Single One.
+              </h1>
             </div>
           </div>
         </div>
@@ -102,7 +115,13 @@ export default function Store() {
               placeholder="Search by app name, category, or keyword..."
             />
             {search && (
-              <button className={styles.heroSearchClear} onClick={() => setSearch('')} aria-label="Clear search">✕</button>
+              <button
+                className={styles.heroSearchClear}
+                onClick={() => setSearch('')}
+                aria-label="Clear search"
+              >
+                ✕
+              </button>
             )}
           </div>
 
@@ -129,14 +148,23 @@ export default function Store() {
                 <div className={styles.featuredName}>{FEATURED.name}</div>
                 <div className={styles.featuredDesc}>
                   {FEATURED.desc}
-                  {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer}</span>}
+                  {FEATURED.developer && (
+                    <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>
+                      by {FEATURED.developer}
+                    </span>
+                  )}
                 </div>
               </div>
+
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                 {FEATURED.url && (
-                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Open App</a>
+                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                    Open App
+                  </a>
                 )}
-                <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View App</Link>
+                <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">
+                  View App
+                </Link>
               </div>
             </div>
 
@@ -225,6 +253,7 @@ export default function Store() {
           <div>AI scanned weekly</div>
         </div>
       </div>
+
       <Footer />
       <ToastContainer />
     </>
