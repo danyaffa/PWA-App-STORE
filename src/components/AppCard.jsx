@@ -52,14 +52,11 @@ export default function AppCard({ app, onFeature }) {
       </div>
 
       <div className={styles.actions}>
-        <button
+        <Link
           className={`btn btn-primary btn-sm ${styles.installBtn}`}
-          onClick={() => { if (onFeature) onFeature(app) }}
+          to={`/app/${app.id}`}
         >
           View App
-        </button>
-        <Link to={`/app/${app.id}`} className={`btn btn-ghost btn-sm ${styles.installBtn}`}>
-          Details
         </Link>
       </div>
     </div>

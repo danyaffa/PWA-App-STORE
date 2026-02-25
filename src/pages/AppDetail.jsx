@@ -156,7 +156,7 @@ export default function AppDetail() {
               {app.longDesc || app.desc}
             </p>
 
-            {/* Live App Preview — loads the actual app URL */}
+            {/* Key Functions (replaces iframe preview) */}
             {app.url && (
               <div className={styles.livePreview}>
                 <div className={styles.previewHeader}>
@@ -166,17 +166,35 @@ export default function AppDetail() {
                   <span className={styles.previewUrl}>{app.url}</span>
                   <a href={app.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenBtn}>Open in New Tab</a>
                 </div>
-                <iframe
-                  key={app.id}
-                  src={app.url}
-                  title={`${app.name} live preview`}
-                  className={styles.previewIframe}
-                  sandbox="allow-scripts allow-same-origin allow-popups"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
+
+                {/* Key Functions tiles */}
+                <div className={styles.featureGrid}>
+                  {((app.screenshots || []).length > 0 ? app.screenshots : [
+                    { title: 'Open App', caption: 'View the app in a new tab', color: 'rgba(255,255,255,0.06)' }
+                  ]).map((f, idx) => (
+                    <div
+                      key={idx}
+                      className={styles.featureCard}
+                      style={{ background: f.color ? `${f.color}18` : 'rgba(255,255,255,0.04)' }}
+                    >
+                      <div className={styles.featureTitle}>{f.title || `Feature ${idx + 1}`}</div>
+                      <div className={styles.featureCaption}>{f.caption || ''}</div>
+                      <div className={styles.featureActions}>
+                        <a
+                          className={styles.featureOpen}
+                          href={f.link || app.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Open
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
                 <div className={styles.previewFallback}>
-                  Some apps may not load in preview. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab instead</a>
+                  Live embedding is disabled for security and compatibility. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab</a>.
                 </div>
               </div>
             )}
