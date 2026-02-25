@@ -146,20 +146,32 @@ export default function Store() {
           </div>
         </div>
 
-        {/* Featured strip — dynamic: updates when you click an app's Details */}
+        {/* Featured strip — shows live app preview when you click View App on a card */}
         {showSections && FEATURED && (
           <div ref={featuredRef} className={`${styles.featured} ${featuredApp ? styles.featuredActive : ''}`}>
-            <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
-            <div className={styles.featuredInfo}>
-              <div className={styles.featuredLabel}>{featuredApp ? 'Selected App' : 'Featured App'}</div>
-              <div className={styles.featuredName}>{FEATURED.name}</div>
-              <div className={styles.featuredDesc}>
-                {FEATURED.desc}
-                {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer} · </span>}
-                Safety: {FEATURED.safetyScore}/100 · {FEATURED.averageRating} stars · {FEATURED.installs} installs
+            <div className={styles.featuredTop}>
+              <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
+              <div className={styles.featuredInfo}>
+                <div className={styles.featuredLabel}>{featuredApp ? 'App Preview' : 'Featured App'}</div>
+                <div className={styles.featuredName}>{FEATURED.name}</div>
+                <div className={styles.featuredDesc}>
+                  {FEATURED.desc}
+                  {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer}</span>}
+                </div>
               </div>
+              <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View</Link>
             </div>
-            <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View App</Link>
+            {featuredApp && featuredApp.url && (
+              <div className={styles.featuredPreview}>
+                <iframe
+                  src={featuredApp.url}
+                  title={`${featuredApp.name} preview`}
+                  className={styles.featuredIframe}
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                  loading="lazy"
+                />
+              </div>
+            )}
           </div>
         )}
 

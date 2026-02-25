@@ -42,6 +42,9 @@
   background: linear-gradient(135deg, var(--surface), rgba(0,229,160,.05));
   border: 1px solid rgba(0,229,160,.2); border-radius: var(--radius-lg);
   padding: 32px 36px; margin: 0 0 48px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.featuredTop {
   display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
 }
 .featuredEmoji { font-size: 3rem; }
@@ -50,6 +53,14 @@
 .featuredName  { font-weight: 700; font-size: 1.3rem; margin-bottom: 6px; }
 .featuredDesc  { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
 .featuredActive { animation: featuredPulse .4s ease-out; border-color: var(--accent); }
+.featuredPreview {
+  width: 100%; border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border); background: #fff;
+}
+.featuredIframe {
+  width: 100%; height: 420px; border: none; display: block;
+  background: #fff;
+}
 @keyframes featuredPulse {
   0% { transform: scale(0.98); opacity: 0.7; }
   50% { transform: scale(1.01); }
