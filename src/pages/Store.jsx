@@ -42,7 +42,8 @@ return ( <> <SEO title="Browse Apps — SafeLaunch PWA App Store" description="B
           >
             {c}
           </button>
-        ))}
+        )
+   }
       </div>
     </div>
 
