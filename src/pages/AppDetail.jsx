@@ -10,7 +10,6 @@ import TrustScore from '../components/TrustScore.jsx'
 import PermissionPanel from '../components/PermissionPanel.jsx'
 import PoweredBy from '../components/PoweredBy.jsx'
 import AppCard from '../components/AppCard.jsx'
-import AppPreview from '../components/AppPreview.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import { useInstallState } from '../hooks/useInstallState.js'
@@ -157,10 +156,30 @@ export default function AppDetail() {
               {app.longDesc || app.desc}
             </p>
 
-            {/* Safe App Preview (no iframe — avoids "refused to connect" errors) */}
-            <div className={styles.livePreview}>
-              <AppPreview app={app} />
-            </div>
+            {/* Live App Preview — loads the actual app URL */}
+            {app.url && (
+              <div className={styles.livePreview}>
+                <div className={styles.previewHeader}>
+                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
+                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
+                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
+                  <span className={styles.previewUrl}>{app.url}</span>
+                  <a href={app.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenBtn}>Open in New Tab</a>
+                </div>
+                <iframe
+                  key={app.id}
+                  src={app.url}
+                  title={`${app.name} live preview`}
+                  className={styles.previewIframe}
+                  sandbox="allow-scripts allow-same-origin allow-popups"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                />
+                <div className={styles.previewFallback}>
+                  Some apps may not load in preview. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab instead</a>
+                </div>
+              </div>
+            )}
 
             {/* Tabs */}
             <div className={styles.tabs}>
