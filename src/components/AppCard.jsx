@@ -1,5 +1,3 @@
-import { useToast } from './Toast.jsx'
-import { useInstallState } from '../hooks/useInstallState.js'
 import { TrustBadge } from './TrustScore.jsx'
 import styles from './AppCard.module.css'
 
@@ -12,10 +10,6 @@ const BADGE_MAP = {
 }
 
 export default function AppCard({ app, onFeature }) {
-  const toast = useToast()
-  const appId = app.id || app.name.toLowerCase().replace(/\s+/g, '-')
-  const { installed, install } = useInstallState(appId)
-
   const badges = (app.badges || []).slice(0, 2)
 
   return (
@@ -57,17 +51,9 @@ export default function AppCard({ app, onFeature }) {
       </div>
 
       <div className={styles.actions}>
-        {installed ? (
-          <button className={`btn btn-sm ${styles.installBtn} ${styles.openBtn}`} onClick={() => {
-            if (onFeature) onFeature(app)
-          }}>Open App</button>
-        ) : (
-          <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
-            install()
-            toast(`${app.name} installed successfully!`)
-            if (onFeature) onFeature(app)
-          }}>Install App</button>
-        )}
+        <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
+          if (onFeature) onFeature(app)
+        }}>View App</button>
       </div>
     </div>
   )
