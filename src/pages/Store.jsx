@@ -6,6 +6,7 @@ import AppCard from '../components/AppCard.jsx'
 import SEO from '../components/SEO.jsx'
 import { trackSearch } from '../lib/analytics.js'
 import { APPS, CATEGORIES } from '../utils/data.js'
+import { loadPublishedApps } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Store.module.css'
 
@@ -27,6 +28,7 @@ function parseInstalls(str) {
 
 export default function Store() {
   const { toast, ToastContainer } = useToast()
+  const [baseApps, setBaseApps] = useState(APPS)
   const [q, setQ] = useState('')
   const [cat, setCat] = useState('All')
   const [sort, setSort] = useState('ranking')
@@ -42,7 +44,31 @@ export default function Store() {
     }
   }, [])
 
-  const BASE = [...APPS]
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const published = await loadPublishedApps()
+        if (!mounted) return
+        const merged = [...published, ...APPS]
+        const seen = new Set()
+        const deduped = merged.filter(a => {
+          const id = a?.id
+          if (!id) return false
+          if (seen.has(id)) return false
+          seen.add(id)
+          return true
+        })
+        setBaseApps(deduped)
+      } catch (e) {
+        console.error(e)
+        setBaseApps(APPS)
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
+
+  const BASE = [...baseApps]
 
   const filtered = BASE.filter(a => {
     const matchesQ = !q.trim() || `${a.name} ${a.desc} ${a.category}`.toLowerCase().includes(q.toLowerCase())
@@ -56,7 +82,6 @@ export default function Store() {
     if (sort === 'newest') return (b.publishedAt || '').localeCompare(a.publishedAt || '')
     if (sort === 'safest') return (b.safetyScore || 0) - (a.safetyScore || 0)
     if (sort === 'top_rated') return (b.averageRating || 0) - (a.averageRating || 0)
-    // ranking
     return (b.rankingScore || 0) - (a.rankingScore || 0)
   })
 
@@ -75,9 +100,6 @@ export default function Store() {
         <div className="section-label">Store</div>
         <h1 className="section-title display">Safe Apps. Fast Install.</h1>
         <p className="section-sub">Find safe, verified apps with transparent trust scores.</p>
-        <div style={{marginTop:10}}>
-          <Link to="/management-login" className="btn btn-ghost btn-sm">Management Login</Link>
-        </div>
 
         <div className={styles.filters}>
           <input
