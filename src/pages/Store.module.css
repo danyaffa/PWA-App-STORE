@@ -68,16 +68,42 @@
   font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap;
 }
-.featuredIframe {
-  width: 100%; height: 420px; border: none; display: block;
-  background: #fff;
+.previewOpenLink {
+  margin-left: auto; padding: 4px 14px; border-radius: 6px;
+  background: var(--accent); color: var(--bg); font-size: 0.72rem;
+  font-weight: 700; text-decoration: none; white-space: nowrap;
+  transition: opacity .2s; flex-shrink: 0;
 }
-.previewFallback {
-  padding: 10px 14px; font-size: 0.78rem; color: var(--muted);
-  background: var(--surface2); border-top: 1px solid var(--border);
-  text-align: center;
+.previewOpenLink:hover { opacity: 0.85; }
+.previewBody { padding: 16px; }
+.screenshotGrid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  margin-bottom: 16px;
 }
-.previewFallback a { color: var(--accent); text-decoration: underline; }
+.screenshotTile {
+  border-radius: 12px; padding: 20px; min-height: 120px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.screenshotTitle {
+  font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;
+  color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+.screenshotCaption {
+  font-size: 0.82rem; line-height: 1.4;
+  color: rgba(255,255,255,.85); text-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+.previewEmpty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 10px; padding: 40px 20px;
+  color: var(--muted); font-size: 1rem; font-weight: 600;
+}
+.openAppBtn {
+  display: block; width: 100%; padding: 14px; border-radius: 10px;
+  background: var(--accent); color: var(--bg); text-align: center;
+  font-weight: 700; font-size: 0.95rem; text-decoration: none;
+  transition: opacity .2s;
+}
+.openAppBtn:hover { opacity: 0.9; }
 @keyframes featuredPulse {
   0% { transform: scale(0.98); opacity: 0.7; }
   50% { transform: scale(1.01); }

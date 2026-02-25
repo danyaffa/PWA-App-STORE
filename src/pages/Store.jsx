@@ -53,7 +53,6 @@ export default function Store() {
   const [sort, setSort]     = useState('ranking')
   const [userApps, setUserApps] = useState(getPublishedApps)
   const [featuredApp, setFeaturedApp] = useState(null)
-  const [iframeError, setIframeError] = useState(false)
   const { toast, ToastContainer } = useToast()
   const featuredRef = useRef(null)
 
@@ -106,7 +105,6 @@ export default function Store() {
   // THIS is what "View App" does: swaps the preview box to show the clicked app
   function handleFeature(app) {
     setFeaturedApp(app)
-    setIframeError(false)
     if (featuredRef.current) {
       featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
@@ -179,36 +177,40 @@ export default function Store() {
               </div>
             </div>
 
-            {/* Actual app preview: iframe that loads the app URL */}
-            {FEATURED.url && (
-              <div className={styles.featuredPreview}>
-                <div className={styles.previewBar}>
-                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
-                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
-                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
-                  <span className={styles.previewUrlText}>{FEATURED.url}</span>
-                </div>
-                {!iframeError ? (
-                  <iframe
-                    key={FEATURED.id}
-                    src={FEATURED.url}
-                    title={`${FEATURED.name} preview`}
-                    className={styles.featuredIframe}
-                    sandbox="allow-scripts allow-same-origin allow-popups"
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                    onError={() => setIframeError(true)}
-                  />
-                ) : null}
-                <div className={styles.previewFallback}>
-                  {iframeError
-                    ? <>This app blocked iframe embedding. </>
-                    : <>If the app doesn't load above, </>
-                  }
-                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer">open {FEATURED.name} directly</a>
-                </div>
+            {/* App preview: screenshots + open link (no iframe — most sites block them) */}
+            <div className={styles.featuredPreview}>
+              <div className={styles.previewBar}>
+                <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
+                <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
+                <span className={styles.previewDot} style={{ background: '#27c93f' }} />
+                <span className={styles.previewUrlText}>{FEATURED.url || FEATURED.name}</span>
+                {FEATURED.url && (
+                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenLink}>Open App &rarr;</a>
+                )}
               </div>
-            )}
+              <div className={styles.previewBody}>
+                {Array.isArray(FEATURED.screenshots) && FEATURED.screenshots.length > 0 ? (
+                  <div className={styles.screenshotGrid}>
+                    {FEATURED.screenshots.slice(0, 4).map((s, i) => (
+                      <div key={i} className={styles.screenshotTile} style={{ background: s.color || 'var(--surface2)' }}>
+                        <div className={styles.screenshotTitle}>{s.title}</div>
+                        <div className={styles.screenshotCaption}>{s.caption}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.previewEmpty}>
+                    <span style={{ fontSize: '3rem' }}>{FEATURED.icon}</span>
+                    <div>{FEATURED.name}</div>
+                  </div>
+                )}
+                {FEATURED.url && (
+                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className={styles.openAppBtn}>
+                    Open {FEATURED.name}
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
