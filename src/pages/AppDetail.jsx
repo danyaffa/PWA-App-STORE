@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
@@ -13,9 +13,9 @@ import AppCard from '../components/AppCard.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import { useInstallState } from '../hooks/useInstallState.js'
+import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import { trackView, trackInstall } from '../lib/analytics.js'
 import { getSimilarApps } from '../lib/recommendations.js'
-import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import styles from './AppDetail.module.css'
 
 const TABS = ['Overview', 'Safety Report', 'Reviews', 'Versions']
@@ -57,57 +57,35 @@ export default function AppDetail() {
   const [showDisclaimer, setShowDisclaimer] = useState(false)
   const [showReport, setShowReport] = useState(false)
 
-  const userApps = (() => { try { return JSON.parse(localStorage.getItem('sl_published_apps') || '[]') } catch { return [] } })()
-  const allApps = [...APPS, ...userApps]
-  const app = allApps.find(a => a.id === id) || allApps[0]
+  const app = APPS.find(a => a.id === id) || APPS[0]
   const { installed, install } = useInstallState(app.id)
-  const { canInstall: canPWAInstall, install: triggerPWAInstall } = usePWAInstall()
+  const { canInstall, install: installPWA, isStandalone } = usePWAInstall()
 
-  // Track page view
   useEffect(() => { trackView(app.id) }, [app.id])
 
-  // AI-powered similar apps
-  const similarApps = getSimilarApps(app, allApps, 4)
+  const similarApps = useMemo(() => getSimilarApps(app, APPS, 4), [app])
 
   function handleInstallClick() {
     setShowDisclaimer(true)
   }
 
-  async function handleInstallAccepted() {
+  function handleInstallAccepted() {
     setShowDisclaimer(false)
     install()
     trackInstall(app.id)
-    toast(`${app.name} saved to your library.`)
+    toast(`${app.name} installed successfully!`)
 
-    // Try native PWA install prompt first
-    if (canPWAInstall) {
-      const accepted = await triggerPWAInstall()
-      if (accepted) {
-        toast('Added to your home screen!')
-        return
-      }
+    if (!isStandalone && canInstall) {
+      installPWA().then(ok => {
+        if (ok) toast('SafeLaunch installed to your device.')
+      })
     }
 
-    // Detect iOS Safari — show manual "Add to Home Screen" guidance
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-    const isAndroid = /Android/.test(navigator.userAgent)
-
-    if (isIOS) {
-      toast('Tap the Share button in Safari, then "Add to Home Screen" to install this app.')
-    } else if (isAndroid) {
-      // On Android Chrome, if no beforeinstallprompt fired, guide to menu
-      if (app.url) {
-        toast('Tap the browser menu (⋮) and select "Add to Home Screen" or "Install App".')
-        window.open(app.url, '_blank', 'noopener,noreferrer')
-      }
-    } else if (app.url) {
-      // Desktop: open the app and guide to install via browser
-      toast('Use your browser menu to "Install" this app, or bookmark it for quick access.')
-      window.open(app.url, '_blank', 'noopener,noreferrer')
+    if (app.url) {
+      window.location.href = app.url
     }
   }
 
-  // Use price field from app data — all current apps are Free
   const isPaid = app.price && app.price !== 'Free'
   const price = isPaid ? app.price : null
 
@@ -115,7 +93,6 @@ export default function AppDetail() {
   const badges = (app.badges || []).map(b => BADGE_MAP[b]).filter(Boolean)
   const developer = app.developer || 'Independent Developer'
 
-  // JSON-LD for SoftwareApplication
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -152,7 +129,6 @@ export default function AppDetail() {
         <Link to="/store" style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>&larr; Back to Store</Link>
 
         <div className={styles.hero}>
-          {/* Left col */}
           <div className={styles.left}>
             <div className={styles.iconLg}>{app.icon}</div>
             <h1 className={`display ${styles.title}`}>{app.name}</h1>
@@ -171,30 +147,24 @@ export default function AppDetail() {
               {app.longDesc || app.desc}
             </p>
 
-            {/* App screenshots */}
+            {/* Key functions (replaces iframe preview) */}
             {Array.isArray(app.screenshots) && app.screenshots.length > 0 && (
               <div className={styles.featureGrid}>
-                {app.screenshots.map((f, idx) => (
-                  <div
-                    key={idx}
-                    className={styles.featureCard}
-                    style={{ background: f.color ? `${f.color}18` : 'rgba(255,255,255,0.04)' }}
-                  >
-                    <div className={styles.featureTitle}>{f.title || `Feature ${idx + 1}`}</div>
-                    <div className={styles.featureCaption}>{f.caption || ''}</div>
+                {app.screenshots.slice(0, 4).map((s, idx) => (
+                  <div key={idx} className={styles.featureTile} style={{ background: s.color || 'var(--surface2)' }}>
+                    <div className={styles.featureTitle}>{s.title}</div>
+                    <div className={styles.featureCaption}>{s.caption}</div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Tabs */}
             <div className={styles.tabs}>
               {TABS.map((t, i) => (
                 <div key={t} className={`${styles.tab} ${tab === i ? styles.activeTab : ''}`} onClick={() => setTab(i)}>{t}</div>
               ))}
             </div>
 
-            {/* Overview — now includes Permission Transparency */}
             {tab === 0 && (
               <div className={styles.tabBody}>
                 {app.whatsNew && (
@@ -204,7 +174,6 @@ export default function AppDetail() {
                   </>
                 )}
 
-                {/* Permission Transparency Panel — the clear "can / cannot" display */}
                 <PermissionPanel
                   permissions={app.permissions || []}
                   safetyScore={app.safetyScore || 0}
@@ -221,7 +190,6 @@ export default function AppDetail() {
               </div>
             )}
 
-            {/* Safety */}
             {tab === 1 && (
               <div className={styles.tabBody}>
                 <div className={styles.scanSummary}>
@@ -245,7 +213,6 @@ export default function AppDetail() {
               </div>
             )}
 
-            {/* Reviews */}
             {tab === 2 && (
               <div className={styles.tabBody}>
                 <div className={styles.ratingOverview}>
@@ -269,7 +236,6 @@ export default function AppDetail() {
               </div>
             )}
 
-            {/* Versions */}
             {tab === 3 && (
               <div className={styles.tabBody}>
                 {VERSIONS.map(v => (
@@ -286,14 +252,11 @@ export default function AppDetail() {
             )}
           </div>
 
-          {/* Install card — now with Trust Score gauge */}
           <div className={styles.installCard}>
-            {/* Universal Trust Score — the ONE number investors see */}
             <div className={styles.trustScoreWrap}>
               <TrustScore score={app.safetyScore || 0} size="lg" />
             </div>
 
-            {/* Verification badges — visible trust signals */}
             <div className={styles.certBadges}>
               {(app.safetyScore || 0) >= 85 && (
                 <span className={styles.certBadge}>{'\u2713'} AI Security Checked</span>
@@ -306,7 +269,6 @@ export default function AppDetail() {
               )}
             </div>
 
-            {/* Safety badge with score */}
             <div className={styles.trustBadge}>
               {app.safetyScore >= 85 ? 'Safety Verified' : 'Safety Reviewed'} ({app.safetyScore || 'N/A'}/100) &middot; v2.3.1
             </div>
@@ -324,15 +286,13 @@ export default function AppDetail() {
             ) : installed ? (
               <>
                 <div className={`btn ${styles.installBtn} ${styles.installedLabel}`}>Installed</div>
-                <a href={app.url} target="_blank" rel="noopener noreferrer" className={`btn ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
+                <a href={app.url} className={`btn ${styles.installBtn} ${styles.openBtn}`}>Open App</a>
               </>
             ) : (
               <button className={`btn btn-primary ${styles.installBtn}`} onClick={handleInstallClick}>Install App</button>
             )}
 
             <Link to={`/report/${app.id}`} className={styles.reportLink}>View full safety report &rarr;</Link>
-
-            {/* Promote link */}
             <Link to={`/app/${app.id}/promote`} className={styles.reportLink} style={{ color: 'var(--accent2)' }}>Promote this app &rarr;</Link>
 
             <div className={styles.installMeta}>
@@ -357,7 +317,6 @@ export default function AppDetail() {
               ))}
             </div>
 
-            {/* Report App button */}
             <button
               className="btn btn-ghost btn-sm"
               onClick={() => setShowReport(true)}
@@ -369,7 +328,6 @@ export default function AppDetail() {
         </div>
       </div>
 
-      {/* Similar Apps — AI Recommendations */}
       {similarApps.length > 0 && (
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 40px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 16 }}>Apps You May Like</h3>
@@ -379,16 +337,13 @@ export default function AppDetail() {
         </div>
       )}
 
-      {/* Independent developer disclaimer banner */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 20px' }}>
         <div style={{ padding: '14px 20px', background: 'rgba(255,184,77,.06)', border: '1px solid rgba(255,184,77,.15)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.6 }}>
           Apps on SafeLaunch are provided by <strong style={{ color: 'var(--text)' }}>independent developers</strong>. The platform does not create, own, or guarantee third-party applications. <Link to="/how-safety-works" style={{ color: 'var(--accent)' }}>How safety works</Link> &middot; <Link to="/terms" style={{ color: 'var(--accent)' }}>Terms</Link>
         </div>
       </div>
 
-      {/* Powered by SafeLaunch — viral growth footer */}
       <PoweredBy />
-
       <Footer />
 
       {showDisclaimer && (
