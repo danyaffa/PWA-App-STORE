@@ -74,7 +74,20 @@ export default function AppDetail() {
     install()
     trackInstall(app.id)
     toast(`${app.name} installed successfully!`)
-    if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
+
+    // Try native PWA install prompt first, then open the app
+    if (window.__pwaInstallPrompt) {
+      window.__pwaInstallPrompt.prompt()
+      window.__pwaInstallPrompt.userChoice.then(choice => {
+        if (choice.outcome === 'accepted') {
+          toast(`${app.name} added to your home screen!`)
+        }
+        window.__pwaInstallPrompt = null
+      })
+    } else if (app.url) {
+      // Open the app URL so user can install it as PWA from the browser
+      window.open(app.url, '_blank', 'noopener,noreferrer')
+    }
   }
 
   // Use price field from app data — all current apps are Free
@@ -149,14 +162,19 @@ export default function AppDetail() {
                   <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
                   <span className={styles.previewDot} style={{ background: '#27c93f' }} />
                   <span className={styles.previewUrl}>{app.url}</span>
+                  <a href={app.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenBtn}>Open in New Tab</a>
                 </div>
                 <iframe
+                  key={app.id}
                   src={app.url}
                   title={`${app.name} live preview`}
                   className={styles.previewIframe}
-                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                  referrerPolicy="no-referrer"
                   loading="lazy"
                 />
+                <div className={styles.previewFallback}>
+                  Some apps may not load in preview. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab instead</a>
+                </div>
               </div>
             )}
 

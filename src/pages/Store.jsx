@@ -146,8 +146,8 @@ export default function Store() {
           </div>
         </div>
 
-        {/* Featured strip — shows live app preview when you click View App on a card */}
-        {showSections && FEATURED && (
+        {/* App Preview Box — updates when you click View App on any card */}
+        {FEATURED && (
           <div ref={featuredRef} className={`${styles.featured} ${featuredApp ? styles.featuredActive : ''}`}>
             <div className={styles.featuredTop}>
               <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
@@ -159,17 +159,32 @@ export default function Store() {
                   {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer}</span>}
                 </div>
               </div>
-              <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View</Link>
+              <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                {FEATURED.url && (
+                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Open App</a>
+                )}
+                <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View Details</Link>
+              </div>
             </div>
-            {featuredApp && featuredApp.url && (
+            {FEATURED.url && (
               <div className={styles.featuredPreview}>
+                <div className={styles.previewBar}>
+                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
+                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
+                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
+                  <span className={styles.previewUrlText}>{FEATURED.url}</span>
+                </div>
                 <iframe
-                  src={featuredApp.url}
-                  title={`${featuredApp.name} preview`}
+                  key={FEATURED.id}
+                  src={FEATURED.url}
+                  title={`${FEATURED.name} preview`}
                   className={styles.featuredIframe}
-                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                  referrerPolicy="no-referrer"
                   loading="lazy"
                 />
+                <div className={styles.previewFallback}>
+                  If the app doesn't load above, <a href={FEATURED.url} target="_blank" rel="noopener noreferrer">open {FEATURED.name} in a new tab</a>
+                </div>
               </div>
             )}
           </div>
