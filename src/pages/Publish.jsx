@@ -10,8 +10,6 @@ import styles from './Publish.module.css'
 
 const STEPS = ['Upload', 'Configure', 'Scan', 'Publish']
 
-const MOCKUP_TYPES = ['editor','list','grid','player','chat','map','chart','feed','form','gauge','board','game','cards']
-
 function hasDevAgreement() {
   try {
     const stored = JSON.parse(localStorage.getItem('sl_dev_agreement') || 'null')
@@ -44,17 +42,8 @@ export default function Publish() {
   const [websiteUrl,    setWebsiteUrl]    = useState('')
   const [appVersion,    setAppVersion]    = useState('')
   const [whatsNew,      setWhatsNew]      = useState('')
-  const [tags,          setTags]          = useState('')
-  const [permissions,   setPermissions]   = useState('')
-  const [appSize,       setAppSize]       = useState('')
   const [pricingType,   setPricingType]   = useState('free')
   const [priceAmount,   setPriceAmount]   = useState('')
-  const [screenshots,   setScreenshots]   = useState([
-    { title: '', caption: '', color: '#6c5ce7', mockup: 'editor' },
-    { title: '', caption: '', color: '#00b894', mockup: 'list' },
-    { title: '', caption: '', color: '#0984e3', mockup: 'grid' },
-    { title: '', caption: '', color: '#e17055', mockup: 'chart' },
-  ])
 
   const [errors,     setErrors]     = useState({})
   const [published,  setPublished]  = useState(false)
@@ -138,10 +127,6 @@ export default function Publish() {
       return next
     })
     setTimeout(() => runStep(i + 1), 350 + Math.random() * 250)
-  }
-
-  function updateScreenshot(index, field, value) {
-    setScreenshots(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s))
   }
 
   const pct = scanIdx >= 0 ? SCAN_STEPS[Math.min(scanIdx, SCAN_STEPS.length-1)].pct : 0
@@ -311,19 +296,6 @@ export default function Publish() {
                 <label>Version</label>
                 <input className="input" placeholder="1.0.0" value={appVersion} onChange={e => setAppVersion(e.target.value)} />
               </div>
-              <div className="form-group">
-                <label>App Size</label>
-                <input className="input" placeholder="2.4 MB" value={appSize} onChange={e => setAppSize(e.target.value)} />
-              </div>
-              <div className="form-group">
-                <label>Tags (comma-separated)</label>
-                <input className="input" placeholder="productivity, offline, notes" value={tags} onChange={e => setTags(e.target.value)} />
-              </div>
-            </div>
-            <div className="form-group" style={{marginTop:20}}>
-              <label>Permissions (comma-separated)</label>
-              <input className="input" placeholder="Internet access, Notifications, Camera (optional)" value={permissions} onChange={e => setPermissions(e.target.value)} />
-              <span className={styles.fieldHint}>List the device capabilities your app requires, e.g. "Internet access", "Location", "None — fully offline"</span>
             </div>
             <div className="form-group" style={{marginTop:20}}>
               <label>What's New</label>
@@ -394,31 +366,6 @@ export default function Publish() {
             </div>
           </div>
 
-          {/* Screenshots */}
-          <div className={styles.detailsSection}>
-            <h3 className={styles.sectionHead}>Screenshots</h3>
-            <p className={styles.sectionHint}>Add up to 4 screenshots to showcase your app. Provide a title, caption, and choose a theme color and mockup type.</p>
-            <div className={styles.screenshotGrid}>
-              {screenshots.map((ss, i) => (
-                <div key={i} className={styles.screenshotEntry}>
-                  <div className={styles.ssPreviewBox} style={{background: `linear-gradient(135deg, ${ss.color}, ${ss.color}dd)`}}>
-                    <span style={{fontSize:'0.7rem',color:'rgba(255,255,255,.7)',fontWeight:700}}>{ss.title || `Screen ${i + 1}`}</span>
-                  </div>
-                  <div className={styles.ssFields}>
-                    <input className="input" placeholder="Title" value={ss.title} onChange={e => updateScreenshot(i, 'title', e.target.value)} style={{fontSize:'0.82rem'}} />
-                    <input className="input" placeholder="Caption" value={ss.caption} onChange={e => updateScreenshot(i, 'caption', e.target.value)} style={{fontSize:'0.82rem'}} />
-                    <div className={styles.ssColorRow}>
-                      <input type="color" value={ss.color} onChange={e => updateScreenshot(i, 'color', e.target.value)} className={styles.colorPicker} />
-                      <select className="input" value={ss.mockup} onChange={e => updateScreenshot(i, 'mockup', e.target.value)} style={{fontSize:'0.82rem',flex:1}}>
-                        {MOCKUP_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Self-certification */}
           <div className={styles.selfCert}>
             <h4 style={{ fontSize: '0.88rem', fontWeight: 700, marginBottom: 12 }}>Developer Self-Certification</h4>
@@ -475,12 +422,6 @@ export default function Publish() {
                     style={published ? { background: '#22c55e', borderColor: '#22c55e', color: '#fff', opacity: 1 } : {}}
                     onClick={() => {
                       const slug = appName.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-                      const permList = permissions.trim()
-                        ? permissions.split(',').map(p => p.trim()).filter(Boolean)
-                        : []
-                      const screenshotList = screenshots
-                        .filter(s => s.title.trim() || s.caption.trim())
-                        .map(s => ({ title: s.title, caption: s.caption, color: s.color, mockup: s.mockup }))
                       const newApp = {
                         id: slug || `app-${Date.now()}`,
                         icon: iconUrl.trim() && !/^https?:\/\//.test(iconUrl.trim()) ? iconUrl.trim() : '📦',
@@ -491,11 +432,11 @@ export default function Publish() {
                         price: pricingType === 'paid' ? parseFloat(priceAmount).toFixed(2) : 'Free',
                         developer: developerName.trim(),
                         url: websiteUrl.trim() || '',
-                        size: appSize.trim() || 'N/A',
+                        size: 'N/A',
                         whatsNew: whatsNew.trim(),
-                        permissions: permList.length > 0 ? permList : ['None — fully offline'],
-                        screenshots: screenshotList,
-                        tags: tags.trim() ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+                        permissions: ['None — fully offline'],
+                        screenshots: [],
+                        tags: [],
                         score: 12,
                         trust: 'green',
                         installs: '0',
