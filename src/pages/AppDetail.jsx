@@ -71,7 +71,7 @@ export default function AppDetail() {
     // Fallback: open the app URL so the user can install it (if it is a PWA) from the browser UI.
     if (app.url) {
       window.open(app.url, '_blank', 'noopener,noreferrer')
-      toast('Opened the app in a new tab. If it supports PWA install, use your browser\'s Install option.')
+      toast('Opened the app in a new tab. If it supports PWA install, use your browser’s Install option.')
       return
     }
 
@@ -123,7 +123,7 @@ export default function AppDetail() {
                     {(app.screenshots || []).map((s, idx) => (
                       <div key={idx} className={styles.featureCard}>
                         <div className={styles.featureTitle}>{s.title}</div>
-                        <div className={styles.featureDesc}>{s.caption || s.desc}</div>
+                        <div className={styles.featureDesc}>{s.desc}</div>
                       </div>
                     ))}
                   </div>
@@ -247,7 +247,7 @@ export default function AppDetail() {
             <div className={styles.modal}>
               <h3>Install Notice</h3>
               <p>
-                SafeLaunch can't "force install" another website.
+                SafeLaunch can’t “force install” another website.
                 If the app supports PWA install, your browser will show an Install option.
               </p>
               <div className={styles.modalBtns}>
