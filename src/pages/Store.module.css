@@ -120,7 +120,21 @@
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
 }
 
-.filters  { display: flex; gap: 10px; flex-wrap: wrap; }
+.filters  { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; align-items: center; }
+.search {
+  flex: 1; min-width: 180px; padding: 10px 16px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 0.92rem; font-family: var(--font-body);
+  outline: none; transition: border-color .2s;
+}
+.search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,160,.15); }
+.search::placeholder { color: var(--muted); }
+.select {
+  padding: 10px 14px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 0.82rem; font-family: var(--font-body);
+  cursor: pointer; outline: none;
+}
 .filterBtn {
   padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
   background: transparent; color: var(--muted);
