@@ -19,6 +19,7 @@ import DMCA         from './pages/DMCA.jsx'
 import HowSafetyWorks from './pages/HowSafetyWorks.jsx'
 import Promote      from './pages/Promote.jsx'
 import Tutorial     from './pages/Tutorial.jsx'
+import Management   from './pages/Management.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
       <Route path="/dashboard"    element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/signin"       element={<SignIn />} />
       <Route path="/trust-ops"    element={<ProtectedRoute><TrustOps /></ProtectedRoute>} />
+      <Route path="/management"  element={<ProtectedRoute><Management /></ProtectedRoute>} />
       <Route path="/report/:id"   element={<ScanReport />} />
       <Route path="/app-store"    element={<InstallGuide />} />
       <Route path="/privacy"      element={<Privacy />} />

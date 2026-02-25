@@ -106,10 +106,44 @@
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
 }
 
+/* Step Grid — new layout */
+.sectionHead { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+
+.stepGrid { display: grid; grid-template-columns: 260px 1fr; gap: 24px; margin-bottom: 32px; }
+.stepList { display: flex; flex-direction: column; gap: 6px; }
+.stepBtn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; text-align: left; transition: all .2s;
+  color: var(--text); font-family: var(--font-body);
+}
+.stepBtn:hover { border-color: rgba(0,229,160,.3); }
+.stepBtnActive { border-color: var(--accent); background: rgba(0,229,160,.06); }
+
+.stepCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px; min-height: 300px;
+}
+.stepCardHead { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.stepCardIcon { font-size: 2rem; }
+.stepCardNum { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+.stepCardTitle { font-size: 1.15rem; font-weight: 700; }
+.stepCardBody {}
+
+/* Prompt grid */
+.promptGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.promptCard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+.promptTitle { font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; }
+.tipTitle { font-weight: 700; color: #f5b800; margin-bottom: 4px; }
+.tipText { color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+
 /* Responsive */
 @media (max-width: 768px) {
   .featureGrid { grid-template-columns: 1fr 1fr; }
   .examplesGrid { grid-template-columns: 1fr; }
+  .stepGrid { grid-template-columns: 1fr; }
+  .promptGrid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .featureGrid { grid-template-columns: 1fr; }

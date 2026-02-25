@@ -1,10 +1,16 @@
-.hero { display: grid; grid-template-columns: 1fr 340px; gap: 60px; margin-top: 32px; }
+/* Two-column layout */
+.topRow { display: grid; grid-template-columns: 1fr 340px; gap: 60px; margin-top: 32px; }
 .left { min-width: 0; }
-.iconLg { width: 88px; height: 88px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 20px; }
-.title  { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 8px; }
-.publisher { color: var(--muted); font-size: 0.88rem; margin-bottom: 16px; }
-.metaRow { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.desc { color: var(--muted); font-size: 0.93rem; line-height: 1.75; margin-bottom: 28px; }
+.right { min-width: 0; }
+
+/* App header */
+.appHeader { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.icon { width: 72px; height: 72px; border-radius: 18px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; }
+.title  { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 4px; }
+.meta { color: var(--muted); font-size: 0.88rem; }
+
+/* Active tab style override */
+.active { color: var(--accent) !important; border-bottom-color: var(--accent) !important; }
 
 /* Key functions tiles */
 .featureGrid {
@@ -84,6 +90,65 @@
 .activeTab { color: var(--accent); border-bottom-color: var(--accent); }
 .tabBody { padding-bottom: 40px; }
 
+/* Overview tab sections */
+.whatsNew { margin-bottom: 24px; }
+.whatsNew h2 { font-size: 1.15rem; margin-bottom: 8px; }
+.whatsNew p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+.features { margin-bottom: 24px; }
+.features h3 { font-size: 1.05rem; margin-bottom: 14px; }
+.featureCard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.featureDesc { color: var(--muted); font-size: 0.85rem; line-height: 1.5; margin-top: 4px; }
+
+/* Privacy block */
+.privacyBlock { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px; }
+.privacyHead { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.privacyTitle { font-weight: 700; font-size: 1.05rem; }
+.privacySub { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+.privacyScore { font-size: 0.85rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.perms { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+.permLabel { font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; }
+.perms ul { list-style: none; padding: 0; margin: 0; }
+.perms li { color: var(--muted); font-size: 0.82rem; padding: 3px 0; }
+.chipsRow { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 100px; background: rgba(0,229,160,.08); color: var(--accent); border: 1px solid rgba(0,229,160,.15); }
+
+.privacyText { margin-bottom: 24px; }
+.privacyText h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.privacyText p { color: var(--muted); font-size: 0.88rem; line-height: 1.65; }
+.privacyText a { color: var(--accent); }
+
+/* Safety tab */
+.safety h2 { font-size: 1.15rem; margin-bottom: 10px; }
+.safety p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 14px; }
+.safetyList { list-style: none; padding: 0; margin: 0; }
+.safetyList li { padding: 8px 0; font-size: 0.88rem; color: var(--accent); border-bottom: 1px solid var(--border); }
+
+/* Reviews & Versions placeholders */
+.reviews h2, .versions h2 { font-size: 1.15rem; margin-bottom: 10px; }
+.reviews p, .versions p { color: var(--muted); font-size: 0.9rem; }
+
+/* Score card (right sidebar) */
+.scoreCard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: sticky; top: 90px; }
+.scoreRing { text-align: center; padding: 16px 0; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
+.scoreNum { font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1; font-family: var(--font-mono); }
+.scoreLbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; }
+.checks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.check { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; background: rgba(0,229,160,.06); border: 1px solid rgba(0,229,160,.15); font-size: 0.75rem; font-weight: 700; color: var(--accent); }
+.bigBtn { width: 100%; justify-content: center; padding: 14px; font-size: 0.95rem; margin-bottom: 10px; }
+.metaTable { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-bottom: 14px; }
+.metaTable > div { display: flex; justify-content: space-between; font-size: 0.82rem; }
+.metaTable > div > span:first-child { color: var(--muted); }
+.metaTable > div > span:last-child { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; }
+.reportBtn { width: 100%; justify-content: center; color: var(--muted); font-size: 0.82rem; }
+
+/* Modal */
+.modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 50; }
+.modal { width: min(520px, 100%); background: rgba(15,17,23,0.98); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.60); }
+.modal h3 { margin: 0 0 12px; }
+.modal p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+.modalBtns { display: flex; gap: 10px; justify-content: flex-end; }
+
 .scanSummary { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
 .scanCard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
 .scanNum  { font-size: 2rem; line-height: 1; }
@@ -145,7 +210,8 @@
 }
 
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; }
-  .installCard { position: static; }
+  .topRow { grid-template-columns: 1fr; }
+  .scoreCard { position: static; }
   .featureGrid { grid-template-columns: 1fr; }
+  .perms { grid-template-columns: 1fr; }
 }

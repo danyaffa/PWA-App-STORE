@@ -125,7 +125,14 @@
   cursor: pointer; transition: all .2s; letter-spacing: 0.04em;
 }
 .filterBtn:hover, .active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,.05); }
-.sortSelect { width: 160px; padding: 10px 12px; font-size: 0.82rem; }
+/* Sort row */
+.sortRow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px; margin-top: 12px; flex-wrap: wrap;
+}
+.sortLabel { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+.sortSelect { width: 180px; padding: 10px 12px; font-size: 0.82rem; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.sortCount { font-size: 0.82rem; color: var(--muted); margin-left: auto; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .empty { text-align: center; color: var(--muted); padding: 80px 20px; }

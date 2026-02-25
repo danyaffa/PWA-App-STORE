@@ -64,6 +64,26 @@ export async function trackInstall(appId) {
 }
 
 /**
+ * Track an app open (user clicks "Open App").
+ */
+export async function trackOpenApp(appId) {
+  if (isConfigured && db) {
+    try {
+      const { doc, updateDoc, increment } = await import('firebase/firestore')
+      await updateDoc(doc(db, 'analytics', appId), {
+        opens: increment(1),
+        lastOpened: new Date().toISOString(),
+      }).catch(() => {})
+    } catch { /* silent fail */ }
+  }
+
+  const data = getLocalAnalytics()
+  if (!data[appId]) data[appId] = { views: 0, installs: 0, opens: 0 }
+  data[appId].opens = (data[appId].opens || 0) + 1
+  saveLocalAnalytics(data)
+}
+
+/**
  * Track a search query.
  */
 export async function trackSearch(query) {
