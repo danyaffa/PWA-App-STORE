@@ -114,13 +114,13 @@
   margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
 }
 
-/* Key Functions grid (replaces iframe previews) */
+/* App screenshots / features grid */
 .featureGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  padding: 14px;
-  background: rgba(255,255,255,0.02);
+  padding: 14px 0;
+  margin-bottom: 28px;
 }
 
 .featureCard {
