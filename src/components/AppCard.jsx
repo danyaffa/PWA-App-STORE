@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useToast } from './Toast.jsx'
 import { useInstallState } from '../hooks/useInstallState.js'
+import { TrustBadge } from './TrustScore.jsx'
 import styles from './AppCard.module.css'
 
 const BADGE_MAP = {
@@ -38,36 +39,23 @@ export default function AppCard({ app, onFeature }) {
       {app.developer && <div className={styles.developer}>by {app.developer}</div>}
       <div className={styles.desc}>{app.desc}</div>
 
-      {/* Trust signals */}
-      <div className={styles.meta}>
-        <span className={`${styles.trust} ${styles[app.trust]}`}>
-          <span className={styles.dot} />
-          {app.trust === 'green' ? 'AI Verified Safe' : 'Under Review'}
-        </span>
+      {/* Universal Trust Score — the single visible trust signal */}
+      <div className={styles.trustRow}>
+        <TrustBadge score={app.safetyScore || 0} />
         <span className={styles.category}>{app.category}</span>
       </div>
 
       <div className={styles.stats}>
         <span className={styles.installs}>{app.installs} installs</span>
-        {app.averageRating && <span>{'★'.repeat(Math.round(app.averageRating))} {app.averageRating}</span>}
-        <span>Risk: <strong style={{ color: app.score < 30 ? 'var(--accent)' : 'var(--warn)' }}>{app.score}</strong></span>
+        {app.averageRating > 0 && <span>{'★'.repeat(Math.round(app.averageRating))} {app.averageRating}</span>}
       </div>
 
-      {/* Last scanned + developer trust */}
-      {app.safetyScore && (
-        <div className={styles.trustBar}>
-          <span>Safety: {app.safetyScore}/100</span>
-          {app.developerTrust && <span>Dev Trust: {app.developerTrust}</span>}
-        </div>
-      )}
-
-      {/* App details row */}
-      {(app.size || app.permissions) && (
-        <div className={styles.detailsRow}>
-          {app.size && <span className={styles.detailChip}>{app.size}</span>}
-          {app.permissions && app.permissions[0] && <span className={styles.detailChip}>{app.permissions[0]}</span>}
-        </div>
-      )}
+      {/* Verification chips */}
+      <div className={styles.verChips}>
+        {(app.safetyScore || 0) >= 85 && <span className={styles.verChip}>AI Scanned</span>}
+        {(app.safetyScore || 0) >= 80 && <span className={styles.verChip}>Privacy OK</span>}
+        {app.size && <span className={styles.detailChip}>{app.size}</span>}
+      </div>
 
       <div className={styles.actions}>
         <Link
@@ -80,7 +68,7 @@ export default function AppCard({ app, onFeature }) {
         ) : (
           <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
             install()
-            toast(`📲 ${app.name} installed successfully!`)
+            toast(`${app.name} installed successfully!`)
             if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
           }}>Install App</button>
         )}

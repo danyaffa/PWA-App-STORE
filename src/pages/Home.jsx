@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import AppCard from '../components/AppCard.jsx'
+import { APPS } from '../utils/data.js'
+import { getAIPicks, getLightweightApps, getPrivacyChampions } from '../lib/recommendations.js'
+import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import styles from './Home.module.css'
 
 const FEATURES = [
@@ -28,12 +32,19 @@ export default function Home() {
   const [s1, setS1] = useState('0')
   const [s2, setS2] = useState('0')
   const [s3, setS3] = useState('0')
+  const { canInstall, install: installPWA } = usePWAInstall()
 
   useEffect(() => {
     animateCount(1247, setS1, '+')
     animateCount(389,  setS2)
     animateCount(4200, setS3, '+')
   }, [])
+
+  // AI-driven discovery sections
+  const trending   = [...APPS].sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0)).slice(0, 4)
+  const aiPicks    = getAIPicks(APPS, 4)
+  const lightweight = getLightweightApps(APPS, 4)
+  const privacyApps = getPrivacyChampions(APPS, 4)
 
   return (
     <>
@@ -64,14 +75,79 @@ export default function Home() {
         </p>
 
         <div className={styles.actions}>
-          <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
+          <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing &rarr;</Link>
           <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
+          {canInstall && (
+            <button className="btn btn-ghost btn-lg" onClick={installPWA}>
+              Install SafeLaunch
+            </button>
+          )}
         </div>
 
         <div className={styles.stats}>
           <div className={styles.stat}><div className={`display ${styles.statNum}`}>{s1}</div><div className={styles.statLabel}>Apps Published</div></div>
           <div className={styles.stat}><div className={`display ${styles.statNum}`}>{s2}</div><div className={styles.statLabel}>Threats Blocked</div></div>
           <div className={styles.stat}><div className={`display ${styles.statNum}`}>{s3}</div><div className={styles.statLabel}>Developers</div></div>
+        </div>
+      </section>
+
+      {/* ── Discovery Engine — users see apps IMMEDIATELY ── */}
+      <section className={styles.discovery}>
+        <div className="section-label" style={{ textAlign: 'center' }}>Discover Apps</div>
+        <h2 className="section-title display" style={{ textAlign: 'center', marginBottom: 48 }}>
+          AI-Picked Safe Apps
+        </h2>
+
+        {/* AI Picks */}
+        <div className={styles.discSection}>
+          <div className={styles.discHeader}>
+            <h3 className={styles.discTitle}>AI Recommended</h3>
+            <Link to="/store" className={styles.discMore}>View all &rarr;</Link>
+          </div>
+          <div className={styles.discGrid}>
+            {aiPicks.map(a => <AppCard key={a.id} app={a} />)}
+          </div>
+        </div>
+
+        {/* Trending */}
+        <div className={styles.discSection}>
+          <div className={styles.discHeader}>
+            <h3 className={styles.discTitle}>Trending Today</h3>
+            <Link to="/store" className={styles.discMore}>View all &rarr;</Link>
+          </div>
+          <div className={styles.discGrid}>
+            {trending.map(a => <AppCard key={a.id} app={a} />)}
+          </div>
+        </div>
+
+        {/* Privacy Champions */}
+        {privacyApps.length >= 2 && (
+          <div className={styles.discSection}>
+            <div className={styles.discHeader}>
+              <h3 className={styles.discTitle}>Privacy Champions</h3>
+              <Link to="/store" className={styles.discMore}>View all &rarr;</Link>
+            </div>
+            <div className={styles.discGrid}>
+              {privacyApps.map(a => <AppCard key={a.id} app={a} />)}
+            </div>
+          </div>
+        )}
+
+        {/* Lightweight Apps */}
+        {lightweight.length >= 2 && (
+          <div className={styles.discSection}>
+            <div className={styles.discHeader}>
+              <h3 className={styles.discTitle}>Best Lightweight Apps</h3>
+              <Link to="/store" className={styles.discMore}>View all &rarr;</Link>
+            </div>
+            <div className={styles.discGrid}>
+              {lightweight.map(a => <AppCard key={a.id} app={a} />)}
+            </div>
+          </div>
+        )}
+
+        <div style={{ textAlign: 'center', marginTop: 40 }}>
+          <Link to="/store" className="btn btn-primary btn-lg">Browse All Apps &rarr;</Link>
         </div>
       </section>
 
@@ -100,6 +176,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust Score Explanation — Investor "aha" moment */}
+      <section className={styles.trustExplain}>
+        <div className="section-label" style={{ textAlign: 'center' }}>Universal Trust Score</div>
+        <h2 className="section-title display" style={{ textAlign: 'center', marginBottom: 16 }}>
+          Every App Gets a Trust Score
+        </h2>
+        <p className="section-sub" style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 48px' }}>
+          Our AI analyzes security, privacy, permissions, and developer reputation to generate a single Trust Score from 0 to 100. Users install without fear.
+        </p>
+        <div className={styles.trustGrid}>
+          <div className={styles.trustItem}>
+            <div className={styles.trustPercent}>30%</div>
+            <div className={styles.trustFactor}>Security Scan</div>
+            <div className={styles.trustDesc}>Static analysis, malware detection, CVE checks</div>
+          </div>
+          <div className={styles.trustItem}>
+            <div className={styles.trustPercent}>20%</div>
+            <div className={styles.trustFactor}>Permission Risk</div>
+            <div className={styles.trustDesc}>Camera, location, contacts, network access</div>
+          </div>
+          <div className={styles.trustItem}>
+            <div className={styles.trustPercent}>20%</div>
+            <div className={styles.trustFactor}>Privacy Behavior</div>
+            <div className={styles.trustDesc}>Trackers, data collection, third-party calls</div>
+          </div>
+          <div className={styles.trustItem}>
+            <div className={styles.trustPercent}>15%</div>
+            <div className={styles.trustFactor}>Performance</div>
+            <div className={styles.trustDesc}>Load time, size, offline capability</div>
+          </div>
+          <div className={styles.trustItem}>
+            <div className={styles.trustPercent}>15%</div>
+            <div className={styles.trustFactor}>Developer Trust</div>
+            <div className={styles.trustDesc}>History, violations, verification level</div>
+          </div>
+        </div>
+      </section>
+
       <div className={styles.features}>
         {FEATURES.map(f => (
           <div key={f.title} className={`card ${styles.featCard}`}>
@@ -115,7 +229,7 @@ export default function Home() {
         <h2 className={`display ${styles.ctaTitle}`}>Ready to Ship with Confidence?</h2>
         <p className={styles.ctaSub}>Join 4,200+ developers publishing PWAs people trust.</p>
         <div className={styles.ctaActions}>
-          <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
+          <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing &rarr;</Link>
           <Link to="/app-store" className="btn btn-ghost btn-lg">Install the App</Link>
         </div>
       </section>

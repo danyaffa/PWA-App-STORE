@@ -27,27 +27,28 @@
 .priceTag { font-size: 0.68rem; font-weight: 800; padding: 3px 10px; border-radius: 100px; background: linear-gradient(135deg, rgba(255,193,7,.18), rgba(255,152,0,.12)); color: #f5b800; border: 1px solid rgba(255,193,7,.35); white-space: nowrap; flex-shrink: 0; letter-spacing: 0.04em; text-transform: uppercase; }
 .developer { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
 .desc { font-size: 0.83rem; color: var(--muted); line-height: 1.5; margin-bottom: 16px; flex: 1; }
-.meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.trust { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; }
-.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.green .dot { background: var(--accent); }
-.green { color: var(--accent); }
-.yellow .dot { background: var(--warn); }
-.yellow { color: var(--warn); }
-.category { font-size: 0.72rem; color: var(--muted); background: var(--bg); padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); }
+
+/* Trust Row — Universal Trust Score badge + category */
+.trustRow {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; gap: 8px;
+}
+.category { font-size: 0.72rem; color: var(--muted); background: var(--bg); padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); flex-shrink: 0; }
+
 .stats { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; font-family: var(--font-mono); }
 
-.trustBar {
-  display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted);
-  padding: 6px 0; margin-bottom: 10px; border-top: 1px solid var(--border);
-  font-family: var(--font-mono);
+/* Verification chips */
+.verChips {
+  display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;
 }
-
-.detailsRow {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+.verChip {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 2px 8px; border-radius: 100px;
+  background: rgba(0,229,160,.06); color: var(--accent);
+  border: 1px solid rgba(0,229,160,.12);
 }
 .detailChip {
-  font-size: 0.68rem; color: var(--muted); padding: 2px 8px;
+  font-size: 0.65rem; color: var(--muted); padding: 2px 8px;
   border-radius: 100px; background: var(--bg); border: 1px solid var(--border);
   white-space: nowrap;
 }
