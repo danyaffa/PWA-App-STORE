@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
@@ -10,6 +10,7 @@ import TrustScore from '../components/TrustScore.jsx'
 import PermissionPanel from '../components/PermissionPanel.jsx'
 import PoweredBy from '../components/PoweredBy.jsx'
 import AppCard from '../components/AppCard.jsx'
+import AppPreview from '../components/AppPreview.jsx'
 import { APPS } from '../utils/data.js'
 import { useToast } from '../hooks/useToast.js'
 import { useInstallState } from '../hooks/useInstallState.js'
@@ -56,14 +57,16 @@ export default function AppDetail() {
   const [showDisclaimer, setShowDisclaimer] = useState(false)
   const [showReport, setShowReport] = useState(false)
 
-  const app = APPS.find(a => a.id === id) || APPS[0]
+  const userApps = (() => { try { return JSON.parse(localStorage.getItem('sl_published_apps') || '[]') } catch { return [] } })()
+  const allApps = [...APPS, ...userApps]
+  const app = allApps.find(a => a.id === id) || allApps[0]
   const { installed, install } = useInstallState(app.id)
 
   // Track page view
-  useState(() => { trackView(app.id) })
+  useEffect(() => { trackView(app.id) }, [app.id])
 
   // AI-powered similar apps
-  const similarApps = getSimilarApps(app, APPS, 4)
+  const similarApps = getSimilarApps(app, allApps, 4)
 
   function handleInstallClick() {
     setShowDisclaimer(true)
@@ -73,19 +76,19 @@ export default function AppDetail() {
     setShowDisclaimer(false)
     install()
     trackInstall(app.id)
-    toast(`${app.name} installed successfully!`)
+    toast(`${app.name} saved to your library.`)
 
-    // Try native PWA install prompt first, then open the app
+    // Try native PWA install prompt first, then open the app URL
     if (window.__pwaInstallPrompt) {
       window.__pwaInstallPrompt.prompt()
       window.__pwaInstallPrompt.userChoice.then(choice => {
         if (choice.outcome === 'accepted') {
-          toast(`${app.name} added to your home screen!`)
+          toast('Added to your home screen!')
         }
         window.__pwaInstallPrompt = null
       })
     } else if (app.url) {
-      // Open the app URL so user can install it as PWA from the browser
+      toast('Opening the app — use your browser menu to "Install / Add to Home Screen".')
       window.open(app.url, '_blank', 'noopener,noreferrer')
     }
   }
@@ -154,29 +157,10 @@ export default function AppDetail() {
               {app.longDesc || app.desc}
             </p>
 
-            {/* Live App Preview */}
-            {app.url && (
-              <div className={styles.livePreview}>
-                <div className={styles.previewHeader}>
-                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
-                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
-                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
-                  <span className={styles.previewUrl}>{app.url}</span>
-                  <a href={app.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenBtn}>Open in New Tab</a>
-                </div>
-                <iframe
-                  key={app.id}
-                  src={app.url}
-                  title={`${app.name} live preview`}
-                  className={styles.previewIframe}
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
-                <div className={styles.previewFallback}>
-                  Some apps may not load in preview. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab instead</a>
-                </div>
-              </div>
-            )}
+            {/* Safe App Preview (no iframe — avoids "refused to connect" errors) */}
+            <div className={styles.livePreview}>
+              <AppPreview app={app} />
+            </div>
 
             {/* Tabs */}
             <div className={styles.tabs}>

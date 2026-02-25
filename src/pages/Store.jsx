@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
+import AppPreview from '../components/AppPreview.jsx'
 import SEO from '../components/SEO.jsx'
 import { trackSearch } from '../lib/analytics.js'
 import { APPS, CATEGORIES } from '../utils/data.js'
@@ -18,9 +19,12 @@ const SORT_OPTIONS = [
   { value: 'name',      label: 'A → Z' },
 ]
 
-function parseInstalls(str) {
-  const n = parseFloat(str)
-  if (str.includes('k')) return n * 1000
+function parseInstalls(str = '') {
+  const s = String(str).toLowerCase()
+  const n = parseFloat(s)
+  if (Number.isNaN(n)) return 0
+  if (s.includes('m')) return n * 1_000_000
+  if (s.includes('k')) return n * 1_000
   return n
 }
 
@@ -80,10 +84,17 @@ export default function Store() {
   // Featured app: user-selected or default to top trending
   const FEATURED = featuredApp || TRENDING[0]
 
-  // Sync search from URL query param (e.g. /store?q=focus)
+  // Sync search + preview from URL query params
   useEffect(() => {
     const q = searchParams.get('q')
     if (q && q !== search) setSearch(q)
+
+    const previewId = searchParams.get('preview')
+    if (previewId) {
+      const found = allApps.find(a => a.id === previewId)
+      if (found) setFeaturedApp(found)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
   const filtered = allApps.filter(a =>
@@ -95,11 +106,23 @@ export default function Store() {
   function handleSearch(e) {
     const q = e.target.value
     setSearch(q)
+
+    const next = new URLSearchParams(searchParams)
+    if (q) next.set('q', q)
+    else next.delete('q')
+    setSearchParams(next, { replace: true })
+
     if (q.length >= 3) trackSearch(q)
   }
 
   function handleFeature(app) {
     setFeaturedApp(app)
+
+    // Persist preview selection in URL so refresh doesn't reset to default
+    const next = new URLSearchParams(searchParams)
+    next.set('preview', app.id)
+    setSearchParams(next, { replace: true })
+
     // Scroll featured box into view
     if (featuredRef.current) {
       featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -132,7 +155,12 @@ export default function Store() {
               onChange={handleSearch}
             />
             {search && (
-              <button className={styles.heroSearchClear} onClick={() => setSearch('')} aria-label="Clear search">✕</button>
+              <button className={styles.heroSearchClear} onClick={() => {
+                setSearch('')
+                const next = new URLSearchParams(searchParams)
+                next.delete('q')
+                setSearchParams(next, { replace: true })
+              }} aria-label="Clear search">✕</button>
             )}
           </div>
           <div className={styles.heroFilters}>
@@ -166,27 +194,9 @@ export default function Store() {
                 <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View Details</Link>
               </div>
             </div>
-            {FEATURED.url && (
-              <div className={styles.featuredPreview}>
-                <div className={styles.previewBar}>
-                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
-                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
-                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
-                  <span className={styles.previewUrlText}>{FEATURED.url}</span>
-                </div>
-                <iframe
-                  key={FEATURED.id}
-                  src={FEATURED.url}
-                  title={`${FEATURED.name} preview`}
-                  className={styles.featuredIframe}
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
-                <div className={styles.previewFallback}>
-                  If the app doesn't load above, <a href={FEATURED.url} target="_blank" rel="noopener noreferrer">open {FEATURED.name} in a new tab</a>
-                </div>
-              </div>
-            )}
+            <div className={styles.featuredPreview}>
+              <AppPreview app={FEATURED} />
+            </div>
           </div>
         )}
 
