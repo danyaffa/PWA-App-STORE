@@ -119,7 +119,7 @@ export default function Management() {
                         <button className="btn btn-ghost btn-sm" onClick={() => toggleBlock(app)}>
                           {isBlocked ? 'Unblock' : 'Block'}
                         </button>
-                        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', borderColor: 'rgba(255,77,109,.3)' }} onClick={() => beginDelete(app)}>
+                        <button className="btn btn-danger btn-sm" onClick={() => beginDelete(app)}>
                           Delete
                         </button>
                       </div>
@@ -153,7 +153,7 @@ export default function Management() {
             <div className={styles.suggest}>
               <p>• Add rules for auto-blocking (malware flags, phishing domains, policy violations).</p>
               <p>• Require verified developer identity before publishing paid apps.</p>
-              <p>• Add an "Appeal Block" workflow for developers.</p>
+              <p>• Add an “Appeal Block” workflow for developers.</p>
             </div>
           </section>
         </div>
@@ -179,7 +179,7 @@ export default function Management() {
 
             <div className={styles.modalBtns}>
               <button className="btn btn-ghost" onClick={cancelDelete}>Cancel</button>
-              <button className="btn btn-primary" style={{ background: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={confirmDelete}>Confirm Delete</button>
+              <button className="btn btn-danger" onClick={confirmDelete}>Confirm Delete</button>
             </div>
 
             <div className={styles.modalFoot}>
