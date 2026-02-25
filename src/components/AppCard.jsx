@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { TrustBadge } from './TrustScore.jsx'
 import styles from './AppCard.module.css'
 
@@ -9,7 +10,7 @@ const BADGE_MAP = {
   rising:    { icon: '📈', label: 'Rising' },
 }
 
-export default function AppCard({ app, onFeature }) {
+export default function AppCard({ app }) {
   const badges = (app.badges || []).slice(0, 2)
 
   return (
@@ -51,9 +52,7 @@ export default function AppCard({ app, onFeature }) {
       </div>
 
       <div className={styles.actions}>
-        <button className={`btn btn-primary btn-sm ${styles.installBtn}`} onClick={() => {
-          if (onFeature) onFeature(app)
-        }}>View App</button>
+        <Link to={`/app/${app.id}`} className={`btn btn-primary btn-sm ${styles.installBtn}`}>View App</Link>
       </div>
     </div>
   )

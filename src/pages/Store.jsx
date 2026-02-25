@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
@@ -53,9 +53,7 @@ export default function Store() {
   const [search, setSearch] = useState(searchParams.get('q') || '')
   const [sort, setSort]     = useState('ranking')
   const [userApps, setUserApps] = useState(getPublishedApps)
-  const [featuredApp, setFeaturedApp] = useState(null)
   const { toast, ToastContainer } = useToast()
-  const featuredRef = useRef(null)
 
   // Refresh user-published apps when tab becomes visible (e.g. after publishing)
   useEffect(() => {
@@ -81,19 +79,13 @@ export default function Store() {
   const VERIFIED    = allApps.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
   const RISING_FAST = [...allApps].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
 
-  // Featured app: user-selected or default to top trending
-  const FEATURED = featuredApp || TRENDING[0]
+  // Featured app: always the top trending app
+  const FEATURED = TRENDING[0]
 
-  // Sync search + preview from URL query params
+  // Sync search from URL query param (e.g. /store?q=focus)
   useEffect(() => {
     const q = searchParams.get('q')
     if (q && q !== search) setSearch(q)
-
-    const previewId = searchParams.get('preview')
-    if (previewId) {
-      const found = allApps.find(a => a.id === previewId)
-      if (found) setFeaturedApp(found)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
@@ -113,20 +105,6 @@ export default function Store() {
     setSearchParams(next, { replace: true })
 
     if (q.length >= 3) trackSearch(q)
-  }
-
-  function handleFeature(app) {
-    setFeaturedApp(app)
-
-    // Persist preview selection in URL so refresh doesn't reset to default
-    const next = new URLSearchParams(searchParams)
-    next.set('preview', app.id)
-    setSearchParams(next, { replace: true })
-
-    // Scroll featured box into view
-    if (featuredRef.current) {
-      featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
   }
 
   const showSections = !search && filter === 'All'
@@ -174,13 +152,13 @@ export default function Store() {
           </div>
         </div>
 
-        {/* App Preview Box — updates when you click View App on any card */}
+        {/* Featured App spotlight */}
         {FEATURED && (
-          <div ref={featuredRef} className={`${styles.featured} ${featuredApp ? styles.featuredActive : ''}`}>
+          <div className={styles.featured}>
             <div className={styles.featuredTop}>
               <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
               <div className={styles.featuredInfo}>
-                <div className={styles.featuredLabel}>{featuredApp ? 'App Preview' : 'Featured App'}</div>
+                <div className={styles.featuredLabel}>Featured App</div>
                 <div className={styles.featuredName}>{FEATURED.name}</div>
                 <div className={styles.featuredDesc}>
                   {FEATURED.desc}
@@ -206,35 +184,35 @@ export default function Store() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Trending Now</h2>
               <div className={styles.scrollRow}>
-                {TRENDING.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
+                {TRENDING.map(a => <AppCard key={a.id} app={a} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Top Rated</h2>
               <div className={styles.scrollRow}>
-                {TOP_RATED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
+                {TOP_RATED.map(a => <AppCard key={a.id} app={a} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>New Apps</h2>
               <div className={styles.scrollRow}>
-                {NEW_APPS.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
+                {NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Verified Safe</h2>
               <div className={styles.scrollRow}>
-                {VERIFIED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
+                {VERIFIED.map(a => <AppCard key={a.id} app={a} />)}
               </div>
             </section>
 
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Rising Fast</h2>
               <div className={styles.scrollRow}>
-                {RISING_FAST.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
+                {RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}
               </div>
             </section>
           </>
@@ -250,7 +228,7 @@ export default function Store() {
 
         {visible.length === 0
           ? <div className={styles.empty}>No apps found. Try a different filter or search term.</div>
-          : <div className={styles.grid}>{visible.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}</div>
+          : <div className={styles.grid}>{visible.map(a => <AppCard key={a.id} app={a} />)}</div>
         }
 
         {/* Stats bar */}
