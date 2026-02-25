@@ -170,23 +170,17 @@ export default function Store() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                {FEATURED.url && (
-                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Open App</a>
-                )}
-                <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View Details</Link>
+                <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View App</Link>
               </div>
             </div>
 
-            {/* App preview: screenshots + open link (no iframe — most sites block them) */}
+            {/* App preview: screenshots */}
             <div className={styles.featuredPreview}>
               <div className={styles.previewBar}>
                 <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
                 <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
                 <span className={styles.previewDot} style={{ background: '#27c93f' }} />
                 <span className={styles.previewUrlText}>{FEATURED.url || FEATURED.name}</span>
-                {FEATURED.url && (
-                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenLink}>Open App &rarr;</a>
-                )}
               </div>
               <div className={styles.previewBody}>
                 {Array.isArray(FEATURED.screenshots) && FEATURED.screenshots.length > 0 ? (
@@ -204,11 +198,9 @@ export default function Store() {
                     <div>{FEATURED.name}</div>
                   </div>
                 )}
-                {FEATURED.url && (
-                  <a href={FEATURED.url} target="_blank" rel="noopener noreferrer" className={styles.openAppBtn}>
-                    Open {FEATURED.name}
-                  </a>
-                )}
+                <Link to={`/app/${FEATURED.id}`} className={styles.openAppBtn}>
+                  View App
+                </Link>
               </div>
             </div>
           </div>

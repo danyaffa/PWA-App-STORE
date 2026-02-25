@@ -15,6 +15,7 @@ import { useToast } from '../hooks/useToast.js'
 import { useInstallState } from '../hooks/useInstallState.js'
 import { trackView, trackInstall } from '../lib/analytics.js'
 import { getSimilarApps } from '../lib/recommendations.js'
+import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import styles from './AppDetail.module.css'
 
 const TABS = ['Overview', 'Safety Report', 'Reviews', 'Versions']
@@ -60,6 +61,7 @@ export default function AppDetail() {
   const allApps = [...APPS, ...userApps]
   const app = allApps.find(a => a.id === id) || allApps[0]
   const { installed, install } = useInstallState(app.id)
+  const { canInstall: canPWAInstall, install: triggerPWAInstall } = usePWAInstall()
 
   // Track page view
   useEffect(() => { trackView(app.id) }, [app.id])
@@ -71,23 +73,36 @@ export default function AppDetail() {
     setShowDisclaimer(true)
   }
 
-  function handleInstallAccepted() {
+  async function handleInstallAccepted() {
     setShowDisclaimer(false)
     install()
     trackInstall(app.id)
     toast(`${app.name} saved to your library.`)
 
-    // Try native PWA install prompt first, then open the app URL
-    if (window.__pwaInstallPrompt) {
-      window.__pwaInstallPrompt.prompt()
-      window.__pwaInstallPrompt.userChoice.then(choice => {
-        if (choice.outcome === 'accepted') {
-          toast('Added to your home screen!')
-        }
-        window.__pwaInstallPrompt = null
-      })
+    // Try native PWA install prompt first
+    if (canPWAInstall) {
+      const accepted = await triggerPWAInstall()
+      if (accepted) {
+        toast('Added to your home screen!')
+        return
+      }
+    }
+
+    // Detect iOS Safari — show manual "Add to Home Screen" guidance
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+    const isAndroid = /Android/.test(navigator.userAgent)
+
+    if (isIOS) {
+      toast('Tap the Share button in Safari, then "Add to Home Screen" to install this app.')
+    } else if (isAndroid) {
+      // On Android Chrome, if no beforeinstallprompt fired, guide to menu
+      if (app.url) {
+        toast('Tap the browser menu (⋮) and select "Add to Home Screen" or "Install App".')
+        window.open(app.url, '_blank', 'noopener,noreferrer')
+      }
     } else if (app.url) {
-      toast('Opening the app — use your browser menu to "Install / Add to Home Screen".')
+      // Desktop: open the app and guide to install via browser
+      toast('Use your browser menu to "Install" this app, or bookmark it for quick access.')
       window.open(app.url, '_blank', 'noopener,noreferrer')
     }
   }
@@ -156,46 +171,19 @@ export default function AppDetail() {
               {app.longDesc || app.desc}
             </p>
 
-            {/* Key Functions (replaces iframe preview) */}
-            {app.url && (
-              <div className={styles.livePreview}>
-                <div className={styles.previewHeader}>
-                  <span className={styles.previewDot} style={{ background: '#ff5f56' }} />
-                  <span className={styles.previewDot} style={{ background: '#ffbd2e' }} />
-                  <span className={styles.previewDot} style={{ background: '#27c93f' }} />
-                  <span className={styles.previewUrl}>{app.url}</span>
-                  <a href={app.url} target="_blank" rel="noopener noreferrer" className={styles.previewOpenBtn}>Open in New Tab</a>
-                </div>
-
-                {/* Key Functions tiles */}
-                <div className={styles.featureGrid}>
-                  {((app.screenshots || []).length > 0 ? app.screenshots : [
-                    { title: 'Open App', caption: 'View the app in a new tab', color: 'rgba(255,255,255,0.06)' }
-                  ]).map((f, idx) => (
-                    <div
-                      key={idx}
-                      className={styles.featureCard}
-                      style={{ background: f.color ? `${f.color}18` : 'rgba(255,255,255,0.04)' }}
-                    >
-                      <div className={styles.featureTitle}>{f.title || `Feature ${idx + 1}`}</div>
-                      <div className={styles.featureCaption}>{f.caption || ''}</div>
-                      <div className={styles.featureActions}>
-                        <a
-                          className={styles.featureOpen}
-                          href={f.link || app.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Open
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className={styles.previewFallback}>
-                  Live embedding is disabled for security and compatibility. <a href={app.url} target="_blank" rel="noopener noreferrer">Open {app.name} in a new tab</a>.
-                </div>
+            {/* App screenshots */}
+            {Array.isArray(app.screenshots) && app.screenshots.length > 0 && (
+              <div className={styles.featureGrid}>
+                {app.screenshots.map((f, idx) => (
+                  <div
+                    key={idx}
+                    className={styles.featureCard}
+                    style={{ background: f.color ? `${f.color}18` : 'rgba(255,255,255,0.04)' }}
+                  >
+                    <div className={styles.featureTitle}>{f.title || `Feature ${idx + 1}`}</div>
+                    <div className={styles.featureCaption}>{f.caption || ''}</div>
+                  </div>
+                ))}
               </div>
             )}
 
