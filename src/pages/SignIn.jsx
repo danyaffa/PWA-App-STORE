@@ -47,7 +47,7 @@ export default function SignIn() {
   return (
     <>
       <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://pwa-app-store.com/signin" />
-      <div className={styles.page}>
+      <div className={styles.wrap}>
         <div className={styles.card}>
           <div className={styles.logo}>Safe<span>Launch</span></div>
 
@@ -67,12 +67,12 @@ export default function SignIn() {
                 <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
               </div>
 
-              {error && <div className={styles.errorBox}>{error}</div>}
+              {error && <div className={styles.error}>{error}</div>}
 
               <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Sign In →</button>
 
-              <div className={styles.forgot}>
-                <Link className={styles.forgotBtn} to="/forgot">Forgot password?</Link>
+              <div className={styles.rowBetween}>
+                <Link className={styles.smallLink} to="/forgot">Forgot password?</Link>
               </div>
 
               <div className={styles.divider}><span>or continue with</span></div>
@@ -107,11 +107,11 @@ export default function SignIn() {
                 <input className="input" placeholder="Enter promo code for free access" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
               </div>
 
-              {error && <div className={styles.errorBox}>{error}</div>}
+              {error && <div className={styles.error}>{error}</div>}
 
               <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Create Account →</button>
 
-              <div className={styles.terms}>
+              <div className={styles.legal}>
                 By creating an account you agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
               </div>
 
