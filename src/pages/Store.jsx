@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
@@ -19,132 +20,91 @@ const SORT_OPTIONS = [
 
 function parseInstalls(str) {
   const n = parseFloat(str)
-  if (String(str).toLowerCase().includes('k')) return n * 1000
-  if (String(str).toLowerCase().includes('m')) return n * 1_000_000
-  return n
-}
-
-function sortApps(apps, sortBy) {
-  const sorted = [...apps]
-  switch (sortBy) {
-    case 'ranking':   return sorted.sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0))
-    case 'popular':   return sorted.sort((a, b) => parseInstalls(b.installs) - parseInstalls(a.installs))
-    case 'newest':    return sorted.sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
-    case 'safest':    return sorted.sort((a, b) => (a.safetyScore || a.score || 0) - (b.safetyScore || b.score || 0))
-    case 'top_rated': return sorted.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-    case 'name':      return sorted.sort((a, b) => a.name.localeCompare(b.name))
-    default:          return sorted
-  }
-}
-
-function getPublishedApps() {
-  try {
-    return JSON.parse(localStorage.getItem('sl_published_apps') || '[]')
-  } catch { return [] }
+  if (String(str).toLowerCase().includes('m')) return Math.round(n * 1_000_000)
+  if (String(str).toLowerCase().includes('k')) return Math.round(n * 1_000)
+  return Number.isFinite(n) ? n : 0
 }
 
 export default function Store() {
-  const [filter, setFilter] = useState('All')
-  const [search, setSearch] = useState('')
-  const [sort, setSort]     = useState('ranking')
-  const [userApps, setUserApps] = useState(getPublishedApps)
-  const { ToastContainer } = useToast()
+  const { toast, ToastContainer } = useToast()
+  const [q, setQ] = useState('')
+  const [cat, setCat] = useState('All')
+  const [sort, setSort] = useState('ranking')
+  const [showSections, setShowSections] = useState(true)
 
   useEffect(() => {
-    function onFocus() { setUserApps(getPublishedApps()) }
-    window.addEventListener('focus', onFocus)
-    return () => window.removeEventListener('focus', onFocus)
+    const params = new URLSearchParams(window.location.search)
+    const pq = params.get('q') || ''
+    if (pq) {
+      setQ(pq)
+      setShowSections(false)
+      trackSearch(pq)
+    }
   }, [])
 
-  useEffect(() => {
-    function onStorage(e) { if (e.key === 'sl_published_apps') setUserApps(getPublishedApps()) }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
-  }, [])
+  const BASE = [...APPS]
 
-  const allApps = [...APPS, ...userApps]
+  const filtered = BASE.filter(a => {
+    const matchesQ = !q.trim() || `${a.name} ${a.desc} ${a.category}`.toLowerCase().includes(q.toLowerCase())
+    const matchesCat = cat === 'All' || a.category === cat
+    return matchesQ && matchesCat
+  })
 
-  const TRENDING    = [...allApps].sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0)).slice(0, 4)
-  const TOP_RATED   = [...allApps].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4)
-  const NEW_APPS    = [...allApps].sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
-  const VERIFIED    = allApps.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
-  const RISING_FAST = [...allApps].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
+  const sorted = filtered.sort((a, b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name)
+    if (sort === 'popular') return parseInstalls(b.installs) - parseInstalls(a.installs)
+    if (sort === 'newest') return (b.publishedAt || '').localeCompare(a.publishedAt || '')
+    if (sort === 'safest') return (b.safetyScore || 0) - (a.safetyScore || 0)
+    if (sort === 'top_rated') return (b.averageRating || 0) - (a.averageRating || 0)
+    // ranking
+    return (b.rankingScore || 0) - (a.rankingScore || 0)
+  })
 
-  const filtered = allApps.filter(a =>
-    (filter === 'All' || a.category === filter) &&
-    (!search || a.name.toLowerCase().includes(search.toLowerCase()) || a.desc.toLowerCase().includes(search.toLowerCase()))
-  )
-  const visible = sortApps(filtered, sort)
+  const visible = sorted.slice(0, 24)
 
-  function handleSearch(e) {
-    const q = e.target.value
-    setSearch(q)
-    if (q.length >= 3) trackSearch(q)
-  }
-
-  const showSections = !search && filter === 'All'
+  const TRENDING = BASE.filter(a => (a.badges || []).includes('trending')).slice(0, 6)
+  const NEW_APPS = BASE.filter(a => (a.badges || []).includes('new')).slice(0, 6)
+  const VERIFIED = BASE.filter(a => (a.badges || []).includes('verified')).slice(0, 6)
+  const RISING_FAST = BASE.filter(a => (a.badges || []).includes('rising')).slice(0, 6)
 
   return (
     <>
-      <SEO
-        title="Browse Apps — SafeLaunch PWA App Store"
-        description="Browse and install AI-verified progressive web apps. Every app scanned for safety."
-        canonical="https://pwa-app-store.com/store"
-      />
+      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical="https://pwa-app-store.com/store" />
       <Nav />
       <div className="page-wrap">
-        <div className="section-label">The SafeLaunch Store</div>
-        <h1 className="section-title display">AI-Verified Apps.<br />Every Single One.</h1>
-
-        <div className={styles.heroSearch}>
-          <div className={styles.heroSearchInner}>
-            <span className={styles.heroSearchIcon}>🔍</span>
-            <input
-              className={styles.heroSearchInput}
-              type="search"
-              placeholder="Search by app name, category, or keyword..."
-              value={search}
-              onChange={handleSearch}
-            />
-            {search && (
-              <button
-                className={styles.heroSearchClear}
-                onClick={() => setSearch('')}
-                aria-label="Clear search"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          <div className={styles.heroFilters}>
-            {CATEGORIES.map(c => (
-              <button
-                key={c}
-                className={`${styles.filterBtn} ${filter === c ? styles.active : ''}`}
-                onClick={() => setFilter(c)}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+        <div className="section-label">Store</div>
+        <h1 className="section-title display">Safe Apps. Fast Install.</h1>
+        <p className="section-sub">Find safe, verified apps with transparent trust scores.</p>
+        <div style={{marginTop:10}}>
+          <Link to="/management-login" className="btn btn-ghost btn-sm">Management Login</Link>
         </div>
 
-        <div className={styles.sortRow}>
-          <div className={styles.sortLabel}>Sort</div>
-          <select className={styles.sortSelect} value={sort} onChange={e => setSort(e.target.value)}>
+        <div className={styles.filters}>
+          <input
+            className={styles.search}
+            placeholder="Search apps..."
+            value={q}
+            onChange={e => { setQ(e.target.value); setShowSections(false) }}
+            onKeyDown={e => { if (e.key === 'Enter') { toast('Searching…'); trackSearch(q) } }}
+          />
+
+          <select className={styles.select} value={cat} onChange={e => { setCat(e.target.value); setShowSections(false) }}>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+
+          <select className={styles.select} value={sort} onChange={e => setSort(e.target.value)}>
             {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
-          <div className={styles.sortCount}>{visible.length} apps</div>
+
+          <button className="btn btn-ghost" onClick={() => { setQ(''); setCat('All'); setSort('ranking'); setShowSections(true); toast('Reset.') }}>
+            Reset
+          </button>
         </div>
 
         {showSections && (
           <>
-            <h2 className={styles.sectionTitle}>Trending Now</h2>
+            <h2 className={styles.sectionTitle}>Trending</h2>
             <div className={styles.grid}>{TRENDING.map(a => <AppCard key={a.id} app={a} />)}</div>
-
-            <h2 className={styles.sectionTitle}>Top Rated</h2>
-            <div className={styles.grid}>{TOP_RATED.map(a => <AppCard key={a.id} app={a} />)}</div>
 
             <h2 className={styles.sectionTitle}>New & Updated</h2>
             <div className={styles.grid}>{NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}</div>

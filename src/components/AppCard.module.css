@@ -1,3 +1,6 @@
+.cardLink{display:block;text-decoration:none;color:inherit}
+.cardLink:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:14px}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -57,6 +60,3 @@
   color: var(--muted); border: 1px solid var(--border);
   font-family: var(--font-mono);
 }
-
-.actions { display: block; }
-.installBtn { width: 100%; justify-content: center; display: flex; }

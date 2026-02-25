@@ -20,10 +20,10 @@ export default function Footer() {
           </div>
           <div className={styles.col}>
             <h4>Resources</h4>
-            <Link to="/tutorial">Build with Claude Code</Link>
+            <Link to="/tutorial">PWA Tutorial (with AI)</Link>
             <Link to="/app-store">Install Guide</Link>
             <Link to="/how-safety-works">How Safety Works</Link>
-            <Link to="/support">Help Center</Link>
+            <Link to="/support">AI Support</Link>
           </div>
           <div className={styles.col}>
             <h4>Legal</h4>
@@ -31,7 +31,7 @@ export default function Footer() {
             <Link to="/terms">Terms of Service</Link>
             <Link to="/developer-agreement">Developer Agreement</Link>
             <Link to="/dmca">DMCA / Content Removal</Link>
-            <Link to="/support">Contact</Link>
+            <Link to="/management-login">Management Login</Link>
           </div>
         </div>
       </div>
