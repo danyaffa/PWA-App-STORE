@@ -265,6 +265,7 @@
   background: rgba(255,255,255,.02);
   cursor:pointer;
   transition: border-color .2s, background .2s, transform .2s;
+  color: var(--text);
 }
 .pricingOption:hover{ background: rgba(255,255,255,.04); transform: translateY(-1px); }
 .pricingActive{
@@ -272,7 +273,7 @@
   background: rgba(34,197,94,.08);
 }
 .pricingIcon{ font-size:1.25rem; display:block; }
-.pricingLabel{ font-weight:900; display:block; margin-top:6px; }
+.pricingLabel{ font-weight:900; display:block; margin-top:6px; color: #fbbf24; }
 .pricingDesc{ color: var(--muted); font-size:.86rem; display:block; margin-top:4px; }
 
 .priceInputRow{
