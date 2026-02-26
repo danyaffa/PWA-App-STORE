@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Nav from '../components/Nav.jsx'
+import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import styles from './ManagementLogin.module.css'
 import { useToast } from '../hooks/useToast.js'
@@ -96,45 +98,49 @@ export default function ManagementLogin() {
   return (
     <>
       <SEO title="Management Login — SafeLaunch" description="Secure admin access with verification code." canonical="https://pwa-app-store.com/management-login" />
-      <div className={styles.wrap}>
-        <div className={styles.card}>
-          <h1 className={styles.title}>Management Login</h1>
-          <div className={styles.sub}>Secure admin access. A verification code will be sent to your email.</div>
+      <Nav />
+      <div className="page-wrap">
+        <div className={styles.wrap}>
+          <div className={styles.card}>
+            <h1 className={styles.title}>Management Login</h1>
+            <div className={styles.sub}>Secure admin access. A verification code will be sent to your email.</div>
 
-          {codeSent && (
-            <div className={styles.codeBanner}>
-              Verification code sent to <b>{email}</b>. Check your inbox.
-            </div>
-          )}
-
-          <form onSubmit={confirm} className={styles.form}>
-            <div className={styles.group}>
-              <label className={styles.label}>Management Email</label>
-              <input className={styles.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@yourcompany.com" />
-            </div>
-
-            <div className={styles.groupRow}>
-              <div className={styles.group} style={{ flex: 1 }}>
-                <label className={styles.label}>Verification Code</label>
-                <input className={styles.input} value={code} onChange={e => setCode(e.target.value)} placeholder="Enter the 6-digit code" inputMode="numeric" />
+            {codeSent && (
+              <div className={styles.codeBanner}>
+                Verification code sent to <b>{email}</b>. Check your inbox.
               </div>
-              <button type="button" className={styles.sendBtn} onClick={sendCode} disabled={sending}>
-                {sending ? 'Sending...' : (codeSent ? 'Resend' : 'Send Code')}
+            )}
+
+            <form onSubmit={confirm} className={styles.form}>
+              <div className={styles.group}>
+                <label className={styles.label}>Management Email</label>
+                <input className={styles.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@yourcompany.com" />
+              </div>
+
+              <div className={styles.groupRow}>
+                <div className={styles.group} style={{ flex: 1 }}>
+                  <label className={styles.label}>Verification Code</label>
+                  <input className={styles.input} value={code} onChange={e => setCode(e.target.value)} placeholder="Enter the 6-digit code" inputMode="numeric" />
+                </div>
+                <button type="button" className={styles.sendBtn} onClick={sendCode} disabled={sending}>
+                  {sending ? 'Sending...' : (codeSent ? 'Resend' : 'Send Code')}
+                </button>
+              </div>
+
+              {error && <div className={styles.error}>{error}</div>}
+
+              <button className={styles.confirmBtn} disabled={verifying}>
+                {verifying ? 'Verifying...' : 'Confirm'}
               </button>
-            </div>
 
-            {error && <div className={styles.error}>{error}</div>}
-
-            <button className={styles.confirmBtn} disabled={verifying}>
-              {verifying ? 'Verifying...' : 'Confirm'}
-            </button>
-
-            <div className={styles.links}>
-              <Link to="/store">Return to Store</Link>
-            </div>
-          </form>
+              <div className={styles.links}>
+                <Link to="/store">Return to Store</Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
+      <Footer />
       <ToastContainer />
     </>
   )
