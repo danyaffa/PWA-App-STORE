@@ -21,7 +21,11 @@ export default function SignIn() {
     setError('')
     if (!email || !password) return setError('Please enter email and password.')
     localStorage.setItem('sl_auth', JSON.stringify({ email, company: company || 'Publisher', ts: Date.now() }))
-    toast('✅ Signed in.')
+    if (promoCode && promoCode.trim()) {
+      localStorage.setItem('sl_promo_code', promoCode.trim())
+      localStorage.setItem('sl_billing_status', 'active')
+    }
+    toast('Signed in.')
     setTimeout(() => nav('/dashboard'), 350)
   }
 
@@ -47,7 +51,7 @@ export default function SignIn() {
   return (
     <>
       <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://pwa-app-store.com/signin" />
-      <div className={styles.wrap}>
+      <div className={styles.page}>
         <div className={styles.card}>
           <div className={styles.logo}>Safe<span>Launch</span></div>
 
@@ -66,13 +70,17 @@ export default function SignIn() {
                 <label>PASSWORD</label>
                 <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
               </div>
+              <div className="form-group">
+                <label>PROMO CODE (OPTIONAL)</label>
+                <input className="input" placeholder="Enter promo code" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
+              </div>
 
-              {error && <div className={styles.error}>{error}</div>}
+              {error && <div className={styles.errorBox}>{error}</div>}
 
               <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Sign In →</button>
 
-              <div className={styles.rowBetween}>
-                <Link className={styles.smallLink} to="/forgot">Forgot password?</Link>
+              <div className={styles.forgot}>
+                <Link className={styles.forgotBtn} to="/forgot">Forgot password?</Link>
               </div>
 
               <div className={styles.divider}><span>or continue with</span></div>
@@ -103,15 +111,15 @@ export default function SignIn() {
               </div>
 
               <div className="form-group">
-                <label>Promo Code (optional)</label>
-                <input className="input" placeholder="Enter promo code for free access" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
+                <label>PROMO CODE (OPTIONAL)</label>
+                <input className="input" placeholder="Enter promo code" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
               </div>
 
-              {error && <div className={styles.error}>{error}</div>}
+              {error && <div className={styles.errorBox}>{error}</div>}
 
               <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Create Account →</button>
 
-              <div className={styles.legal}>
+              <div className={styles.terms}>
                 By creating an account you agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
               </div>
 

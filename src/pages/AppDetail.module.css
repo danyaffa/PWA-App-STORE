@@ -84,9 +84,21 @@
   pointer-events: none;
 }
 
-.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
-.tab { padding: 12px 22px; cursor: pointer; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); border-bottom: 2px solid transparent; transition: all .2s; }
-.tab:hover { color: var(--text); }
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 28px; gap: 0; }
+.tab {
+  padding: 12px 22px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-body);
+  transition: all .2s;
+}
+.tab:hover { color: var(--text); background: rgba(255,255,255,.03); }
 .activeTab { color: var(--accent); border-bottom-color: var(--accent); }
 .tabBody { padding-bottom: 40px; }
 

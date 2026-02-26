@@ -55,11 +55,49 @@ export default function Publish() {
   const navigate = useNavigate()
   const logRef = useRef()
 
+  const DRAFT_KEY = 'sl_publish_draft'
+
+  function saveDraft() {
+    const draft = {
+      appName, category, shortDesc, fullDesc, developerName,
+      websiteUrl, privacyUrl, contactEmail, appVersion,
+      whatsNew, iconUrl, pricingType, priceAmount, selfCert,
+      tab, fileName, ghPreview, savedAt: new Date().toISOString(),
+    }
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    toast('Draft saved.')
+  }
+
+  function loadDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (!raw) return
+      const d = JSON.parse(raw)
+      if (d.appName) setAppName(d.appName)
+      if (d.category) setCategory(d.category)
+      if (d.shortDesc) setShortDesc(d.shortDesc)
+      if (d.fullDesc) setFullDesc(d.fullDesc)
+      if (d.developerName) setDeveloperName(d.developerName)
+      if (d.websiteUrl) setWebsiteUrl(d.websiteUrl)
+      if (d.privacyUrl) setPrivacyUrl(d.privacyUrl)
+      if (d.contactEmail) setContactEmail(d.contactEmail)
+      if (d.appVersion) setAppVersion(d.appVersion)
+      if (d.whatsNew) setWhatsNew(d.whatsNew)
+      if (d.iconUrl) setIconUrl(d.iconUrl)
+      if (d.pricingType) setPricingType(d.pricingType)
+      if (d.priceAmount) setPriceAmount(d.priceAmount)
+      if (d.selfCert) setSelfCert(d.selfCert)
+      if (d.fileName) { setFileName(d.fileName); setStep(2) }
+      if (d.ghPreview) setGhPreview(d.ghPreview)
+    } catch { /* ignore corrupt data */ }
+  }
+
   // Agreement gate: redirect to /developer-agreement if not accepted
   useEffect(() => {
     if (!hasDevAgreement()) {
       navigate('/developer-agreement', { replace: true })
     }
+    loadDraft()
   }, [])
 
   function handleFile(e) {
@@ -122,11 +160,13 @@ export default function Publish() {
 
   function runStep(i) {
     setScanIdx(i)
-    const step = SCAN_STEPS[i]
-    setLogs(prev => [...prev, { type: 'info', msg: `▶ ${step.label}` }])
+    const s = SCAN_STEPS[i]
+    setLogs(prev => [...prev, { type: 'info', msg: `▶ ${s.label}` }])
 
+    const delay = 800 + Math.random() * 600 // realistic delay per step
     setTimeout(() => {
-      setLogs(prev => [...prev, ...step.logs])
+      setLogs(prev => [...prev, { type: s.cls || 'info', msg: s.text }])
+      setTimeout(() => { logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' }) }, 30)
       if (i < SCAN_STEPS.length - 1) {
         runStep(i + 1)
       } else {
@@ -136,7 +176,7 @@ export default function Publish() {
         setLogs(prev => [...prev, { type: 'ok', msg: '✓ Scan complete. Ready to publish.' }])
         setTimeout(() => { logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' }) }, 50)
       }
-    }, step.delay)
+    }, delay)
   }
 
   async function publishNow() {
@@ -179,6 +219,7 @@ export default function Publish() {
 
       await savePublishedApp(newApp)
       setPublished(true)
+      localStorage.removeItem(DRAFT_KEY)
       toast('🎉 Your app is live on SafeLaunch!')
     } catch (e) {
       console.error(e)
@@ -416,7 +457,7 @@ export default function Publish() {
               <div className={styles.btnRow}>
                 <button className="btn btn-ghost" onClick={() => setStep(1)}>Back</button>
                 <button className="btn btn-primary" onClick={startScan}>Build & Scan</button>
-                <button className="btn btn-ghost" onClick={() => { toast('Draft saved (demo).') }}>Save Draft</button>
+                <button className="btn btn-ghost" onClick={saveDraft}>Save Draft</button>
               </div>
             </div>
           </div>
