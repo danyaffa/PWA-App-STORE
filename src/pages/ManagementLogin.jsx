@@ -6,9 +6,23 @@ import SEO from '../components/SEO.jsx'
 import styles from './ManagementLogin.module.css'
 import { useToast } from '../hooks/useToast.js'
 
+function hasValidSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem('sl_mgmt_session') || 'null')
+    if (!s || !s.ts) return false
+    const age = Date.now() - Number(s.ts || 0)
+    if (age >= 0 && age < 8 * 60 * 60 * 1000) return true
+    localStorage.removeItem('sl_mgmt_session')
+  } catch { /* ignore */ }
+  return false
+}
+
 export default function ManagementLogin() {
   const nav = useNavigate()
   const { toast, ToastContainer } = useToast()
+
+  // Check session synchronously on first render — avoid flash before redirect
+  const [redirecting] = useState(() => hasValidSession())
 
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -20,19 +34,10 @@ export default function ManagementLogin() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    // If already authed with a valid (non-expired) session, go straight in
-    try {
-      const s = JSON.parse(localStorage.getItem('sl_mgmt_session') || 'null')
-      if (s?.ts) {
-        const age = Date.now() - Number(s.ts || 0)
-        if (age >= 0 && age < 8 * 60 * 60 * 1000) {
-          nav('/management', { replace: true })
-        } else {
-          localStorage.removeItem('sl_mgmt_session')
-        }
-      }
-    } catch { /* ignore */ }
-  }, [])
+    if (redirecting) {
+      nav('/management', { replace: true })
+    }
+  }, [redirecting, nav])
 
   async function sendCode(e) {
     e?.preventDefault()
@@ -93,6 +98,16 @@ export default function ManagementLogin() {
     } finally {
       setVerifying(false)
     }
+  }
+
+  // While redirecting to /management, render just the Nav (keeps the screen consistent)
+  if (redirecting) {
+    return (
+      <>
+        <Nav />
+        <div className="page-wrap" style={{ minHeight: '60vh' }} />
+      </>
+    )
   }
 
   return (
