@@ -510,10 +510,10 @@ export default function Publish() {
                   <button
                     className="btn btn-primary"
                     disabled={publishing || published}
-                    style={published ? { background: '#22c55e', borderColor: '#22c55e', color: '#fff', opacity: 1 } : {}}
+                    style={published ? { background: '#f59e0b', borderColor: '#f59e0b', color: '#fff', opacity: 1 } : {}}
                     onClick={publishNow}
                   >
-                    {published ? '✓ Published' : (publishing ? 'Publishing…' : 'Publish Now')}
+                    {published ? 'Published' : (publishing ? 'Publishing…' : 'Publish Now')}
                   </button>
                 </div>
               </div>
