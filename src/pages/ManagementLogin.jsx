@@ -18,10 +18,18 @@ export default function ManagementLogin() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    // If already authed, go straight in
+    // If already authed with a valid (non-expired) session, go straight in
     try {
       const s = JSON.parse(localStorage.getItem('sl_mgmt_session') || 'null')
-      if (s?.ts) nav('/management', { replace: true })
+      if (s?.ts) {
+        const age = Date.now() - Number(s.ts || 0)
+        if (age >= 0 && age < 8 * 60 * 60 * 1000) {
+          nav('/management', { replace: true })
+        } else {
+          // Expired session — clear it to avoid redirect loops
+          localStorage.removeItem('sl_mgmt_session')
+        }
+      }
     } catch { /* ignore */ }
   }, [])
 

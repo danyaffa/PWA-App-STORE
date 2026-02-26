@@ -18,8 +18,12 @@ export async function savePublishedApp(app) {
   // If Firebase is configured, also persist globally so it appears on every device
   if (!isConfigured || !db) return
 
-  const ref = doc(db, 'apps', String(app.id))
-  await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
+  try {
+    const ref = doc(db, 'apps', String(app.id))
+    await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
+  } catch (e) {
+    console.warn('[appsStore] Firebase save failed (local save OK):', e.message)
+  }
 }
 
 export async function loadPublishedApps() {
