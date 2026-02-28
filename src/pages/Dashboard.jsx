@@ -40,20 +40,31 @@ const NAV = [
 
 export default function Dashboard() {
   const { toast, ToastContainer } = useToast()
-  const { user, logout } = useAuth()
+  const { user, logout, isConfigured } = useAuth()
   const navigate = useNavigate()
+
+  // Read from localStorage as fallback when Firebase user is unavailable
+  const localAuth = (() => {
+    try { return JSON.parse(localStorage.getItem('sl_auth') || 'null') }
+    catch { return null }
+  })()
 
   async function handleSignOut() {
     try {
-      await logout()
-      toast('Signed out')
-      navigate('/')
+      if (isConfigured) {
+        await logout()
+      }
     } catch {
-      toast('Error signing out')
+      // Firebase sign out failed, continue with local cleanup
     }
+    localStorage.removeItem('sl_auth')
+    localStorage.removeItem('sl_promo_code')
+    localStorage.removeItem('sl_billing_status')
+    toast('Signed out')
+    navigate('/')
   }
 
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Publisher'
+  const displayName = user?.displayName || user?.email?.split('@')[0] || localAuth?.company || localAuth?.email?.split('@')[0] || 'Publisher'
   const initials = displayName.slice(0, 2).toUpperCase()
 
   return (
