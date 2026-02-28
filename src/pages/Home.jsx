@@ -7,6 +7,7 @@ import AppCard from '../components/AppCard.jsx'
 import { APPS } from '../utils/data.js'
 import { getAIPicks, getLightweightApps, getPrivacyChampions } from '../lib/recommendations.js'
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
+import IOSInstallGuide from '../components/IOSInstallGuide.jsx'
 import styles from './Home.module.css'
 
 const FEATURES = [
@@ -32,7 +33,7 @@ export default function Home() {
   const [s1, setS1] = useState('0')
   const [s2, setS2] = useState('0')
   const [s3, setS3] = useState('0')
-  const { canInstall, install: installPWA } = usePWAInstall()
+  const { canInstall, install: installPWA, installed, isStandalone, showIOSGuide, dismissIOSGuide } = usePWAInstall()
 
   useEffect(() => {
     animateCount(1247, setS1, '+')
@@ -77,7 +78,7 @@ export default function Home() {
         <div className={styles.actions}>
           <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing &rarr;</Link>
           <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
-          {canInstall && (
+          {!installed && !isStandalone && (
             <button className="btn btn-ghost btn-lg" onClick={installPWA}>
               Install SafeLaunch
             </button>
@@ -230,10 +231,15 @@ export default function Home() {
         <p className={styles.ctaSub}>Join 4,200+ developers publishing PWAs people trust.</p>
         <div className={styles.ctaActions}>
           <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing &rarr;</Link>
-          <Link to="/app-store" className="btn btn-ghost btn-lg">Install the App</Link>
+          {!installed && !isStandalone ? (
+            <button className="btn btn-ghost btn-lg" onClick={installPWA}>Install SafeLaunch</button>
+          ) : (
+            <Link to="/store" className="btn btn-ghost btn-lg">Browse Store</Link>
+          )}
         </div>
       </section>
 
+      {showIOSGuide && <IOSInstallGuide onDismiss={dismissIOSGuide} />}
       <Footer />
     </>
   )

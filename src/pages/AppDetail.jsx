@@ -53,29 +53,14 @@ export default function AppDetail() {
     install()
     trackInstall(app.id)
 
-    // If the STORE (this site) is installable, show the native prompt.
-    // Note: Browsers do NOT allow a website to install another website/PWA directly.
-    if (window.__pwaInstallPrompt) {
-      window.__pwaInstallPrompt.prompt()
-      window.__pwaInstallPrompt.userChoice.then(choice => {
-        if (choice.outcome === 'accepted') {
-          toast(`${app.name} saved. You can now open it from your home screen / apps list.`)
-        } else {
-          toast('Install cancelled.')
-        }
-        window.__pwaInstallPrompt = null
-      })
-      return
-    }
-
-    // Fallback: open the app URL so the user can install it (if it is a PWA) from the browser UI.
+    // Open the app so the user can use/install it directly
     if (app.url) {
       window.open(app.url, '_blank', 'noopener,noreferrer')
-      toast('Opened the app in a new tab. If it supports PWA install, use your browser’s Install option.')
+      toast(`${app.name} opened — bookmark or install it from your browser.`)
       return
     }
 
-    toast('No app URL found to open.')
+    toast(`${app.name} marked as installed.`)
   }
 
   function handleInstallDeclined() {
@@ -245,14 +230,13 @@ export default function AppDetail() {
         {showDisclaimer && (
           <div className={styles.modalOverlay} role="dialog" aria-modal="true">
             <div className={styles.modal}>
-              <h3>Install Notice</h3>
+              <h3>Install {app.name}</h3>
               <p>
-                SafeLaunch can’t “force install” another website.
-                If the app supports PWA install, your browser will show an Install option.
+                This will open {app.name} in a new tab. You can then use it directly or install it from your browser.
               </p>
               <div className={styles.modalBtns}>
                 <button className="btn btn-ghost" onClick={handleInstallDeclined}>Cancel</button>
-                <button className="btn btn-primary" onClick={handleInstallAccepted}>Continue</button>
+                <button className="btn btn-primary" onClick={handleInstallAccepted}>Install</button>
               </div>
             </div>
           </div>

@@ -29,6 +29,12 @@
 }
 .link:hover, .active { color: var(--accent); }
 
+.installLink {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body);
+  padding: 0;
+}
+
 /* Nav search bar */
 .navSearch {
   display: flex; align-items: center; gap: 6px;
