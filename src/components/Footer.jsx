@@ -21,7 +21,7 @@ export default function Footer() {
           <div className={styles.col}>
             <h4>Resources</h4>
             <Link to="/tutorial">PWA Tutorial (with AI)</Link>
-            <Link to="/app-store">Install Guide</Link>
+            <Link to="/app-store">Install App</Link>
             <Link to="/how-safety-works">How Safety Works</Link>
             <Link to="/support">AI Support</Link>
           </div>
