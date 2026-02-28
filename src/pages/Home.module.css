@@ -1,168 +1,21 @@
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 100px 40px 60px;
-  position: relative; overflow: hidden;
-}
-.grid {
-  position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(0,229,160,.04) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0,229,160,.04) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
-}
-.orb1 { width:500px; height:500px; background:rgba(0,229,160,.08); top:10%; left:-10%; }
-.orb2 { width:400px; height:400px; background:rgba(124,111,255,.08); bottom:10%; right:-5%; }
-
-.badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px; border-radius: 100px;
-  border: 1px solid rgba(0,229,160,.3); background: rgba(0,229,160,.05);
-  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 32px; position: relative; z-index: 1;
-}
-.pulse {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-.h1 {
-  font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.1;
-  letter-spacing: -0.03em; max-width: 800px; margin-bottom: 24px;
-  position: relative; z-index: 1;
-}
-.h1 em { font-style: italic; color: var(--accent); }
-
-.sub {
-  font-size: 1.1rem; color: var(--muted); max-width: 560px;
-  line-height: 1.7; margin-bottom: 40px; position: relative; z-index: 1;
+.homePage {
+  padding-top: var(--nav-h);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: var(--bg);
 }
 
-.actions {
-  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-  margin-bottom: 80px; position: relative; z-index: 1;
+.heroImage {
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
+  display: block;
 }
-
-.stats {
-  display: flex; gap: 60px; justify-content: center;
-  padding-top: 60px; border-top: 1px solid var(--border);
-  width: 100%; max-width: 700px; position: relative; z-index: 1;
-}
-.stat { text-align: center; }
-.statNum { font-size: 2.5rem; color: var(--text); }
-.statLabel { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-
-/* ── Discovery Engine (NEW) ── */
-.discovery {
-  padding: 80px 40px;
-  max-width: 1200px; margin: 0 auto;
-}
-.discSection {
-  margin-bottom: 48px;
-}
-.discHeader {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
-}
-.discTitle {
-  font-size: 1.15rem; font-weight: 700;
-}
-.discMore {
-  font-size: 0.82rem; font-weight: 700; color: var(--accent);
-  letter-spacing: 0.04em; transition: opacity .2s;
-}
-.discMore:hover { opacity: 0.7; }
-.discGrid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-}
-
-/* ── Trust Score Explanation (NEW) ── */
-.trustExplain {
-  padding: 80px 40px;
-  max-width: 1200px; margin: 0 auto;
-}
-.trustGrid {
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  gap: 20px; max-width: 900px; margin: 0 auto;
-}
-.trustItem {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 24px 16px;
-  text-align: center; transition: border-color .2s;
-}
-.trustItem:hover { border-color: rgba(0,229,160,.3); }
-.trustPercent {
-  font-family: var(--font-display); font-size: 1.6rem;
-  color: var(--accent); margin-bottom: 8px;
-}
-.trustFactor {
-  font-weight: 700; font-size: 0.85rem; margin-bottom: 6px;
-}
-.trustDesc {
-  color: var(--muted); font-size: 0.75rem; line-height: 1.5;
-}
-
-/* How It Works */
-.howItWorks {
-  text-align: center; padding: 80px 40px;
-  max-width: 1200px; margin: 0 auto;
-}
-.stepsRow {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 32px; max-width: 900px; margin: 0 auto;
-}
-.stepCard {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 32px 24px;
-  text-align: center; transition: border-color .2s;
-}
-.stepCard:hover { border-color: rgba(0,229,160,.3); }
-.stepNum {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: rgba(0,229,160,.1); color: var(--accent);
-  font-weight: 700; font-size: 1.2rem;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-}
-.stepCard h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-.stepCard p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
-
-/* Features */
-.features {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 24px; padding: 0 40px 80px;
-  max-width: 1200px; margin: 0 auto;
-}
-.featCard { padding: 36px; transition: border-color .2s; }
-.featCard:hover { border-color: rgba(0,229,160,.3); }
-.featIcon { font-size: 2.4rem; margin-bottom: 20px; display: block; }
-.featTitle { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
-.featDesc { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
-
-/* CTA */
-.ctaSection {
-  text-align: center; padding: 80px 40px;
-  max-width: 900px; margin: 0 auto;
-}
-.ctaTitle { font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 12px; }
-.ctaSub { color: var(--muted); margin-bottom: 32px; }
-.ctaActions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
 @media (max-width: 768px) {
-  .hero { padding: 80px 20px 40px; }
-  .stats { gap: 30px; }
-  .discovery { padding: 60px 20px; }
-  .discGrid { grid-template-columns: repeat(2, 1fr); }
-  .trustExplain { padding: 60px 20px; }
-  .trustGrid { grid-template-columns: repeat(2, 1fr); }
-  .howItWorks { padding: 60px 20px; }
-  .stepsRow { grid-template-columns: 1fr; }
-  .features { grid-template-columns: 1fr; padding: 0 20px 60px; }
-  .ctaSection { padding: 60px 20px; }
-  .ctaActions { flex-direction: column; align-items: center; }
-}
-@media (max-width: 480px) {
-  .discGrid { grid-template-columns: 1fr; }
-  .trustGrid { grid-template-columns: 1fr; }
+  .homePage {
+    padding-top: var(--nav-h);
+  }
 }
