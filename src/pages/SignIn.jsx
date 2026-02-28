@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
 import SEO from '../components/SEO.jsx'
 import styles from './SignIn.module.css'
 import { useToast } from '../hooks/useToast.js'
@@ -7,6 +8,7 @@ import { useToast } from '../hooks/useToast.js'
 export default function SignIn() {
   const nav = useNavigate()
   const { toast, ToastContainer } = useToast()
+  const { login, register, isConfigured } = useAuth()
   const [tab, setTab] = useState('signin')
 
   const [email, setEmail] = useState('')
@@ -15,37 +17,85 @@ export default function SignIn() {
   const [password2, setPassword2] = useState('')
   const [promoCode, setPromoCode] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
-  function handleSignIn(e) {
+  async function handleSignIn(e) {
     e.preventDefault()
     setError('')
     if (!email || !password) return setError('Please enter email and password.')
-    localStorage.setItem('sl_auth', JSON.stringify({ email, company: company || 'Publisher', ts: Date.now() }))
-    if (promoCode && promoCode.trim()) {
-      localStorage.setItem('sl_promo_code', promoCode.trim())
-      localStorage.setItem('sl_billing_status', 'active')
+
+    setBusy(true)
+    try {
+      // Authenticate with Firebase when configured
+      if (isConfigured) {
+        await login(email, password)
+      }
+
+      // Store supplementary data in localStorage
+      localStorage.setItem('sl_auth', JSON.stringify({ email, company: company || 'Publisher', ts: Date.now() }))
+      if (promoCode && promoCode.trim()) {
+        localStorage.setItem('sl_promo_code', promoCode.trim())
+        localStorage.setItem('sl_billing_status', 'active')
+      }
+
+      toast('Signed in.')
+      setTimeout(() => nav('/dashboard'), 350)
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
+        setError('Invalid email or password. Please try again.')
+      } else if (code === 'auth/wrong-password') {
+        setError('Incorrect password. Please try again.')
+      } else if (code === 'auth/too-many-requests') {
+        setError('Too many attempts. Please try again later.')
+      } else if (code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else {
+        setError(err.message || 'Sign in failed. Please try again.')
+      }
+    } finally {
+      setBusy(false)
     }
-    toast('Signed in.')
-    setTimeout(() => nav('/dashboard'), 350)
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault()
     setError('')
     if (!company || !email || !password) return setError('Please fill all fields.')
     if (password.length < 8) return setError('Password must be at least 8 characters.')
     if (password !== password2) return setError('Passwords do not match.')
 
-    localStorage.setItem('sl_auth', JSON.stringify({ email, company, ts: Date.now() }))
+    setBusy(true)
+    try {
+      // Register with Firebase when configured
+      if (isConfigured) {
+        await register(email, password, company)
+      }
 
-    // Promo code = free access path (skips payment for now)
-    if (promoCode && promoCode.trim()) {
-      localStorage.setItem('sl_promo_code', promoCode.trim())
-      localStorage.setItem('sl_billing_status', 'active')
+      localStorage.setItem('sl_auth', JSON.stringify({ email, company, ts: Date.now() }))
+
+      // Promo code = free access path (skips payment for now)
+      if (promoCode && promoCode.trim()) {
+        localStorage.setItem('sl_promo_code', promoCode.trim())
+        localStorage.setItem('sl_billing_status', 'active')
+      }
+
+      toast('Account created!')
+      setTimeout(() => nav('/pricing'), 350)
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Try signing in instead.')
+      } else if (code === 'auth/weak-password') {
+        setError('Password is too weak. Please use a stronger password.')
+      } else if (code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else {
+        setError(err.message || 'Registration failed. Please try again.')
+      }
+    } finally {
+      setBusy(false)
     }
-
-    toast('🎉 Account created!')
-    setTimeout(() => nav('/pricing'), 350)
   }
 
   return (
@@ -77,7 +127,9 @@ export default function SignIn() {
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
-              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Sign In →</button>
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} disabled={busy}>
+                {busy ? 'Signing in...' : 'Sign In →'}
+              </button>
 
               <div className={styles.forgot}>
                 <Link className={styles.forgotBtn} to="/forgot">Forgot password?</Link>
@@ -117,7 +169,9 @@ export default function SignIn() {
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
-              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Create Account →</button>
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} disabled={busy}>
+                {busy ? 'Creating account...' : 'Create Account →'}
+              </button>
 
               <div className={styles.terms}>
                 By creating an account you agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
