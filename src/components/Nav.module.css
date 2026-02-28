@@ -1,11 +1,16 @@
-.nav {
+/* ── Header wrapper ────────────────────────────────────────────────────────── */
+.header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+}
+
+/* ── Row 1 – Primary (Store & Install) ────────────────────────────────────── */
+.primaryRow {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 40px;
-  background: rgba(10,10,15,0.9);
+  padding: 14px 40px;
+  background: rgba(10,10,15,0.95);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  height: var(--nav-h);
+  border-bottom: 1px solid var(--accent);
+  height: var(--nav-row1);
 }
 
 .logo {
@@ -17,17 +22,17 @@
 }
 .logo span { color: var(--accent); }
 
-.links {
-  display: flex; gap: 32px; list-style: none;
+.primaryLinks {
+  display: flex; gap: 28px; list-style: none; align-items: center;
 }
 
-.link {
-  color: var(--muted);
-  font-size: 0.9rem; font-weight: 600;
-  letter-spacing: 0.05em; text-transform: uppercase;
+.primaryLink {
+  color: var(--text);
+  font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
   transition: color .2s;
 }
-.link:hover, .active { color: var(--accent); }
+.primaryLink:hover, .primaryLink.active { color: var(--accent); }
 
 .installLink {
   background: none; border: none; cursor: pointer;
@@ -53,7 +58,36 @@
 
 .actions { display: flex; gap: 12px; }
 
-/* Hamburger */
+/* ── Row 2 – Secondary (Publisher Tools) ──────────────────────────────────── */
+.secondaryRow {
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  padding: 8px 40px;
+  background: rgba(18,18,30,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(124,111,255,0.3);
+  height: var(--nav-row2);
+}
+
+.secondaryLabel {
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(124,111,255,0.5);
+  margin-right: 8px;
+}
+
+.secondaryLinks {
+  display: flex; gap: 32px; list-style: none; align-items: center;
+}
+
+.secondaryLink {
+  color: var(--muted);
+  font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  transition: color .2s;
+}
+.secondaryLink:hover, .secondaryActive { color: var(--accent2); }
+
+/* ── Hamburger ────────────────────────────────────────────────────────────── */
 .hamburger {
   display: none;
   flex-direction: column; gap: 5px;
@@ -69,25 +103,41 @@
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .nav { padding: 16px 20px; }
+  .primaryRow { padding: 14px 20px; }
   .hamburger { display: flex; }
 
   .navSearch {
     display: none;
     width: calc(100% - 40px); margin: 0 auto;
-    position: fixed; top: calc(var(--nav-h) + 12px); left: 20px; right: 20px;
+    position: fixed; top: calc(var(--nav-row1) + 12px); left: 20px; right: 20px;
     z-index: 103;
   }
   .navSearch.menuOpen { display: flex; }
 
-  .links {
+  .primaryLinks {
     display: none;
-    position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
-    flex-direction: column; align-items: center; justify-content: center;
-    gap: 32px; background: var(--bg); z-index: 102;
+    position: fixed; top: var(--nav-row1); left: 0; right: 0; bottom: 0;
+    flex-direction: column; align-items: center;
+    padding-top: 80px;
+    gap: 28px; background: var(--bg); z-index: 102;
   }
-  .links.menuOpen { display: flex; }
+  .primaryLinks.menuOpen { display: flex; }
+
+  /* On mobile, show secondary links in the mobile menu overlay */
+  .secondaryRow {
+    display: none;
+    position: fixed; bottom: 100px; left: 20px; right: 20px;
+    flex-direction: column; gap: 12px;
+    background: rgba(18,18,30,0.95);
+    border: 1px solid rgba(124,111,255,0.3);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    z-index: 103;
+  }
+  .secondaryRow.menuOpen { display: flex; }
+  .secondaryLinks { flex-wrap: wrap; justify-content: center; gap: 20px; }
 
   .actions {
     display: none;

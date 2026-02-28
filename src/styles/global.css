@@ -21,7 +21,9 @@
   --radius-lg:  20px;
   --radius-xl:  24px;
 
-  --nav-h: 73px;
+  --nav-row1: 56px;
+  --nav-row2: 36px;
+  --nav-h: calc(var(--nav-row1) + var(--nav-row2));
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
