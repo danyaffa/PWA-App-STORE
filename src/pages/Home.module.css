@@ -1,21 +1,81 @@
 .homePage {
   padding-top: var(--nav-h);
-  min-height: calc(100vh - 80px);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
   background: var(--bg);
 }
 
 .heroImage {
   width: 100%;
-  max-width: 1400px;
-  height: auto;
   display: block;
 }
 
+/* ── Key Features ─────────────────────────────────────────────────────────── */
+.features {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.featuresTitle {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin-bottom: 48px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.featCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  transition: border-color .2s;
+}
+.featCard:hover {
+  border-color: rgba(0,229,160,.3);
+}
+
+.featIcon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.featName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.featDesc {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.featuresActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .homePage {
-    padding-top: var(--nav-h);
+  .features {
+    padding: 60px 20px;
+  }
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .featuresActions {
+    flex-direction: column;
+    align-items: center;
   }
 }

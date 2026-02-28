@@ -6,7 +6,7 @@
 /* ── Row 1 – Primary (Store & Install) ────────────────────────────────────── */
 .primaryRow {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 40px;
+  padding: 0 40px;
   background: rgba(10,10,15,0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--accent);
@@ -15,7 +15,7 @@
 
 .logo {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   color: var(--text);
   letter-spacing: -0.02em;
   z-index: 101;
@@ -23,12 +23,12 @@
 .logo span { color: var(--accent); }
 
 .primaryLinks {
-  display: flex; gap: 28px; list-style: none; align-items: center;
+  display: flex; gap: 32px; list-style: none; align-items: center;
 }
 
 .primaryLink {
   color: var(--text);
-  font-size: 0.95rem; font-weight: 700;
+  font-size: 1rem; font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase;
   transition: color .2s;
 }
@@ -40,28 +40,12 @@
   padding: 0;
 }
 
-/* Nav search bar */
-.navSearch {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; padding: 4px 14px;
-  transition: border-color .2s;
-}
-.navSearch:focus-within { border-color: var(--accent); }
-.navSearchIcon { font-size: 0.8rem; }
-.navSearchInput {
-  border: none; background: transparent; outline: none;
-  color: var(--text); font-size: 0.82rem; padding: 6px 0;
-  width: 180px; font-family: var(--font-body);
-}
-.navSearchInput::placeholder { color: var(--muted); }
-
 .actions { display: flex; gap: 12px; }
 
 /* ── Row 2 – Secondary (Publisher Tools) ──────────────────────────────────── */
 .secondaryRow {
-  display: flex; align-items: center; justify-content: center; gap: 20px;
-  padding: 8px 40px;
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  padding: 0 40px;
   background: rgba(18,18,30,0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(124,111,255,0.3);
@@ -69,10 +53,10 @@
 }
 
 .secondaryLabel {
-  font-size: 0.68rem; font-weight: 700;
+  font-size: 0.72rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(124,111,255,0.5);
-  margin-right: 8px;
+  margin-right: 4px;
 }
 
 .secondaryLinks {
@@ -81,11 +65,15 @@
 
 .secondaryLink {
   color: var(--muted);
-  font-size: 0.82rem; font-weight: 600;
+  font-size: 0.85rem; font-weight: 600;
   letter-spacing: 0.05em; text-transform: uppercase;
   transition: color .2s;
 }
 .secondaryLink:hover, .secondaryActive { color: var(--accent2); }
+
+.submitBtn {
+  margin-left: 12px;
+}
 
 /* ── Hamburger ────────────────────────────────────────────────────────────── */
 .hamburger {
@@ -105,16 +93,8 @@
 
 /* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .primaryRow { padding: 14px 20px; }
+  .primaryRow { padding: 0 20px; }
   .hamburger { display: flex; }
-
-  .navSearch {
-    display: none;
-    width: calc(100% - 40px); margin: 0 auto;
-    position: fixed; top: calc(var(--nav-row1) + 12px); left: 20px; right: 20px;
-    z-index: 103;
-  }
-  .navSearch.menuOpen { display: flex; }
 
   .primaryLinks {
     display: none;
@@ -134,10 +114,12 @@
     border: 1px solid rgba(124,111,255,0.3);
     border-radius: var(--radius-md);
     padding: 16px 20px;
+    height: auto;
     z-index: 103;
   }
   .secondaryRow.menuOpen { display: flex; }
   .secondaryLinks { flex-wrap: wrap; justify-content: center; gap: 20px; }
+  .submitBtn { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; justify-content: center; }
 
   .actions {
     display: none;

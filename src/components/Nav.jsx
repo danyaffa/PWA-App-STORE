@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import IOSInstallGuide from './IOSInstallGuide.jsx'
@@ -19,9 +19,7 @@ const PUBLISHER_LINKS = [
 export default function Nav() {
   const { pathname } = useLocation()
   const { user } = useAuth()
-  const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [navSearch, setNavSearch] = useState('')
   const {
     install,
     installed,
@@ -29,14 +27,6 @@ export default function Nav() {
     showIOSGuide,
     dismissIOSGuide,
   } = usePWAInstall()
-
-  function handleNavSearch(e) {
-    if (e.key === 'Enter' && navSearch.trim()) {
-      navigate(`/store?q=${encodeURIComponent(navSearch.trim())}`)
-      setNavSearch('')
-      setMenuOpen(false)
-    }
-  }
 
   async function handleInstallClick() {
     setMenuOpen(false)
@@ -79,35 +69,17 @@ export default function Nav() {
                   className={`${styles.primaryLink} ${styles.installLink}`}
                   onClick={handleInstallClick}
                 >
-                  Install
+                  Install App
                 </button>
               </li>
             )}
           </ul>
 
-          <div className={`${styles.navSearch} ${menuOpen ? styles.menuOpen : ''}`}>
-            <span className={styles.navSearchIcon}>🔍</span>
-            <input
-              className={styles.navSearchInput}
-              type="search"
-              placeholder="Search apps..."
-              value={navSearch}
-              onChange={e => setNavSearch(e.target.value)}
-              onKeyDown={handleNavSearch}
-            />
-          </div>
-
           <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
             {user ? (
-              <>
-                <Link to="/dashboard" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-                <Link to="/publish"   className="btn btn-primary" onClick={() => setMenuOpen(false)}>Submit App</Link>
-              </>
+              <Link to="/dashboard" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Dashboard</Link>
             ) : (
-              <>
-                <Link to="/signin"  className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Sign In</Link>
-                <Link to="/publish" className="btn btn-primary" onClick={() => setMenuOpen(false)}>Submit App</Link>
-              </>
+              <Link to="/signin" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Sign In</Link>
             )}
           </div>
         </nav>
@@ -128,6 +100,9 @@ export default function Nav() {
               </li>
             ))}
           </ul>
+          <Link to="/publish" className={`btn btn-primary btn-sm ${styles.submitBtn}`} onClick={() => setMenuOpen(false)}>
+            Submit App
+          </Link>
         </div>
       </header>
 
