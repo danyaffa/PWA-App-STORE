@@ -3,7 +3,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
-import { loadCampaign, saveCampaign } from '../lib/appsStore.js'
+import { loadPublishedApps, loadCampaign, saveCampaign, deletePublishedApp } from '../lib/appsStore.js'
 import styles from './Management.module.css'
 
 function readJson(key, fallback) {
@@ -26,6 +26,13 @@ export default function Management() {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [otp, setOtp] = useState('')
   const [otpInput, setOtpInput] = useState('')
+
+  // Load published apps from Firestore (not just localStorage)
+  useEffect(() => {
+    loadPublishedApps().then(apps => {
+      if (apps && apps.length) setPublished(apps)
+    }).catch(() => {})
+  }, [])
 
   // Campaign state
   const [campActive, setCampActive]       = useState(false)
@@ -102,7 +109,7 @@ export default function Management() {
     setOtpInput('')
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!deleteTarget) return
     if (otpInput.trim() !== otp) {
       toast('❌ Verification code is incorrect.')
@@ -111,7 +118,10 @@ export default function Management() {
     const next = published.filter(a => a.id !== deleteTarget.id)
     writeJson('sl_published_apps', next)
     setPublished(next)
-    toast(`✅ Deleted: ${deleteTarget.name}`)
+
+    // Delete from Firestore so it disappears everywhere (incognito, other devices)
+    const fbOk = await deletePublishedApp(deleteTarget.id)
+    toast(fbOk ? `✅ Deleted: ${deleteTarget.name}` : `✅ Deleted locally: ${deleteTarget.name} (Firebase sync failed)`)
     cancelDelete()
   }
 

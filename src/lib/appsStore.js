@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, getDocs, doc, setDoc, getDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
 import { db, isConfigured } from './firebase'
 
 const LS_KEY = 'sl_published_apps'
@@ -61,6 +61,25 @@ export async function loadPublishedApps() {
   } catch (e) {
     console.error('[appsStore] Firebase load FAILED, using localStorage only:', e.message)
     return local
+  }
+}
+
+export async function deletePublishedApp(appId) {
+  // Remove from localStorage
+  try {
+    const existing = safeParse(localStorage.getItem(LS_KEY) || '[]', [])
+    const next = existing.filter(a => a?.id !== appId)
+    localStorage.setItem(LS_KEY, JSON.stringify(next))
+  } catch { /* ignore */ }
+
+  // Remove from Firestore so it disappears for ALL users/browsers
+  if (!isConfigured || !db) return false
+  try {
+    await deleteDoc(doc(db, 'apps', String(appId)))
+    return true
+  } catch (e) {
+    console.error('[appsStore] Firebase delete FAILED:', e.message)
+    return false
   }
 }
 
