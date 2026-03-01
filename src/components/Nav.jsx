@@ -75,13 +75,6 @@ export default function Nav() {
             )}
           </ul>
 
-          <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
-            {user ? (
-              <Link to="/dashboard" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-            ) : (
-              <Link to="/signin" className="btn btn-ghost" onClick={() => setMenuOpen(false)}>Sign In</Link>
-            )}
-          </div>
         </nav>
 
         {/* ── Row 2 – Publisher Tools ─────────────────────────── */}
@@ -103,6 +96,13 @@ export default function Nav() {
           <Link to="/publish" className={`btn btn-primary btn-sm ${styles.submitBtn}`} onClick={() => setMenuOpen(false)}>
             Submit App
           </Link>
+          <div className={`${styles.actions} ${menuOpen ? styles.menuOpen : ''}`}>
+            {user ? (
+              <Link to="/dashboard" className="btn btn-ghost btn-sm" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            ) : (
+              <Link to="/signin" className="btn btn-ghost btn-sm" onClick={() => setMenuOpen(false)}>Sign In</Link>
+            )}
+          </div>
         </div>
       </header>
 
