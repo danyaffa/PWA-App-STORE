@@ -3,6 +3,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
+import { loadCampaign, saveCampaign } from '../lib/appsStore.js'
 import styles from './Management.module.css'
 
 function readJson(key, fallback) {
@@ -25,6 +26,55 @@ export default function Management() {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [otp, setOtp] = useState('')
   const [otpInput, setOtpInput] = useState('')
+
+  // Campaign state
+  const [campActive, setCampActive]       = useState(false)
+  const [campHeadline, setCampHeadline]   = useState('')
+  const [campSubtitle, setCampSubtitle]   = useState('')
+  const [campCtaText, setCampCtaText]     = useState('Browse Store')
+  const [campCtaLink, setCampCtaLink]     = useState('/store')
+  const [campSaving, setCampSaving]       = useState(false)
+
+  useEffect(() => {
+    loadCampaign().then(c => {
+      if (!c) return
+      setCampActive(!!c.active)
+      setCampHeadline(c.headline || '')
+      setCampSubtitle(c.subtitle || '')
+      setCampCtaText(c.ctaText || 'Browse Store')
+      setCampCtaLink(c.ctaLink || '/store')
+    })
+  }, [])
+
+  async function handleCampaignSave(forceActive) {
+    setCampSaving(true)
+    const isActive = forceActive !== undefined ? forceActive : campActive
+    const data = {
+      active: isActive,
+      headline: campHeadline.trim(),
+      subtitle: campSubtitle.trim(),
+      ctaText: campCtaText.trim() || 'Browse Store',
+      ctaLink: campCtaLink.trim() || '/store',
+    }
+    const ok = await saveCampaign(data)
+    setCampSaving(false)
+    toast(ok ? 'Campaign saved!' : 'Campaign saved locally.')
+  }
+
+  async function handleCampaignStop() {
+    setCampSaving(true)
+    setCampActive(false)
+    const data = {
+      active: false,
+      headline: campHeadline.trim(),
+      subtitle: campSubtitle.trim(),
+      ctaText: campCtaText.trim(),
+      ctaLink: campCtaLink.trim(),
+    }
+    await saveCampaign(data)
+    setCampSaving(false)
+    toast('Campaign stopped. Banner removed from homepage.')
+  }
 
   useEffect(() => {
     function onStorage(e) {
@@ -78,7 +128,7 @@ export default function Management() {
 
   return (
     <>
-      <SEO title="Management Dashboard — SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical="https://pwa-app-store.com/management" />
+      <SEO title="Management Dashboard - SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical="https://pwa-app-store.com/management" />
       <Nav />
       <div className="page-wrap">
         <div className={styles.header}>
@@ -148,13 +198,90 @@ export default function Management() {
             )}
           </section>
 
-          <section className={styles.card}>
-            <h2 className={styles.cardTitle}>Suggestions</h2>
-            <div className={styles.suggest}>
-              <p>• Add rules for auto-blocking (malware flags, phishing domains, policy violations).</p>
-              <p>• Require verified developer identity before publishing paid apps.</p>
-              <p>• Add an “Appeal Block” workflow for developers.</p>
+          {/* Feature Campaign */}
+          <section className={`${styles.card} ${styles.campaignCard}`}>
+            <div className={styles.campaignHeader}>
+              <h2 className={styles.cardTitle}>Feature Campaign</h2>
+              <div className={`${styles.campaignBadge} ${campActive ? styles.campaignLive : styles.campaignOff}`}>
+                {campActive ? 'LIVE' : 'OFF'}
+              </div>
             </div>
+            <p className={styles.campaignHint}>
+              Control the splash banner on the homepage. Edit wording or stop the campaign anytime.
+            </p>
+
+            <div className={styles.campaignFields}>
+              <div className={styles.campField}>
+                <label className={styles.campLabel}>Headline</label>
+                <input
+                  className={styles.campInput}
+                  value={campHeadline}
+                  onChange={e => setCampHeadline(e.target.value)}
+                  placeholder="Grand Launch - SafeLaunch is Live!"
+                />
+              </div>
+              <div className={styles.campField}>
+                <label className={styles.campLabel}>Subtitle</label>
+                <input
+                  className={styles.campInput}
+                  value={campSubtitle}
+                  onChange={e => setCampSubtitle(e.target.value)}
+                  placeholder="e.g. Discover safe, AI-verified PWAs today."
+                />
+              </div>
+              <div className={styles.campRow}>
+                <div className={styles.campField}>
+                  <label className={styles.campLabel}>Button Text</label>
+                  <input
+                    className={styles.campInput}
+                    value={campCtaText}
+                    onChange={e => setCampCtaText(e.target.value)}
+                    placeholder="Browse Store"
+                  />
+                </div>
+                <div className={styles.campField}>
+                  <label className={styles.campLabel}>Button Link</label>
+                  <input
+                    className={styles.campInput}
+                    value={campCtaLink}
+                    onChange={e => setCampCtaLink(e.target.value)}
+                    placeholder="/store"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.campaignActions}>
+              {campActive ? (
+                <>
+                  <button className="btn btn-primary btn-sm" disabled={campSaving} onClick={handleCampaignSave}>
+                    {campSaving ? 'Saving...' : 'Update Campaign'}
+                  </button>
+                  <button className="btn btn-danger btn-sm" disabled={campSaving} onClick={handleCampaignStop}>
+                    Stop Campaign
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="btn btn-primary btn-sm"
+                  disabled={campSaving || !campHeadline.trim()}
+                  onClick={() => { setCampActive(true); handleCampaignSave(true) }}
+                >
+                  {campSaving ? 'Launching...' : 'Launch Campaign'}
+                </button>
+              )}
+            </div>
+
+            {campActive && campHeadline && (
+              <div className={styles.campaignPreview}>
+                <div className={styles.previewLabel}>Preview</div>
+                <div className={styles.previewBanner}>
+                  <div className={styles.previewHeadline}>{campHeadline}</div>
+                  {campSubtitle && <div className={styles.previewSub}>{campSubtitle}</div>}
+                  {campCtaText && <div className={styles.previewCta}>{campCtaText}</div>}
+                </div>
+              </div>
+            )}
           </section>
         </div>
       </div>

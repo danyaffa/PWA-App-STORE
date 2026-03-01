@@ -1,7 +1,8 @@
-import { collection, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, getDocs, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { db, isConfigured } from './firebase'
 
 const LS_KEY = 'sl_published_apps'
+const CAMPAIGN_KEY = 'sl_campaign'
 
 function safeParse(json, fallback) {
   try { return JSON.parse(json) } catch { return fallback }
@@ -61,4 +62,49 @@ export async function loadPublishedApps() {
     console.error('[appsStore] Firebase load FAILED, using localStorage only:', e.message)
     return local
   }
+}
+
+/* ── Campaign Banner ─────────────────────────────────────────────────────── */
+
+const DEFAULT_CAMPAIGN = {
+  active: false,
+  headline: '',
+  subtitle: '',
+  ctaText: 'Browse Store',
+  ctaLink: '/store',
+}
+
+export async function saveCampaign(campaign) {
+  const data = { ...DEFAULT_CAMPAIGN, ...campaign }
+  try { localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(data)) } catch { /* ignore */ }
+
+  if (!isConfigured || !db) return false
+  try {
+    await setDoc(doc(db, 'config', 'campaign'), { ...data, updatedAt: serverTimestamp() })
+    return true
+  } catch (e) {
+    console.error('[appsStore] Campaign save FAILED:', e.message)
+    return false
+  }
+}
+
+export async function loadCampaign() {
+  let local = null
+  try {
+    local = safeParse(localStorage.getItem(CAMPAIGN_KEY), null)
+  } catch { /* ignore */ }
+
+  if (!isConfigured || !db) return local || DEFAULT_CAMPAIGN
+
+  try {
+    const snap = await getDoc(doc(db, 'config', 'campaign'))
+    if (snap.exists()) {
+      const remote = snap.data()
+      try { localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(remote)) } catch { /* ignore */ }
+      return remote
+    }
+  } catch (e) {
+    console.error('[appsStore] Campaign load FAILED:', e.message)
+  }
+  return local || DEFAULT_CAMPAIGN
 }
