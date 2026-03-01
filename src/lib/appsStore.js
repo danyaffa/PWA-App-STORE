@@ -8,60 +8,109 @@ function safeParse(json, fallback) {
   try { return JSON.parse(json) } catch { return fallback }
 }
 
+function dedup(apps) {
+  const seen = new Set()
+  return apps.filter(a => {
+    const id = a?.id
+    if (!id || seen.has(id)) return false
+    seen.add(id)
+    return true
+  })
+}
+
+/* ── Server-side API (works in ANY browser, incognito included) ────────── */
+
+async function apiLoadApps() {
+  const res = await fetch('/api/apps')
+  if (!res.ok) throw new Error(`API ${res.status}`)
+  return await res.json()
+}
+
+async function apiSaveApp(app) {
+  const res = await fetch('/api/apps', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(app),
+  })
+  return res.ok
+}
+
+async function apiDeleteApp(appId) {
+  const res = await fetch(`/api/apps?id=${encodeURIComponent(appId)}`, {
+    method: 'DELETE',
+  })
+  return res.ok
+}
+
+/* ── Client-side Firebase (fallback) ───────────────────────────────────── */
+
+async function fbLoadApps() {
+  if (!isConfigured || !db) return null
+  const snap = await getDocs(collection(db, 'apps'))
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
+async function fbSaveApp(app) {
+  if (!isConfigured || !db) return false
+  const ref = doc(db, 'apps', String(app.id))
+  await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
+  return true
+}
+
+async function fbDeleteApp(appId) {
+  if (!isConfigured || !db) return false
+  await deleteDoc(doc(db, 'apps', String(appId)))
+  return true
+}
+
+/* ── Public API ────────────────────────────────────────────────────────── */
+
 export async function savePublishedApp(app) {
-  // Always save locally (instant UX)
+  // Always save to localStorage (instant UX)
   try {
     const existing = safeParse(localStorage.getItem(LS_KEY) || '[]', [])
     const next = [app, ...existing.filter(a => a?.id !== app?.id)]
     localStorage.setItem(LS_KEY, JSON.stringify(next))
   } catch { /* ignore */ }
 
-  // If Firebase is not configured, we can only save locally
-  if (!isConfigured || !db) {
-    console.warn('[appsStore] Firebase not configured — app saved to localStorage only. Set VITE_FIREBASE_* env vars to enable global persistence.')
-    return false
-  }
+  // Try server API first (reliable), then client Firebase as fallback
+  try { if (await apiSaveApp(app)) return true } catch { /* ignore */ }
+  try { if (await fbSaveApp(app)) return true } catch { /* ignore */ }
 
-  try {
-    const ref = doc(db, 'apps', String(app.id))
-    await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
-    return true
-  } catch (e) {
-    console.error('[appsStore] Firebase save FAILED:', e.message)
-    return false
-  }
+  console.warn('[appsStore] App saved to localStorage only.')
+  return false
 }
 
 export async function loadPublishedApps() {
-  // Start with local (fast)
+  // Start with localStorage (fast, synchronous)
   let local = []
   try {
     local = safeParse(localStorage.getItem(LS_KEY) || '[]', []).filter(a => a?.id)
   } catch { /* ignore */ }
 
-  // If Firebase is not configured, local is all we can do
-  if (!isConfigured || !db) {
-    console.warn('[appsStore] Firebase not configured — loading from localStorage only.')
-    return local
-  }
-
+  // Try server API first — works in incognito, any browser, any device
   try {
-    const snap = await getDocs(collection(db, 'apps'))
-    const remote = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-    // Merge: remote first so it's canonical across devices
-    const merged = [...remote, ...local]
-    const seen = new Set()
-    return merged.filter(a => {
-      const id = a?.id
-      if (!id) return false
-      if (seen.has(id)) return false
-      seen.add(id)
-      return true
-    })
-  } catch (e) {
-    console.error('[appsStore] Firebase load FAILED, using localStorage only:', e.message)
-    return local
-  }
+    const remote = await apiLoadApps()
+    if (remote && remote.length) {
+      const merged = dedup([...remote, ...local])
+      // Sync to localStorage for faster loads next time
+      try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
+      return merged
+    }
+  } catch { /* API unavailable */ }
+
+  // Fallback: client-side Firebase
+  try {
+    const remote = await fbLoadApps()
+    if (remote && remote.length) {
+      const merged = dedup([...remote, ...local])
+      try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
+      return merged
+    }
+  } catch { /* Firebase unavailable */ }
+
+  // Last resort: localStorage only
+  return local
 }
 
 export async function deletePublishedApp(appId) {
@@ -72,15 +121,11 @@ export async function deletePublishedApp(appId) {
     localStorage.setItem(LS_KEY, JSON.stringify(next))
   } catch { /* ignore */ }
 
-  // Remove from Firestore so it disappears for ALL users/browsers
-  if (!isConfigured || !db) return false
-  try {
-    await deleteDoc(doc(db, 'apps', String(appId)))
-    return true
-  } catch (e) {
-    console.error('[appsStore] Firebase delete FAILED:', e.message)
-    return false
-  }
+  // Try server API first, then client Firebase
+  try { if (await apiDeleteApp(appId)) return true } catch { /* ignore */ }
+  try { if (await fbDeleteApp(appId)) return true } catch { /* ignore */ }
+
+  return false
 }
 
 /* ── Campaign Banner ─────────────────────────────────────────────────────── */
