@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import CampaignBanner from '../components/CampaignBanner.jsx'
 import styles from './Home.module.css'
 
 const KEY_FEATURES = [
@@ -29,6 +30,8 @@ export default function Home() {
           alt="SafeLaunch — Trusted PWA App Store"
           className={styles.heroImage}
         />
+
+        <CampaignBanner />
 
         <section className={styles.features}>
           <h2 className={`display ${styles.featuresTitle}`}>Key Features</h2>

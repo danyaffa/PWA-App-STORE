@@ -99,3 +99,109 @@
 }
 .modalBtns{ display:flex; gap:10px; justify-content:flex-end; margin-top: 14px; }
 .modalFoot{ color: var(--muted); font-size: 0.8rem; margin-top: 12px; }
+
+/* ── Feature Campaign Card ─────────────────────────────────────────────── */
+.campaignCard{ grid-column: 1 / -1; }
+
+.campaignHeader{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.campaignBadge{
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+.campaignLive{
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.25);
+}
+.campaignOff{
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.campaignHint{
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 14px;
+}
+
+.campaignFields{ display: flex; flex-direction: column; gap: 10px; }
+.campField{ flex: 1; }
+.campLabel{
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.campInput{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  outline: none;
+  font-size: 0.92rem;
+}
+.campInput:focus{ border-color: rgba(99,102,241,0.5); }
+
+.campRow{ display: flex; gap: 10px; }
+@media (max-width: 600px){ .campRow{ flex-direction: column; } }
+
+.campaignActions{
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Mini preview */
+.campaignPreview{
+  margin-top: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.previewLabel{
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 8px 12px 4px;
+  background: rgba(0,0,0,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.previewBanner{
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  padding: 20px 16px;
+  text-align: center;
+}
+.previewHeadline{
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.previewSub{
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 10px;
+}
+.previewCta{
+  display: inline-block;
+  padding: 6px 18px;
+  background: #fff;
+  color: #6366f1;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
