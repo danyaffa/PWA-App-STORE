@@ -131,7 +131,7 @@ export default function Store() {
           </button>
         </div>
 
-        {showSections && (
+        {showSections ? (
           <>
             <h2 className={styles.sectionTitle}>Trending</h2>
             <div className={styles.grid}>{TRENDING.map(a => <AppCard key={a.id} app={a} />)}</div>
@@ -144,10 +144,13 @@ export default function Store() {
 
             <h2 className={styles.sectionTitle}>Rising Fast</h2>
             <div className={styles.grid}>{RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}</div>
-          </>
-        )}
 
-        {!showSections && (
+            <h2 className={styles.sectionTitle}>Browse</h2>
+            <div className={styles.grid}>
+              {visible.map(a => <AppCard key={a.id} app={a} />)}
+            </div>
+          </>
+        ) : (
           <>
             <h2 className={styles.sectionTitle}>Results</h2>
             <div className={styles.grid}>
@@ -155,11 +158,6 @@ export default function Store() {
             </div>
           </>
         )}
-
-        <h2 className={styles.sectionTitle}>Browse</h2>
-        <div className={styles.grid}>
-          {visible.map(a => <AppCard key={a.id} app={a} />)}
-        </div>
       </div>
       <Footer />
       <ToastContainer />
