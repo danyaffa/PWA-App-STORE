@@ -84,14 +84,21 @@ export function usePWAInstall() {
 
     // Native prompt available (Chrome, Edge, Samsung Internet, etc.)
     if (deferredPrompt) {
-      deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === 'accepted') {
-        setInstalled(true)
-        setCanInstall(false)
+      try {
+        deferredPrompt.prompt()
+        const { outcome } = await deferredPrompt.userChoice
+        // Clear consumed prompt regardless of outcome
         deferredPrompt = null
         window.__pwaInstallPrompt = null
-        return true
+        if (outcome === 'accepted') {
+          setInstalled(true)
+          setCanInstall(false)
+          return true
+        }
+      } catch {
+        // Prompt was already used / consumed — clear it
+        deferredPrompt = null
+        window.__pwaInstallPrompt = null
       }
       return false
     }
