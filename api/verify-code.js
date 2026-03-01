@@ -35,9 +35,13 @@ export default async function handler(req, res) {
 
   // Verify HMAC
   const expected = hmacSign(code.trim(), email.trim().toLowerCase(), ts)
-  const valid = crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(token))
-
-  if (!valid) {
+  try {
+    const a = Buffer.from(expected)
+    const b = Buffer.from(token)
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+      return res.status(400).json({ error: 'Incorrect code.' })
+    }
+  } catch {
     return res.status(400).json({ error: 'Incorrect code.' })
   }
 

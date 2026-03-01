@@ -175,7 +175,7 @@ export default function Dashboard() {
           ) : [
             { label: 'Safety Score', value: String(Math.round(apps.reduce((s,a) => s + (a.safetyScore || 0), 0) / apps.length)), bar: Math.round(apps.reduce((s,a) => s + (a.safetyScore || 0), 0) / apps.length), color: 'var(--accent)' },
             { label: 'Ranking Score', value: String(Math.round(apps.reduce((s,a) => s + (a.rankingScore || 0), 0) / apps.length)), bar: Math.round(apps.reduce((s,a) => s + (a.rankingScore || 0), 0) / apps.length), color: 'var(--accent)' },
-            { label: 'Install Velocity', value: String(Math.round(apps.reduce((s,a) => s + (a.installVelocity || 0), 0) / apps.length)), bar: Math.round(apps.reduce((s,a) => s + (a.installVelocity || 0) / apps.length, 0)), color: 'var(--accent2)' },
+            { label: 'Install Velocity', value: String(Math.round(apps.reduce((s,a) => s + (a.installVelocity || 0), 0) / apps.length)), bar: Math.round(apps.reduce((s,a) => s + (a.installVelocity || 0), 0) / apps.length), color: 'var(--accent2)' },
           ].map(m => (
             <div key={m.label} className={`card ${styles.statCard}`}>
               <div className={styles.statLabel}>{m.label}</div>
