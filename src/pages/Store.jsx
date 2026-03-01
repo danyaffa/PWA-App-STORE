@@ -6,7 +6,7 @@ import AppCard from '../components/AppCard.jsx'
 import SEO from '../components/SEO.jsx'
 import { trackSearch } from '../lib/analytics.js'
 import { APPS, CATEGORIES } from '../utils/data.js'
-import { loadPublishedApps } from '../lib/appsStore.js'
+import { loadPublishedApps, getAppsStoreStatus } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Store.module.css'
 
@@ -49,6 +49,14 @@ export default function Store() {
     ;(async () => {
       try {
         const published = await loadPublishedApps()
+
+        const status = getAppsStoreStatus()
+        if (!status.firebaseEnabled) {
+          toast('Firebase is not configured — published apps may only appear on THIS browser (not incognito/other devices).')
+        } else if (status.lastRemoteError) {
+          toast('Firebase error — showing local apps only. Check Vercel env vars.')
+        }
+
         if (!mounted) return
         const merged = [...published, ...APPS]
         const seen = new Set()
@@ -147,6 +155,11 @@ export default function Store() {
             </div>
           </>
         )}
+
+        <h2 className={styles.sectionTitle}>Browse</h2>
+        <div className={styles.grid}>
+          {visible.map(a => <AppCard key={a.id} app={a} />)}
+        </div>
       </div>
       <Footer />
       <ToastContainer />
