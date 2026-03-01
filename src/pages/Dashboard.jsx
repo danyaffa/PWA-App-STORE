@@ -104,9 +104,10 @@ export default function Dashboard() {
       <main className={styles.main}>
         <div className={styles.topBar}>
           <h1 className={`display ${styles.pageTitle}`}>Dashboard</h1>
-          <div style={{display:'flex',gap:12}}>
-            <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
-          </div>
+        </div>
+        <div className={styles.actionRow}>
+          <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
+          <Link to="/store" className="btn btn-ghost">View Store</Link>
         </div>
 
         {/* Stats */}
