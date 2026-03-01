@@ -3,6 +3,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import CampaignBanner from '../components/CampaignBanner.jsx'
+import LaunchDealBanner from '../components/LaunchDealBanner.jsx'
 import styles from './Home.module.css'
 
 const KEY_FEATURES = [
@@ -32,6 +33,8 @@ export default function Home() {
         />
 
         <CampaignBanner />
+
+        <LaunchDealBanner />
 
         <section className={styles.features}>
           <h2 className={`display ${styles.featuresTitle}`}>Key Features</h2>
