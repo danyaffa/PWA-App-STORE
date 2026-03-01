@@ -41,7 +41,11 @@ async function apiSaveApp(app) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(app),
   })
-  return res.ok
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `API ${res.status}`)
+  }
+  return true
 }
 
 async function apiDeleteApp(appId) {
@@ -82,17 +86,66 @@ export async function savePublishedApp(app) {
     localStorage.setItem(LS_KEY, JSON.stringify(next))
   } catch { /* ignore */ }
 
+  const errors = []
+
   // Try server API first (reliable), then client Firebase as fallback
   try {
     if (await apiSaveApp(app)) { lastRemoteError = null; return true }
-  } catch (e) { lastRemoteError = e?.message || 'api_save_failed' }
+  } catch (e) {
+    const msg = e?.message || 'api_save_failed'
+    errors.push(`API: ${msg}`)
+    lastRemoteError = msg
+  }
   try {
     if (await fbSaveApp(app)) { lastRemoteError = null; return true }
-  } catch (e) { lastRemoteError = e?.message || 'firebase_save_failed' }
+  } catch (e) {
+    const msg = e?.message || 'firebase_save_failed'
+    errors.push(`Firestore: ${msg}`)
+    lastRemoteError = msg
+  }
 
-  if (!isConfigured || !db) lastRemoteError = 'firebase_not_configured'
-  console.warn('[appsStore] App saved to localStorage only.')
+  if (!isConfigured || !db) {
+    lastRemoteError = 'firebase_not_configured'
+    errors.push('Firebase not configured')
+  }
+  console.error('[appsStore] Cloud save FAILED. App is localStorage-only (invisible in incognito).', errors.join(' | '))
+  console.error('[appsStore] FIX: Go to Firebase Console → Firestore → Rules and deploy the rules from firestore.rules')
   return false
+}
+
+/**
+ * Push all localStorage apps to Firestore.
+ * Returns { synced: number, failed: number, errors: string[] }
+ */
+export async function syncAllAppsToCloud() {
+  let local = []
+  try {
+    local = safeParse(localStorage.getItem(LS_KEY) || '[]', []).filter(a => a?.id)
+  } catch { /* ignore */ }
+
+  if (!local.length) return { synced: 0, failed: 0, errors: ['No local apps to sync.'] }
+
+  let synced = 0
+  let failed = 0
+  const errors = []
+
+  for (const app of local) {
+    // Try API first
+    try {
+      if (await apiSaveApp(app)) { synced++; continue }
+    } catch (e) {
+      errors.push(`${app.name || app.id} API: ${e?.message}`)
+    }
+    // Try client Firebase
+    try {
+      if (await fbSaveApp(app)) { synced++; continue }
+    } catch (e) {
+      errors.push(`${app.name || app.id} Firestore: ${e?.message}`)
+    }
+    failed++
+  }
+
+  return { synced, failed, errors }
 }
 
 export async function loadPublishedApps() {

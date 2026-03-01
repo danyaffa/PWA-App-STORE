@@ -242,7 +242,7 @@ export default function Publish() {
     if (firebaseSaved) {
       toast('Your app is live on SafeLaunch!')
     } else {
-      toast('Published locally. Firebase save failed — check your connection or config.')
+      toast('App saved locally only — Firestore write failed. Deploy Firestore rules to fix. Check browser console for details.')
     }
   }
 
