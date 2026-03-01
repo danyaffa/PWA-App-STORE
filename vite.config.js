@@ -8,6 +8,9 @@ export default defineConfig({
     react({ include: /\.(jsx|js)$/ }),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        cleanupOutdatedCaches: true
+      },
       manifest: {
         name: 'SafeLaunch — Trusted PWA Store',
         short_name: 'SafeLaunch',
