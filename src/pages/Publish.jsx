@@ -193,6 +193,7 @@ export default function Publish() {
 
     const newApp = {
       id: slug || `app-${Date.now()}`,
+      status: 'published',
       icon,
       name: appName.trim(),
       desc: shortDesc.trim(),
@@ -200,6 +201,7 @@ export default function Publish() {
       price: pricingType === 'paid' ? String(priceAmount || '').trim() : 'Free',
       url: websiteUrl.trim() || '',
       developer: developerName.trim() || user?.email || 'Developer',
+      developerUid: user?.uid || null,
       whatsNew: whatsNew.trim(),
       version: (appVersion || '').trim(),
       privacyUrl: privacyUrl.trim(),
@@ -212,6 +214,7 @@ export default function Publish() {
       averageRating: 0,
       totalReviews: 0,
       publishedAt: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString(),
       developerTrust: 60,
       installVelocity: 0,
       badges: ['new', 'verified'],
@@ -224,14 +227,23 @@ export default function Publish() {
       localStorage.setItem('sl_published_apps', JSON.stringify(next))
     } catch { /* ignore */ }
 
-    // Mark as published immediately (button → "Published" orange)
+    // Save to Firebase so the app is visible on ALL devices/browsers
+    let firebaseSaved = false
+    try {
+      firebaseSaved = await savePublishedApp(newApp)
+    } catch (e) {
+      console.error('[Publish] Firebase save failed:', e)
+    }
+
     setPublished(true)
     setPublishing(false)
     localStorage.removeItem(DRAFT_KEY)
-    toast('Your app is live on SafeLaunch!')
 
-    // Best-effort: also save to Firebase in the background
-    try { await savePublishedApp(newApp) } catch { /* already saved locally */ }
+    if (firebaseSaved) {
+      toast('Your app is live on SafeLaunch!')
+    } else {
+      toast('Published locally. Firebase save failed — check your connection or config.')
+    }
   }
 
   return (
