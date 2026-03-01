@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore, getFirestore, memoryLocalCache } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY || "",
@@ -23,12 +23,38 @@ let app  = null
 let auth = null
 let db   = null
 
+// Initialize app first — this rarely fails
 try {
-  app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
-  auth = getAuth(app)
-  db   = getFirestore(app)
+  app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
 } catch (e) {
-  console.error("Firebase initialization failed:", e)
+  console.error("Firebase app init failed:", e)
+}
+
+// Initialize Firestore separately with memory cache so it works in
+// incognito/private browsing (no IndexedDB dependency).
+if (app) {
+  try {
+    db = initializeFirestore(app, {
+      localCache: memoryLocalCache(),
+      experimentalAutoDetectLongPolling: true,
+    })
+  } catch (e) {
+    // initializeFirestore throws if called twice; fall back to getFirestore
+    try {
+      db = getFirestore(app)
+    } catch (e2) {
+      console.error("Firestore init failed:", e2)
+    }
+  }
+}
+
+// Initialize Auth separately — if this fails, Firestore still works
+if (app) {
+  try {
+    auth = getAuth(app)
+  } catch (e) {
+    console.error("Firebase Auth init failed:", e)
+  }
 }
 
 const googleProvider = isConfigured ? new GoogleAuthProvider() : null
