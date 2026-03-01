@@ -109,6 +109,8 @@ export async function loadPublishedApps() {
       lastRemoteError = null
       const merged = dedup([...remote, ...local])
       try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
+      // Sync local-only apps to remote (retries previously failed saves)
+      syncLocalOnlyApps(local, remote)
       return merged
     }
   } catch (e) { lastRemoteError = e?.message || 'api_load_failed' }
@@ -120,6 +122,7 @@ export async function loadPublishedApps() {
       lastRemoteError = null
       const merged = dedup([...remote, ...local])
       try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
+      syncLocalOnlyApps(local, remote)
       return merged
     }
   } catch (e) { lastRemoteError = e?.message || 'firebase_load_failed' }
@@ -127,6 +130,18 @@ export async function loadPublishedApps() {
   // Last resort: localStorage only
   if (!isConfigured || !db) lastRemoteError = 'firebase_not_configured'
   return local
+}
+
+/* Re-push local-only apps that never made it to Firestore (fire-and-forget) */
+function syncLocalOnlyApps(local, remote) {
+  if (!local.length) return
+  const remoteIds = new Set(remote.map(a => a?.id))
+  const missing = local.filter(a => a?.id && !remoteIds.has(a.id))
+  for (const app of missing) {
+    apiSaveApp(app)
+      .then(ok => { if (!ok) return fbSaveApp(app) })
+      .catch(() => fbSaveApp(app).catch(() => {}))
+  }
 }
 
 export async function deletePublishedApp(appId) {
