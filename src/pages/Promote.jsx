@@ -12,7 +12,23 @@ export default function Promote() {
   const { toast, ToastContainer } = useToast()
   const [copied, setCopied] = useState(null)
 
-  const app = APPS.find(a => a.id === id) || APPS[0]
+  const app = APPS.find(a => a.id === id)
+
+  if (!app) {
+    return (
+      <>
+        <Nav />
+        <div className="page-wrap" style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <h1 className="display">App Not Found</h1>
+          <p style={{ color: 'var(--muted)', marginTop: 8 }}>The app you're trying to promote doesn't exist.</p>
+          <Link to="/store" className="btn btn-primary" style={{ marginTop: 24 }}>Browse Store</Link>
+        </div>
+        <Footer />
+        <ToastContainer />
+      </>
+    )
+  }
+
   const appUrl = `https://agentslock.com/app/${app.id}`
 
   function copy(text, label) {

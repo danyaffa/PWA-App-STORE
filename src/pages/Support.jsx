@@ -152,7 +152,7 @@ export default function Support() {
 
           <div className={styles.contactInfo}>
             <h3>Support</h3>
-            <div className={styles.infoItem}><strong>Email</strong><span>support@keypayapp.com</span></div>
+            <div className={styles.infoItem}><strong>Email</strong><span>support@agentslock.com</span></div>
             <div className={styles.infoItem}><strong>Hours</strong><span>Mon–Fri (AEST)</span></div>
             <div className={styles.infoItem}><strong>Response</strong><span>Within 24 hours</span></div>
           </div>

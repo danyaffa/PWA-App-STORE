@@ -13,7 +13,7 @@ const CHECKS = [
 
 export default function LaunchDealBanner() {
   const remaining = TOTAL - CLAIMED
-  const pct = Math.max(2, Math.round((CLAIMED / TOTAL) * 100))
+  const pct = Math.round((CLAIMED / TOTAL) * 100)
 
   return (
     <div className={styles.banner}>

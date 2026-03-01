@@ -66,13 +66,17 @@ export async function updateDeveloperProfile(uid, data) {
   }
 }
 
-function getLocalDeveloperProfile() {
+function getLocalDeveloperProfile(uid) {
+  try {
+    const stored = localStorage.getItem(`sl_dev_${uid}`)
+    if (stored) return JSON.parse(stored)
+  } catch { /* ignore corrupted localStorage */ }
   return {
-    emailVerified: true,
-    agreementAccepted: true,
-    appsPublished: 2,
+    emailVerified: false,
+    agreementAccepted: false,
+    appsPublished: 0,
     violationsCount: 0,
-    trustScore: computeTrustScore({ emailVerified: true, agreementAccepted: true, appsPublished: 2, violationsCount: 0 }),
-    verificationLevel: 'verified',
+    trustScore: 0,
+    verificationLevel: 'basic',
   }
 }

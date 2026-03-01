@@ -28,9 +28,11 @@ export default function InstallDisclaimer({ appName, appId, onAccept, onCancel }
     }
 
     // Also track in localStorage for this session
-    const installs = JSON.parse(localStorage.getItem('sl_install_accepts') || '{}')
-    installs[appId] = new Date().toISOString()
-    localStorage.setItem('sl_install_accepts', JSON.stringify(installs))
+    try {
+      const installs = JSON.parse(localStorage.getItem('sl_install_accepts') || '{}')
+      installs[appId] = new Date().toISOString()
+      localStorage.setItem('sl_install_accepts', JSON.stringify(installs))
+    } catch { /* ignore corrupted localStorage */ }
 
     onAccept()
   }

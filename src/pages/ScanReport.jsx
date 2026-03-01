@@ -72,7 +72,21 @@ const SEV_COLOR = { pass:'var(--accent)', bonus:'var(--accent2)', warn:'var(--wa
 export default function ScanReport() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
-  const app = APPS.find(a => a.id === id) || APPS[0]
+  const app = APPS.find(a => a.id === id)
+
+  if (!app) {
+    return (
+      <>
+        <Nav />
+        <div className="page-wrap page-wrap--narrow" style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <h1 className="display">App Not Found</h1>
+          <p style={{ color: 'var(--muted)', marginTop: 8 }}>The scan report you requested doesn't exist.</p>
+          <Link to="/store" className="btn btn-primary" style={{ marginTop: 24 }}>Browse Store</Link>
+        </div>
+        <Footer />
+      </>
+    )
+  }
 
   return (
     <>

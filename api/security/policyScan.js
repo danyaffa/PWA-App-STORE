@@ -62,7 +62,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { title = '', description = '', homepageText = '', category = '' } = req.body || {}
+  const body = req.body || {}
+  const str = v => typeof v === 'string' ? v : ''
+  const title = str(body.title)
+  const description = str(body.description)
+  const homepageText = str(body.homepageText)
+  const category = str(body.category)
   const combined = `${title} ${description} ${homepageText} ${category}`.toLowerCase()
 
   const findings = []
