@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
+import { useToast } from '../hooks/useToast.js'
 import IOSInstallGuide from './IOSInstallGuide.jsx'
 import styles from './Nav.module.css'
 
@@ -19,8 +20,10 @@ const PUBLISHER_LINKS = [
 export default function Nav() {
   const { pathname } = useLocation()
   const { user } = useAuth()
+  const { toast, ToastContainer } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
   const {
+    canInstall,
     install,
     installed,
     isStandalone,
@@ -31,7 +34,10 @@ export default function Nav() {
   async function handleInstallClick() {
     setMenuOpen(false)
     if (installed || isStandalone) return
-    await install()
+    const result = await install()
+    if (!result && !canInstall) {
+      toast('To install: tap your browser menu → "Add to Home Screen" or "Install App"')
+    }
   }
 
   return (
@@ -107,6 +113,7 @@ export default function Nav() {
       </header>
 
       {showIOSGuide && <IOSInstallGuide onDismiss={dismissIOSGuide} />}
+      <ToastContainer />
     </>
   )
 }
