@@ -126,16 +126,32 @@ export default function ManagementLogin() {
               </div>
             )}
 
-            <form onSubmit={confirm} className={styles.form}>
+            <form onSubmit={confirm} className={styles.form} autoComplete="off">
               <div className={styles.group}>
                 <label className={styles.label}>Management Email</label>
-                <input className={styles.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@yourcompany.com" />
+                <input
+                  className={styles.input}
+                  type="email"
+                  autoComplete="username"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="admin@yourcompany.com"
+                />
               </div>
 
               <div className={styles.groupRow}>
                 <div className={styles.group} style={{ flex: 1 }}>
                   <label className={styles.label}>Verification Code</label>
-                  <input className={styles.input} value={code} onChange={e => setCode(e.target.value)} placeholder="Enter the 6-digit code" inputMode="numeric" />
+                  <input
+                    className={styles.input}
+                    type="text"
+                    autoComplete="one-time-code"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={code}
+                    onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Enter the 6-digit code"
+                  />
                 </div>
                 <button type="button" className={styles.sendBtn} onClick={sendCode} disabled={sending}>
                   {sending ? 'Sending...' : (codeSent ? 'Resend' : 'Send Code')}
