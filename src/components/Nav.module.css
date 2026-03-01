@@ -40,11 +40,11 @@
   padding: 0;
 }
 
-.actions { display: flex; gap: 12px; }
+.actions { display: flex; gap: 12px; margin-left: auto; }
 
 /* ── Row 2 – Secondary (Publisher Tools) ──────────────────────────────────── */
 .secondaryRow {
-  display: flex; align-items: center; justify-content: center; gap: 24px;
+  display: flex; align-items: center; gap: 24px;
   padding: 0 40px;
   background: rgba(18,18,30,0.95);
   backdrop-filter: blur(20px);
