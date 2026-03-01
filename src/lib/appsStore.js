@@ -4,8 +4,17 @@ import { db, isConfigured } from './firebase'
 const LS_KEY = 'sl_published_apps'
 const CAMPAIGN_KEY = 'sl_campaign'
 
+let lastRemoteError = null
+
 function safeParse(json, fallback) {
   try { return JSON.parse(json) } catch { return fallback }
+}
+
+export function getAppsStoreStatus() {
+  return {
+    firebaseEnabled: !!(isConfigured && db),
+    lastRemoteError,
+  }
 }
 
 function dedup(apps) {
@@ -74,9 +83,14 @@ export async function savePublishedApp(app) {
   } catch { /* ignore */ }
 
   // Try server API first (reliable), then client Firebase as fallback
-  try { if (await apiSaveApp(app)) return true } catch { /* ignore */ }
-  try { if (await fbSaveApp(app)) return true } catch { /* ignore */ }
+  try {
+    if (await apiSaveApp(app)) { lastRemoteError = null; return true }
+  } catch (e) { lastRemoteError = e?.message || 'api_save_failed' }
+  try {
+    if (await fbSaveApp(app)) { lastRemoteError = null; return true }
+  } catch (e) { lastRemoteError = e?.message || 'firebase_save_failed' }
 
+  if (!isConfigured || !db) lastRemoteError = 'firebase_not_configured'
   console.warn('[appsStore] App saved to localStorage only.')
   return false
 }
@@ -92,24 +106,26 @@ export async function loadPublishedApps() {
   try {
     const remote = await apiLoadApps()
     if (remote && remote.length) {
+      lastRemoteError = null
       const merged = dedup([...remote, ...local])
-      // Sync to localStorage for faster loads next time
       try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
       return merged
     }
-  } catch { /* API unavailable */ }
+  } catch (e) { lastRemoteError = e?.message || 'api_load_failed' }
 
   // Fallback: client-side Firebase
   try {
     const remote = await fbLoadApps()
     if (remote && remote.length) {
+      lastRemoteError = null
       const merged = dedup([...remote, ...local])
       try { localStorage.setItem(LS_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
       return merged
     }
-  } catch { /* Firebase unavailable */ }
+  } catch (e) { lastRemoteError = e?.message || 'firebase_load_failed' }
 
   // Last resort: localStorage only
+  if (!isConfigured || !db) lastRemoteError = 'firebase_not_configured'
   return local
 }
 
