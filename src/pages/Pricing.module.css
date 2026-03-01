@@ -1,3 +1,83 @@
+/* ── Grand Launch Deal ───────────────────────────────────────────────────── */
+.launchDeal {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0,229,160,.08) 0%, rgba(124,111,255,.08) 100%);
+  border: 2px solid rgba(0,229,160,.4);
+  border-radius: var(--radius-xl);
+  padding: 56px;
+  margin-bottom: 80px;
+  overflow: hidden;
+}
+.launchRibbon {
+  position: absolute; top: 24px; right: -36px;
+  background: linear-gradient(135deg, #00e5a0, #7c6fff);
+  color: #0a0a0f;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em;
+  padding: 6px 48px;
+  transform: rotate(45deg);
+}
+.launchContent {
+  display: flex; gap: 56px; align-items: center;
+}
+.launchLeft { flex: 1; }
+.launchRight { flex: 0 0 340px; }
+.launchTitle {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.15; margin-bottom: 16px;
+}
+.launchPrice {
+  font-size: 1.3em;
+  background: linear-gradient(135deg, #00e5a0, #7c6fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.launchSub {
+  color: var(--muted); font-size: 1rem;
+  line-height: 1.7; margin-bottom: 28px; max-width: 420px;
+}
+.launchMeter { margin-bottom: 32px; }
+.launchMeterTrack {
+  height: 8px; border-radius: 100px;
+  background: rgba(255,255,255,.08); overflow: hidden;
+  margin-bottom: 10px;
+}
+.launchMeterFill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, #00e5a0, #7c6fff);
+  min-width: 4px; transition: width .6s ease;
+}
+.launchMeterLabel {
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--accent); letter-spacing: 0.02em;
+}
+.launchCta {
+  font-size: 1.1rem; padding: 16px 40px;
+}
+.launchFeatures {
+  list-style: none; display: flex;
+  flex-direction: column; gap: 18px;
+}
+.launchFeature {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.95rem; color: var(--text);
+}
+.launchCheck {
+  flex-shrink: 0; width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(0,229,160,.12); color: var(--accent);
+  font-size: 0.8rem; font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .launchDeal { padding: 32px 24px; }
+  .launchContent { flex-direction: column; gap: 32px; }
+  .launchRight { flex: 1; width: 100%; }
+  .launchCta { width: 100%; justify-content: center; }
+}
+
+/* ── Hero & Toggle ──────────────────────────────────────────────────────── */
 .heroTitle { font-size: clamp(2.4rem, 5vw, 4rem); margin-bottom: 0; }
 
 /* Toggle */
