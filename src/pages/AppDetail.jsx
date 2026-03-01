@@ -1,28 +1,40 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import PayPalButton from '../components/PayPalButton.jsx'
 import { APPS } from '../utils/data.js'
+import { loadPublishedApps } from '../lib/appsStore.js'
 import { useInstallState } from '../hooks/useInstallState.js'
 import { useToast } from '../hooks/useToast.js'
 import { trackInstall, trackOpenApp } from '../lib/analytics.js'
 import styles from './AppDetail.module.css'
 
-function getPublishedApps() {
-  try { return JSON.parse(localStorage.getItem('sl_published_apps') || '[]') } catch { return [] }
-}
-
 export default function AppDetail() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
+  const [publishedApps, setPublishedApps] = useState([])
 
-  const allApps = useMemo(() => [...APPS, ...getPublishedApps()], [])
+  useEffect(() => {
+    loadPublishedApps().then(setPublishedApps).catch(() => {})
+  }, [])
+
+  const allApps = useMemo(() => {
+    const merged = [...publishedApps, ...APPS]
+    const seen = new Set()
+    return merged.filter(a => {
+      if (!a?.id || seen.has(a.id)) return false
+      seen.add(a.id)
+      return true
+    })
+  }, [publishedApps])
   const app = allApps.find(a => a.id === id)
 
   const [tab, setTab] = useState('overview')
   const [showDisclaimer, setShowDisclaimer] = useState(false)
   const { installed, install } = useInstallState(app?.id)
+  const isPaid = app?.price && app.price !== 'Free' && app.price !== '0'
 
   if (!app) {
     return (
@@ -203,9 +215,26 @@ export default function AppDetail() {
                 <div className={styles.check}>Safety Verified ({app.safetyScore || 0}/100) • v{app.version || '1.0.0'}</div>
               </div>
 
-              <button className={`btn ${installed ? 'btn-ghost' : 'btn-primary'} ${styles.bigBtn}`} onClick={handleInstall}>
-                {installed ? 'Installed' : 'Install App'}
-              </button>
+              {isPaid && (
+                <div className={styles.paySection}>
+                  <div className={styles.priceTag}>${app.price}</div>
+                  <PayPalButton
+                    amount={app.price}
+                    description={`Purchase ${app.name} — SafeLaunch`}
+                    onSuccess={(capture) => {
+                      toast(`Payment successful! Opening ${app.name}…`)
+                      if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
+                    }}
+                    onError={() => toast('Payment failed. Please try again.')}
+                  />
+                </div>
+              )}
+
+              {!isPaid && (
+                <button className={`btn ${installed ? 'btn-ghost' : 'btn-primary'} ${styles.bigBtn}`} onClick={handleInstall}>
+                  {installed ? 'Installed' : 'Install App'}
+                </button>
+              )}
 
               <button className={`btn btn-primary ${styles.bigBtn}`} onClick={handleOpenApp}>
                 Open App
