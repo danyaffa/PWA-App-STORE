@@ -15,14 +15,19 @@ export async function savePublishedApp(app) {
     localStorage.setItem(LS_KEY, JSON.stringify(next))
   } catch { /* ignore */ }
 
-  // If Firebase is configured, also persist globally so it appears on every device
-  if (!isConfigured || !db) return
+  // If Firebase is not configured, we can only save locally
+  if (!isConfigured || !db) {
+    console.warn('[appsStore] Firebase not configured — app saved to localStorage only. Set VITE_FIREBASE_* env vars to enable global persistence.')
+    return false
+  }
 
   try {
     const ref = doc(db, 'apps', String(app.id))
     await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
+    return true
   } catch (e) {
-    console.warn('[appsStore] Firebase save failed (local save OK):', e.message)
+    console.error('[appsStore] Firebase save FAILED:', e.message)
+    return false
   }
 }
 
@@ -34,7 +39,10 @@ export async function loadPublishedApps() {
   } catch { /* ignore */ }
 
   // If Firebase is not configured, local is all we can do
-  if (!isConfigured || !db) return local
+  if (!isConfigured || !db) {
+    console.warn('[appsStore] Firebase not configured — loading from localStorage only.')
+    return local
+  }
 
   try {
     const snap = await getDocs(collection(db, 'apps'))
@@ -49,7 +57,8 @@ export async function loadPublishedApps() {
       seen.add(id)
       return true
     })
-  } catch {
+  } catch (e) {
+    console.error('[appsStore] Firebase load FAILED, using localStorage only:', e.message)
     return local
   }
 }
