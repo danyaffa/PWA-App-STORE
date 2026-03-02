@@ -15,11 +15,17 @@ import admin from 'firebase-admin'
 function getServiceAccount() {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64
   if (b64) {
+    // Try base64 decode first
     try {
       const json = Buffer.from(b64, 'base64').toString('utf8')
       return { sa: JSON.parse(json), method: 'base64' }
-    } catch (e) {
-      return { sa: null, method: 'base64', error: `Failed to parse base64 service account: ${e.message}` }
+    } catch (_) {
+      // If base64 decode fails, try parsing as raw JSON (user may have pasted JSON directly)
+      try {
+        return { sa: JSON.parse(b64), method: 'base64-raw-json' }
+      } catch (e2) {
+        return { sa: null, method: 'base64', error: `Value is neither valid base64 nor raw JSON: ${e2.message}` }
+      }
     }
   }
 
