@@ -9,7 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        cleanupOutdatedCaches: true
+        cleanupOutdatedCaches: true,
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
       },
       manifest: {
         name: 'SafeLaunch — Trusted PWA Store',
