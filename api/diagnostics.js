@@ -10,8 +10,12 @@ function getServiceAccount() {
     try {
       const json = Buffer.from(b64, 'base64').toString('utf8')
       return { sa: JSON.parse(json), method: 'base64' }
-    } catch (e) {
-      return { sa: null, method: 'base64', error: e.message }
+    } catch (_) {
+      try {
+        return { sa: JSON.parse(b64), method: 'base64-raw-json' }
+      } catch (e2) {
+        return { sa: null, method: 'base64', error: e2.message }
+      }
     }
   }
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON

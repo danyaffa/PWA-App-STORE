@@ -20,8 +20,13 @@ function checkServiceAccount() {
   try {
     let sa
     if (b64) {
-      const json = Buffer.from(b64, 'base64').toString('utf8')
-      sa = JSON.parse(json)
+      try {
+        const json = Buffer.from(b64, 'base64').toString('utf8')
+        sa = JSON.parse(json)
+      } catch (_) {
+        // Fallback: try parsing as raw JSON (user may have pasted JSON directly)
+        sa = JSON.parse(b64)
+      }
     } else {
       sa = JSON.parse(raw)
     }
@@ -66,7 +71,11 @@ async function checkFirestoreConnection() {
       const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
       let sa
       if (b64) {
-        sa = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'))
+        try {
+          sa = JSON.parse(Buffer.from(b64, 'base64').toString('utf8'))
+        } catch (_) {
+          sa = JSON.parse(b64)
+        }
       } else if (raw) {
         sa = JSON.parse(raw)
       } else {
