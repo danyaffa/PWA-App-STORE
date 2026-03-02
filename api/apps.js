@@ -7,43 +7,80 @@
 //     - base64 of your service account JSON file
 //   or
 //   FIREBASE_SERVICE_ACCOUNT_JSON    (raw JSON string)
+//
+// Diagnostic: visit /api/health for a full status check.
 
 import admin from 'firebase-admin'
 
 function getServiceAccount() {
   const b64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64
   if (b64) {
-    const json = Buffer.from(b64, 'base64').toString('utf8')
-    return JSON.parse(json)
+    try {
+      const json = Buffer.from(b64, 'base64').toString('utf8')
+      return { sa: JSON.parse(json), method: 'base64' }
+    } catch (e) {
+      return { sa: null, method: 'base64', error: `Failed to parse base64 service account: ${e.message}` }
+    }
   }
 
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
-  if (raw) return JSON.parse(raw)
+  if (raw) {
+    try {
+      return { sa: JSON.parse(raw), method: 'json' }
+    } catch (e) {
+      return { sa: null, method: 'json', error: `Failed to parse JSON service account: ${e.message}` }
+    }
+  }
 
-  return null
+  return { sa: null, method: 'none', error: 'No service account env var found.' }
 }
 
 function getAdminDb() {
-  if (admin.apps.length) return admin.firestore()
+  if (admin.apps.length) return { db: admin.firestore(), error: null }
 
-  const sa = getServiceAccount()
-  if (!sa) return null
+  const { sa, method, error } = getServiceAccount()
+  if (!sa) {
+    return {
+      db: null,
+      error: error || 'Service account not configured.',
+      detail: {
+        FIREBASE_SERVICE_ACCOUNT_BASE64: process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 ? 'SET' : 'NOT SET',
+        FIREBASE_SERVICE_ACCOUNT_JSON: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? 'SET' : 'NOT SET',
+        method,
+        fix: 'Set FIREBASE_SERVICE_ACCOUNT_BASE64 in Vercel → Settings → Env Vars, then redeploy. Use /api/health to diagnose.',
+      },
+    }
+  }
 
-  admin.initializeApp({
-    credential: admin.credential.cert(sa),
-  })
-
-  return admin.firestore()
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(sa),
+    })
+    return { db: admin.firestore(), error: null }
+  } catch (e) {
+    return {
+      db: null,
+      error: `Admin SDK init failed: ${e.message}`,
+      detail: {
+        method,
+        projectId: sa.project_id || 'missing',
+        clientEmail: sa.client_email || 'missing',
+        fix: 'Service account may be invalid or from wrong project. Re-download from Firebase Console.',
+      },
+    }
+  }
 }
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
 
-  const db = getAdminDb()
+  const { db, error, detail } = getAdminDb()
   if (!db) {
+    console.error('[api/apps] Firebase Admin not available:', error, detail)
     return res.status(503).json({
-      error:
-        'Firebase Admin not configured. Set FIREBASE_SERVICE_ACCOUNT_BASE64 (recommended) or FIREBASE_SERVICE_ACCOUNT_JSON in Vercel.',
+      error: `Firebase Admin not configured: ${error}`,
+      detail,
+      diagnosticUrl: '/api/health',
     })
   }
 
@@ -55,7 +92,12 @@ export default async function handler(req, res) {
       return res.status(200).json(apps)
     } catch (e) {
       console.error('[api/apps] GET failed:', e?.message || e)
-      return res.status(500).json({ error: 'Failed to load apps.' })
+      const hint = e?.message?.includes('PERMISSION_DENIED')
+        ? 'Admin SDK should bypass rules — check service account project.'
+        : e?.message?.includes('NOT_FOUND')
+          ? 'Firestore database may not exist. Create it in Firebase Console.'
+          : 'Check Vercel function logs. Visit /api/health for diagnostics.'
+      return res.status(500).json({ error: `Failed to load apps: ${e?.message}`, hint })
     }
   }
 
@@ -78,7 +120,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true })
     } catch (e) {
       console.error('[api/apps] POST failed:', e?.message || e)
-      return res.status(500).json({ error: 'Failed to save app.' })
+      return res.status(500).json({ error: `Failed to save app: ${e?.message}` })
     }
   }
 
@@ -94,7 +136,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true })
     } catch (e) {
       console.error('[api/apps] DELETE failed:', e?.message || e)
-      return res.status(500).json({ error: 'Failed to delete app.' })
+      return res.status(500).json({ error: `Failed to delete app: ${e?.message}` })
     }
   }
 

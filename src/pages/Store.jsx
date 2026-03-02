@@ -51,10 +51,20 @@ export default function Store() {
         const published = await loadPublishedApps()
 
         const status = getAppsStoreStatus()
-        if (!status.firebaseEnabled) {
-          toast('Firebase is not configured — published apps may only appear on THIS browser (not incognito/other devices).')
-        } else if (status.lastRemoteError) {
-          toast('Firebase error — showing local apps only. Check Vercel env vars.')
+        if (status.lastRemoteError) {
+          const err = status.lastRemoteError
+          if (err.includes('404')) {
+            toast('API /api/apps returned 404 — serverless function not deployed. Check Vercel deployment.')
+          } else if (err.includes('503') || err.includes('not configured')) {
+            toast('Firebase Admin not configured on server — visit /api/health for diagnostics.')
+          } else if (err.includes('firebase_not_configured')) {
+            toast('Firebase not configured — published apps only visible on THIS browser (not incognito).')
+          } else {
+            toast(`Cloud sync failed: ${err}. Showing local apps only.`)
+          }
+          console.warn('[Store] Cloud sync issue:', err, '— visit /api/health for diagnostics.')
+        } else if (!status.firebaseEnabled) {
+          toast('Firebase client not configured — using server API only. If apps are missing, visit /api/health.')
         }
 
         if (!mounted) return
