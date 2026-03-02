@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
-import { loadPublishedApps } from '../lib/appsStore.js'
+import { loadPublishedApps, syncAllAppsToCloud, getAppsStoreStatus } from '../lib/appsStore.js'
 import SEO from '../components/SEO.jsx'
 import styles from './Dashboard.module.css'
 
@@ -24,6 +24,7 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [apps, setApps] = useState([])
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
 
   useEffect(() => {
     loadPublishedApps()
@@ -108,6 +109,30 @@ export default function Dashboard() {
         <div className={styles.actionRow}>
           <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
           <Link to="/store" className="btn btn-ghost">View Store</Link>
+          {apps.length > 0 && (
+            <button
+              className="btn btn-ghost"
+              disabled={syncing}
+              onClick={async () => {
+                setSyncing(true)
+                try {
+                  const result = await syncAllAppsToCloud()
+                  if (result.synced > 0) {
+                    toast(`Synced ${result.synced} app${result.synced > 1 ? 's' : ''} to cloud`)
+                  } else if (result.errors.length) {
+                    toast(`Sync failed: ${result.errors[0]}`)
+                    console.error('[Dashboard] Sync errors:', result.errors)
+                  }
+                } catch (e) {
+                  toast(`Sync error: ${e?.message}`)
+                } finally {
+                  setSyncing(false)
+                }
+              }}
+            >
+              {syncing ? 'Syncing…' : 'Sync to Cloud'}
+            </button>
+          )}
         </div>
 
         {/* Stats */}
