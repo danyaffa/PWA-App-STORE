@@ -66,7 +66,18 @@ async function apiLoadApps() {
   const res = await fetchWithTimeout('/api/apps')
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    throw new Error(body.error || `API ${res.status}`)
+    const status = res.status
+    let msg = body.error || `API ${status}`
+    if (status === 404) {
+      msg = 'API route /api/apps not found (404). The serverless function may not be deployed. Check Vercel deployment logs.'
+    } else if (status === 503 && body.detail) {
+      msg = `Firebase Admin not configured: ${body.error}. Visit /api/health for diagnostics.`
+      console.error('[appsStore] /api/apps 503 detail:', body.detail)
+    }
+    if (body.diagnosticUrl) {
+      console.info(`[appsStore] Run diagnostics: ${window.location.origin}${body.diagnosticUrl}`)
+    }
+    throw new Error(msg)
   }
   return await res.json()
 }
