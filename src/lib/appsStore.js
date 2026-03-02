@@ -27,19 +27,56 @@ function dedup(apps) {
   })
 }
 
+/** Strip undefined/function/symbol values before sending to API or Firestore. */
+function sanitize(obj) {
+  if (obj === null || obj === undefined) return null
+  if (Array.isArray(obj)) return obj.map(sanitize).filter(v => v !== undefined)
+  if (typeof obj === 'object' && !(obj instanceof Date)) {
+    const clean = {}
+    for (const [k, v] of Object.entries(obj)) {
+      if (v !== undefined && typeof v !== 'function' && typeof v !== 'symbol') {
+        clean[k] = sanitize(v)
+      }
+    }
+    return clean
+  }
+  return obj
+}
+
+/** Fetch with a timeout to prevent hanging requests. */
+function fetchWithTimeout(url, opts = {}, ms = 12000) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), ms)
+  return fetch(url, { ...opts, signal: controller.signal }).finally(() => clearTimeout(timer))
+}
+
+/** Retry a fn up to `times` with exponential backoff (1s, 2s, 4s). */
+async function withRetry(fn, times = 3) {
+  let lastErr
+  for (let i = 0; i < times; i++) {
+    try { return await fn() } catch (e) { lastErr = e }
+    if (i < times - 1) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)))
+  }
+  throw lastErr
+}
+
 /* ── Server-side API (works in ANY browser, incognito included) ────────── */
 
 async function apiLoadApps() {
-  const res = await fetch('/api/apps')
-  if (!res.ok) throw new Error(`API ${res.status}`)
+  const res = await fetchWithTimeout('/api/apps')
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `API ${res.status}`)
+  }
   return await res.json()
 }
 
 async function apiSaveApp(app) {
-  const res = await fetch('/api/apps', {
+  const clean = sanitize(app)
+  const res = await fetchWithTimeout('/api/apps', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(app),
+    body: JSON.stringify(clean),
   })
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
@@ -48,8 +85,13 @@ async function apiSaveApp(app) {
   return true
 }
 
+/** Save app with retry + exponential backoff (handles transient failures). */
+async function apiSaveAppWithRetry(app) {
+  return withRetry(() => apiSaveApp(app), 3)
+}
+
 async function apiDeleteApp(appId) {
-  const res = await fetch(`/api/apps?id=${encodeURIComponent(appId)}`, {
+  const res = await fetchWithTimeout(`/api/apps?id=${encodeURIComponent(appId)}`, {
     method: 'DELETE',
   })
   return res.ok
@@ -65,8 +107,9 @@ async function fbLoadApps() {
 
 async function fbSaveApp(app) {
   if (!isConfigured || !db) return false
+  const clean = sanitize(app)
   const ref = doc(db, 'apps', String(app.id))
-  await setDoc(ref, { ...app, updatedAt: serverTimestamp() }, { merge: true })
+  await setDoc(ref, { ...clean, updatedAt: serverTimestamp() }, { merge: true })
   return true
 }
 
@@ -88,9 +131,9 @@ export async function savePublishedApp(app) {
 
   const errors = []
 
-  // Try server API first (reliable), then client Firebase as fallback
+  // Try server API first (with retry for transient failures), then client Firebase as fallback
   try {
-    if (await apiSaveApp(app)) { lastRemoteError = null; return true }
+    if (await apiSaveAppWithRetry(app)) { lastRemoteError = null; return true }
   } catch (e) {
     const msg = e?.message || 'api_save_failed'
     errors.push(`API: ${msg}`)
@@ -130,13 +173,13 @@ export async function syncAllAppsToCloud() {
   const errors = []
 
   for (const app of local) {
-    // Try API first
+    // Try API first (with retry for transient failures)
     try {
-      if (await apiSaveApp(app)) { synced++; continue }
+      if (await apiSaveAppWithRetry(app)) { synced++; continue }
     } catch (e) {
       errors.push(`${app.name || app.id} API: ${e?.message}`)
     }
-    // Try client Firebase
+    // Try client Firebase as fallback
     try {
       if (await fbSaveApp(app)) { synced++; continue }
     } catch (e) {
@@ -155,9 +198,9 @@ export async function loadPublishedApps() {
     local = safeParse(localStorage.getItem(LS_KEY) || '[]', []).filter(a => a?.id)
   } catch { /* ignore */ }
 
-  // Try server API first — works in incognito, any browser, any device
+  // Try server API first (with retry) — works in incognito, any browser, any device
   try {
-    const remote = await apiLoadApps()
+    const remote = await withRetry(() => apiLoadApps(), 2)
     if (remote && remote.length) {
       lastRemoteError = null
       const merged = dedup([...remote, ...local])
@@ -191,7 +234,7 @@ function syncLocalOnlyApps(local, remote) {
   const remoteIds = new Set(remote.map(a => a?.id))
   const missing = local.filter(a => a?.id && !remoteIds.has(a.id))
   for (const app of missing) {
-    apiSaveApp(app)
+    apiSaveAppWithRetry(app)
       .then(ok => { if (!ok) return fbSaveApp(app) })
       .catch(() => fbSaveApp(app).catch(() => {}))
   }

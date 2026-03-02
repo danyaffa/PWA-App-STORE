@@ -117,10 +117,21 @@ export default function Dashboard() {
                 setSyncing(true)
                 try {
                   const result = await syncAllAppsToCloud()
-                  if (result.synced > 0) {
+                  if (result.synced > 0 && result.failed === 0) {
                     toast(`Synced ${result.synced} app${result.synced > 1 ? 's' : ''} to cloud`)
+                  } else if (result.synced > 0 && result.failed > 0) {
+                    toast(`Synced ${result.synced}, failed ${result.failed}. Check console for details.`)
+                    console.error('[Dashboard] Partial sync errors:', result.errors)
                   } else if (result.errors.length) {
-                    toast(`Sync failed: ${result.errors[0]}`)
+                    // Show a more actionable error message
+                    const detail = result.errors[0] || ''
+                    if (detail.includes('not configured')) {
+                      toast('Sync failed: Firebase not configured. Set env vars in Vercel dashboard.')
+                    } else if (detail.includes('timed out')) {
+                      toast('Sync failed: Request timed out. Try again in a moment.')
+                    } else {
+                      toast(`Sync failed: ${detail}`)
+                    }
                     console.error('[Dashboard] Sync errors:', result.errors)
                   }
                 } catch (e) {
