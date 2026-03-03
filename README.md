@@ -109,3 +109,19 @@ safelaunch/
 | 60–100 | 🚫 BLOCK |
 
 See `backend/` folder for the full scanner, risk-score model, Docker build sandbox, and PostgreSQL schema.
+
+## PayPal setup
+
+- Frontend setup guide: `/paypal/setup`
+- Checkout APIs:
+  - `POST /api/paypal/create-order`
+  - `POST /api/paypal/capture-order`
+- Webhook endpoint:
+  - `POST /api/paypal/webhook`
+
+Set these env vars in Vercel for server-side verification:
+
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
+- `PAYPAL_ENV` (`sandbox` or `live`)
+- `PAYPAL_WEBHOOK_ID` (from your PayPal webhook settings)

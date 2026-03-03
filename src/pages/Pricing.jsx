@@ -207,6 +207,7 @@ export default function Pricing() {
           <div className={styles.ctaActions}>
             <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
+            <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
         </div>
 
