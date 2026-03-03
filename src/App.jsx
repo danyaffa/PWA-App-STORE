@@ -24,6 +24,7 @@ import Tutorial     from './pages/Tutorial.jsx'
 import Management   from './pages/Management.jsx'
 import ManagementLogin from './pages/ManagementLogin.jsx'
 import Diagnostics  from './pages/Diagnostics.jsx'
+import PayPalSetup  from './pages/PayPalSetup.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -51,6 +52,7 @@ export default function App() {
       <Route path="/app/:id/promote"  element={<Promote />} />
       <Route path="/tutorial"     element={<Tutorial />} />
       <Route path="/diagnostics"  element={<Diagnostics />} />
+      <Route path="/paypal/setup" element={<PayPalSetup />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
   )
