@@ -3,13 +3,18 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
-import { useToast } from '../hooks/useToast.js'
 import styles from './Pricing.module.css'
+
+const PAYPAL_ENV = import.meta.env.VITE_PAYPAL_ENV || 'sandbox'
+const PAYPAL_BASE = PAYPAL_ENV === 'live'
+  ? 'https://www.paypal.com'
+  : 'https://www.sandbox.paypal.com'
 
 const LAUNCH_DEAL = {
   price: 2,
   totalSlots: 1000,
   claimed: 0,   // TODO: wire to Firestore counter
+  planId: 'P-2NW966480U5007726NGUP3EY',
   features: [
     'One-time $2 — no subscription needed',
     'Full 6-layer AI safety scan included',
@@ -24,8 +29,9 @@ const PLANS = [
     name: 'Creator Lite',
     price: { month: 9, year: 7 },
     desc: 'Perfect for indie devs shipping a single app.',
-    cta: 'Start Free Trial',
+    cta: 'Start 14-Day Free Trial',
     featured: false,
+    planId: 'P-3DN45660DX3919046NGUPOHA',
     features: [
       { label: '1 published app',             included: true },
       { label: '1 active version slot',       included: true },
@@ -44,6 +50,7 @@ const PLANS = [
     desc: 'For studios shipping multiple apps with full pipeline access.',
     cta: 'Start 14-Day Free Trial',
     featured: true,
+    planId: 'P-2JS06822B95082352NGUPR5Q',
     features: [
       { label: 'Up to 5 published apps',      included: true },
       { label: '3 active version slots / app',included: true },
@@ -60,8 +67,9 @@ const PLANS = [
     name: 'Business',
     price: { month: 99, year: 79 },
     desc: 'For enterprises needing unlimited apps, team seats, and compliance.',
-    cta: 'Contact Sales',
+    cta: 'Start 14-Day Free Trial',
     featured: false,
+    planId: 'P-3J957709U19092246NGTH2PY',
     features: [
       { label: 'Unlimited apps',              included: true },
       { label: 'Unlimited version slots',     included: true },
@@ -88,8 +96,6 @@ const FAQS = [
 export default function Pricing() {
   const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
-  const { toast, ToastContainer } = useToast()
-
   return (
     <>
       <SEO
@@ -122,9 +128,14 @@ export default function Pricing() {
                   {LAUNCH_DEAL.totalSlots - LAUNCH_DEAL.claimed} of {LAUNCH_DEAL.totalSlots} spots left
                 </span>
               </div>
-              <Link to="/publish" className={`btn btn-primary btn-lg ${styles.launchCta}`}>
+              <a
+                href={`${PAYPAL_BASE}/webapps/billing/plans/subscribe?plan_id=${LAUNCH_DEAL.planId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`btn btn-primary btn-lg ${styles.launchCta}`}
+              >
                 Claim Your $2 Spot
-              </Link>
+              </a>
             </div>
             <div className={styles.launchRight}>
               <ul className={styles.launchFeatures}>
@@ -180,12 +191,15 @@ export default function Pricing() {
                 <div className={styles.annualNote}>billed ${plan.price.year * 12}/yr</div>
               )}
               <p className={styles.planDesc}>{plan.desc}</p>
-              <button
+              <div className={styles.trialBadge}>14-day free trial</div>
+              <a
+                href={`${PAYPAL_BASE}/webapps/billing/plans/subscribe?plan_id=${plan.planId}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'} ${styles.planCta}`}
-                onClick={() => toast(`🚀 ${plan.cta} — ${plan.name}`)}
               >
                 {plan.cta}
-              </button>
+              </a>
               <ul className={styles.featureList}>
                 {plan.features.map(f => (
                   <li key={f.label} className={`${styles.featureItem} ${f.included ? styles.included : styles.excluded}`}>
@@ -227,7 +241,6 @@ export default function Pricing() {
 
       </div>
       <Footer />
-      <ToastContainer />
     </>
   )
 }

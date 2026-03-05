@@ -75,6 +75,17 @@ export default function Nav() {
             )}
           </ul>
 
+          <div className={`${styles.authButtons} ${menuOpen ? styles.menuOpen : ''}`}>
+            {user ? (
+              <Link to="/dashboard" className={`btn btn-ghost btn-sm ${styles.authBtn}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            ) : (
+              <>
+                <Link to="/signin" className={`btn btn-ghost btn-sm ${styles.authBtn}`} onClick={() => setMenuOpen(false)}>Login</Link>
+                <Link to="/signin?tab=register" className={`btn btn-primary btn-sm ${styles.authBtn} ${styles.registerBtn}`} onClick={() => setMenuOpen(false)}>Register</Link>
+              </>
+            )}
+          </div>
+
         </nav>
 
         {/* ── Row 2 – Publisher Tools ─────────────────────────── */}

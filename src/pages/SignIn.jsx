@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import SEO from '../components/SEO.jsx'
 import styles from './SignIn.module.css'
@@ -7,9 +7,10 @@ import { useToast } from '../hooks/useToast.js'
 
 export default function SignIn() {
   const nav = useNavigate()
+  const [searchParams] = useSearchParams()
   const { toast, ToastContainer } = useToast()
   const { login, register, isConfigured } = useAuth()
-  const [tab, setTab] = useState('signin')
+  const [tab, setTab] = useState(searchParams.get('tab') === 'register' ? 'register' : 'signin')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
