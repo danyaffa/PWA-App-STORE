@@ -130,8 +130,17 @@
 .amount    { font-family: var(--font-display); font-size: 4rem; line-height: 1; letter-spacing: -0.02em; }
 .per       { color: var(--muted); font-size: 0.9rem; margin-left: 4px; }
 .annualNote { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; font-family: var(--font-mono); }
-.planDesc  { color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 28px; min-height: 48px; }
-.planCta   { width: 100%; justify-content: center; margin-bottom: 28px; }
+.planDesc  { color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 12px; min-height: 48px; }
+.trialBadge {
+  display: inline-block;
+  background: rgba(0,229,160,.12); color: var(--accent);
+  border: 1px solid rgba(0,229,160,.3);
+  border-radius: 100px; padding: 4px 14px;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.planCta   { width: 100%; justify-content: center; text-align: center; margin-bottom: 28px; text-decoration: none; display: flex; }
 .featureList { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 .featureItem { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
 .featureIcon { width: 18px; text-align: center; flex-shrink: 0; font-weight: 700; }
