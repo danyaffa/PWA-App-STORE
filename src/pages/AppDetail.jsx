@@ -4,6 +4,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
+import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
 import { APPS } from '../utils/data.js'
 import { loadPublishedApps } from '../lib/appsStore.js'
 import { useInstallState } from '../hooks/useInstallState.js'
@@ -57,6 +58,7 @@ export default function AppDetail() {
   }
 
   function handleInstall() {
+    if (installed) return
     setShowDisclaimer(true)
   }
 
@@ -68,16 +70,15 @@ export default function AppDetail() {
     // Open the app so the user can use/install it directly
     if (app.url) {
       window.open(app.url, '_blank', 'noopener,noreferrer')
-      toast(`${app.name} opened — bookmark or install it from your browser.`)
+      toast(`${app.name} installed and opened in a new tab!`)
       return
     }
 
-    toast(`${app.name} marked as installed.`)
+    toast(`${app.name} installed successfully!`)
   }
 
   function handleInstallDeclined() {
     setShowDisclaimer(false)
-    toast('Install cancelled.')
   }
 
   return (
@@ -231,7 +232,11 @@ export default function AppDetail() {
               )}
 
               {!isPaid && (
-                <button className={`btn ${installed ? 'btn-ghost' : 'btn-primary'} ${styles.bigBtn}`} onClick={handleInstall}>
+                <button
+                  className={`btn ${installed ? 'btn-ghost' : 'btn-primary'} ${styles.bigBtn}`}
+                  onClick={handleInstall}
+                  disabled={installed}
+                >
                   {installed ? 'Installed' : 'Install App'}
                 </button>
               )}
@@ -257,18 +262,12 @@ export default function AppDetail() {
         </div>
 
         {showDisclaimer && (
-          <div className={styles.modalOverlay} role="dialog" aria-modal="true">
-            <div className={styles.modal}>
-              <h3>Install {app.name}</h3>
-              <p>
-                This will open {app.name} in a new tab. You can then use it directly or install it from your browser.
-              </p>
-              <div className={styles.modalBtns}>
-                <button className="btn btn-ghost" onClick={handleInstallDeclined}>Cancel</button>
-                <button className="btn btn-primary" onClick={handleInstallAccepted}>Install</button>
-              </div>
-            </div>
-          </div>
+          <InstallDisclaimer
+            appName={app.name}
+            appId={app.id}
+            onAccept={handleInstallAccepted}
+            onCancel={handleInstallDeclined}
+          />
         )}
       </div>
 
