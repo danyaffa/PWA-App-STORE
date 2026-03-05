@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Support.module.css'
 
@@ -25,8 +27,8 @@ function aiAnswer(q) {
   if (s.includes('price') || s.includes('paid') || s.includes('free')) {
     return 'In Publish, choose Free or Paid. If Paid, you\'ll set your pricing plan. For now, promo codes can enable free access to the platform.'
   }
-  if (s.includes('blocked') || s.includes('remove') || s.includes('delete')) {
-    return 'Management can block or delete apps from the Management Dashboard. Delete requires a verification code step.'
+  if (s.includes('blocked') || s.includes('remove') || s.includes('delete') || s.includes('disconnect') || s.includes('cancel')) {
+    return 'To delete your account and data, use the "Disconnect Account" button at the bottom of this page. This will cancel your plan and remove all your data permanently.'
   }
   if (s.includes('privacy') || s.includes('tracker') || s.includes('safe') || s.includes('malware') || s.includes('security')) {
     return 'Safety is a mix of automated checks (permissions, trackers, phishing signals) + policy rules. If you want, paste an app URL and I\'ll tell you what to scan for.'
@@ -36,25 +38,20 @@ function aiAnswer(q) {
 
 export default function Support() {
   const [openFaq, setOpenFaq] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
-
   const [chat, setChat] = useState([{ role: 'assistant', text: aiAnswer('') }])
   const [chatInput, setChatInput] = useState('')
+  const [showDisconnect, setShowDisconnect] = useState(false)
+  const [disconnecting, setDisconnecting] = useState(false)
 
+  const { user, logout } = useAuth()
   const { toast, ToastContainer } = useToast()
+  const navigate = useNavigate()
 
   const quickPrompts = useMemo(() => ([
     'How do I publish a ZIP?',
     'Why doesn\'t Install work on external apps?',
     'What does "Verified Safe" mean?',
   ]), [])
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (!form.email || !form.message) return
-    toast('Message sent! We will respond within 24 hours.')
-    setForm({ name: '', email: '', subject: '', message: '' })
-  }
 
   function sendChat(text) {
     const t = (text || '').trim()
@@ -63,11 +60,33 @@ export default function Support() {
     setChatInput('')
   }
 
+  async function handleDisconnect() {
+    setDisconnecting(true)
+    try {
+      // Clear all local data
+      localStorage.removeItem('sl_auth')
+      localStorage.removeItem('sl_published_apps')
+      localStorage.removeItem('sl_publish_draft')
+      localStorage.removeItem('sl_billing_status')
+      localStorage.removeItem('sl_promo_code')
+      localStorage.removeItem('sl_dev_agreement')
+      // Sign out
+      await logout()
+      toast('Account disconnected. All local data removed.')
+      setTimeout(() => navigate('/'), 500)
+    } catch {
+      toast('Sign-out failed. Local data has been cleared.')
+      setTimeout(() => navigate('/'), 500)
+    } finally {
+      setDisconnecting(false)
+    }
+  }
+
   return (
     <>
       <SEO
         title="Support — SafeLaunch"
-        description="Get help with SafeLaunch. FAQs, AI help, and contact form."
+        description="Get help with SafeLaunch. FAQs and AI-powered support."
         canonical="https://pwa-app-store.com/support"
       />
       <Nav />
@@ -75,7 +94,7 @@ export default function Support() {
         <div className="section-label">Help Center</div>
         <h1 className="section-title display">How Can We Help?</h1>
         <p className="section-sub" style={{ marginBottom: 32 }}>
-          FAQs, AI help, or contact our team.
+          FAQs and AI-powered support — ask anything below.
         </p>
 
         <h2 className={styles.sectionHead}>Frequently Asked Questions</h2>
@@ -126,37 +145,38 @@ export default function Support() {
           </div>
         </div>
 
-        <h2 className={styles.sectionHead} style={{ marginTop: 28 }}>Contact Support</h2>
-        <div className={styles.contactCard}>
-          <form className={styles.contactForm} onSubmit={handleSubmit}>
-            <div className={styles.formRow}>
-              <div className="form-group">
-                <label>Name</label>
-                <input className="input" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+        {/* Disconnect Account */}
+        {user && (
+          <div className={styles.disconnectSection}>
+            {!showDisconnect ? (
+              <button
+                className={styles.disconnectBtn}
+                onClick={() => setShowDisconnect(true)}
+              >
+                Disconnect Account
+              </button>
+            ) : (
+              <div className={styles.disconnectWarning}>
+                <strong>Warning:</strong> This will permanently remove your data, cancel your plan, and sign you out. This action cannot be undone.
+                <div className={styles.disconnectActions}>
+                  <button
+                    className={styles.disconnectConfirm}
+                    disabled={disconnecting}
+                    onClick={handleDisconnect}
+                  >
+                    {disconnecting ? 'Disconnecting...' : 'Yes, Remove My Data & Cancel Plan'}
+                  </button>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => setShowDisconnect(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-              <div className="form-group">
-                <label>Email *</label>
-                <input className="input" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Subject</label>
-              <input className="input" value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Message *</label>
-              <textarea className="input" rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
-            </div>
-            <button className="btn btn-primary">Send</button>
-          </form>
-
-          <div className={styles.contactInfo}>
-            <h3>Support</h3>
-            <div className={styles.infoItem}><strong>Email</strong><span>support@agentslock.com</span></div>
-            <div className={styles.infoItem}><strong>Hours</strong><span>Mon–Fri (AEST)</span></div>
-            <div className={styles.infoItem}><strong>Response</strong><span>Within 24 hours</span></div>
+            )}
           </div>
-        </div>
+        )}
       </div>
       <Footer />
       <ToastContainer />

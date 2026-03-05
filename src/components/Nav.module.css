@@ -136,7 +136,7 @@
 @media (max-width: 768px) {
   .primaryRow { padding: 0 16px; }
   .logo { left: 16px; font-size: 1.4rem; }
-  .hamburger { display: flex; }
+  .hamburger { display: flex; position: absolute; right: 16px; }
 
   /* Desktop auth buttons hidden on mobile */
   .authButtons { display: none; }
@@ -230,5 +230,6 @@
 @media (max-width: 480px) {
   .primaryRow { padding: 0 12px; }
   .logo { left: 12px; font-size: 1.25rem; }
+  .hamburger { right: 12px; }
   .primaryLink { font-size: 1.2rem; }
 }

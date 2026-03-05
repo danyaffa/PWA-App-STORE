@@ -124,8 +124,8 @@ export default function DeveloperAgreement() {
         </section>
 
         <section className={styles.section}>
-          <h2>7. Contact</h2>
-          <p>Questions about this agreement? Contact <strong>support@agentslock.com</strong>.</p>
+          <h2>7. Questions</h2>
+          <p>Questions about this agreement? Please use our AI Support page for assistance.</p>
         </section>
 
         {/* Acceptance checkboxes */}

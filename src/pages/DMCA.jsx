@@ -23,12 +23,12 @@ export default function DMCA() {
 
         <section className={styles.section}>
           <h2>2. Platform Disclaimer</h2>
-          <p><strong>Apps published on this platform are submitted by independent developers. We do not create, own, or guarantee the safety, legality, or functionality of third-party applications. Users install apps at their own discretion. If you believe an app violates laws or rights, contact abuse@agentslock.com for immediate review.</strong></p>
+          <p><strong>Apps published on this platform are submitted by independent developers. We do not create, own, or guarantee the safety, legality, or functionality of third-party applications. Users install apps at their own discretion. If you believe an app violates laws or rights, please report it through our AI Support page for immediate review.</strong></p>
         </section>
 
         <section className={styles.section}>
           <h2>3. Filing a DMCA Takedown Notice</h2>
-          <p>If you believe an application on SafeLaunch infringes your copyright, please send a written notification to <strong>abuse@agentslock.com</strong> containing:</p>
+          <p>If you believe an application on SafeLaunch infringes your copyright, please submit a report through our AI Support page containing:</p>
           <ul>
             <li>Your full legal name and contact information (email, phone, mailing address).</li>
             <li>A description of the copyrighted work you claim has been infringed.</li>
@@ -51,7 +51,7 @@ export default function DMCA() {
 
         <section className={styles.section}>
           <h2>5. Counter-Notification</h2>
-          <p>If you believe your app was removed in error, you may file a counter-notification to <strong>abuse@agentslock.com</strong> containing:</p>
+          <p>If you believe your app was removed in error, you may file a counter-notification through our AI Support page containing:</p>
           <ul>
             <li>Your full legal name and contact information.</li>
             <li>Identification of the material that was removed and the URL where it appeared.</li>
@@ -63,7 +63,7 @@ export default function DMCA() {
 
         <section className={styles.section}>
           <h2>6. Content Removal (Non-Copyright)</h2>
-          <p>For non-copyright content removal requests (malware, illegal content, impersonation, privacy violations), please contact <strong>abuse@agentslock.com</strong> with:</p>
+          <p>For non-copyright content removal requests (malware, illegal content, impersonation, privacy violations), please report through our AI Support page with:</p>
           <ul>
             <li>The app name and URL.</li>
             <li>Description of the issue.</li>
@@ -78,9 +78,8 @@ export default function DMCA() {
         </section>
 
         <section className={styles.section}>
-          <h2>8. Contact</h2>
-          <p><strong>DMCA Agent:</strong> abuse@agentslock.com</p>
-          <p><strong>General Support:</strong> support@agentslock.com</p>
+          <h2>8. Reporting</h2>
+          <p>For all DMCA and content removal requests, please use our AI Support page.</p>
         </section>
       </div>
       <Footer />

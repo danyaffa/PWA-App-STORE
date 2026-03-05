@@ -62,7 +62,7 @@ export default function Privacy() {
 
         <section className={styles.section}>
           <h2>6. Your Rights</h2>
-          <p>You may request access to, correction of, or deletion of your personal data by contacting us at support@agentslock.com. You can delete your account at any time from your dashboard settings.</p>
+          <p>You may request access to, correction of, or deletion of your personal data. You can delete your account at any time from the Support page.</p>
         </section>
 
         <section className={styles.section}>
@@ -81,9 +81,8 @@ export default function Privacy() {
         </section>
 
         <section className={styles.section}>
-          <h2>10. Contact Us</h2>
-          <p>If you have questions about this Privacy Policy, contact us at:</p>
-          <p><strong>Email:</strong> support@agentslock.com</p>
+          <h2>10. Questions</h2>
+          <p>If you have questions about this Privacy Policy, please use our AI Support page for assistance.</p>
         </section>
       </div>
       <Footer />

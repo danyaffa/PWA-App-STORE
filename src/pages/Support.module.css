@@ -112,7 +112,56 @@
   font-size: 0.82rem;
 }
 
+/* Disconnect Account */
+.disconnectSection {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.disconnectBtn {
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.disconnectBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+.disconnectWarning {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid #ef4444;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  color: #fca5a5;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.disconnectActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 14px;
+}
+.disconnectConfirm {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.disconnectConfirm:hover { opacity: 0.9; }
+.disconnectConfirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
 @media (max-width: 768px) {
-  .contactCard { grid-template-columns: 1fr; }
-  .formRow { grid-template-columns: 1fr; }
+  .disconnectActions { flex-direction: column; align-items: stretch; }
+  .disconnectConfirm { text-align: center; }
 }
