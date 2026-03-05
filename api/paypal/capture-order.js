@@ -6,6 +6,10 @@ const PAYPAL_BASE = process.env.PAYPAL_ENV === 'live'
   : 'https://api-m.sandbox.paypal.com'
 
 async function getAccessToken() {
+  if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+    throw new Error('PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET must be set')
+  }
+
   const auth = Buffer.from(
     `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`,
   ).toString('base64')
@@ -20,6 +24,9 @@ async function getAccessToken() {
   })
 
   const data = await res.json()
+  if (!data.access_token) {
+    throw new Error(`PayPal token request failed: ${data.error || 'no access_token returned'}`)
+  }
   return data.access_token
 }
 

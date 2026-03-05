@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './TrustOps.module.css'
 
@@ -71,6 +72,7 @@ export default function TrustOps() {
 
   return (
     <div className={styles.layout}>
+      <SEO title="Trust Ops — SafeLaunch Admin" description="Review and moderate app submissions. Approve, request fixes, or block apps." canonical="https://agentslock.com/trust-ops" />
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <Link to="/" className={styles.logo}>Safe<span>Launch</span> <span className={styles.adminTag}>ADMIN</span></Link>

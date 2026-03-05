@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import { APPS } from '../utils/data.js'
+import { loadPublishedApps } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Promote.module.css'
 
@@ -11,8 +12,23 @@ export default function Promote() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
   const [copied, setCopied] = useState(null)
+  const [publishedApps, setPublishedApps] = useState([])
 
-  const app = APPS.find(a => a.id === id)
+  useEffect(() => {
+    loadPublishedApps().then(setPublishedApps).catch(() => {})
+  }, [])
+
+  const allApps = useMemo(() => {
+    const merged = [...publishedApps, ...APPS]
+    const seen = new Set()
+    return merged.filter(a => {
+      if (!a?.id || seen.has(a.id)) return false
+      seen.add(a.id)
+      return true
+    })
+  }, [publishedApps])
+
+  const app = allApps.find(a => a.id === id)
 
   if (!app) {
     return (

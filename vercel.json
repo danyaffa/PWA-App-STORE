@@ -2,8 +2,8 @@
   "redirects": [
     {
       "source": "/((?!api/).*)",
-      "has": [{ "type": "host", "value": "pwa-app-store.com" }],
-      "destination": "https://www.pwa-app-store.com/$1",
+      "has": [{ "type": "host", "value": "agentslock.com" }],
+      "destination": "https://www.agentslock.com/$1",
       "permanent": true
     }
   ],
