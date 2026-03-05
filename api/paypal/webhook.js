@@ -3,6 +3,10 @@ const PAYPAL_BASE = process.env.PAYPAL_ENV === 'live'
   : 'https://api-m.sandbox.paypal.com'
 
 async function getAccessToken() {
+  if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+    throw new Error('PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET must be set')
+  }
+
   const auth = Buffer.from(
     `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`,
   ).toString('base64')
@@ -17,6 +21,9 @@ async function getAccessToken() {
   })
 
   const data = await res.json()
+  if (!data.access_token) {
+    throw new Error(`PayPal token request failed: ${data.error || 'no access_token returned'}`)
+  }
   return data.access_token
 }
 
@@ -64,11 +71,20 @@ export default async function handler(req, res) {
     const eventBody = req.body || {}
 
     const hasSignatureHeaders = Boolean(req.headers['paypal-transmission-id'])
-    if (hasSignatureHeaders) {
+    const webhookIdConfigured = Boolean(process.env.PAYPAL_WEBHOOK_ID)
+
+    if (webhookIdConfigured) {
+      // When webhook verification is configured, require valid signature headers
+      if (!hasSignatureHeaders) {
+        console.warn('PayPal webhook: Missing signature headers — rejecting (PAYPAL_WEBHOOK_ID is configured)')
+        return res.status(400).json({ error: 'Missing webhook signature headers' })
+      }
       const isValid = await verifyWebhookSignature(req, eventBody)
       if (!isValid) {
         return res.status(400).json({ error: 'Invalid webhook signature' })
       }
+    } else {
+      console.warn('PayPal webhook: PAYPAL_WEBHOOK_ID not set — signature verification skipped')
     }
 
     console.log('PayPal webhook received:', {

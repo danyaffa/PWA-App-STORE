@@ -87,7 +87,7 @@ export default function Support() {
       <SEO
         title="Support — SafeLaunch"
         description="Get help with SafeLaunch. FAQs and AI-powered support."
-        canonical="https://pwa-app-store.com/support"
+        canonical="https://agentslock.com/support"
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 900 }}>

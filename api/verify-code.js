@@ -9,7 +9,8 @@ import crypto from 'crypto'
 const CODE_TTL = 10 * 60 * 1000 // 10 minutes
 
 function hmacSign(code, email, ts) {
-  const secret = process.env.MGMT_SECRET || 'default-dev-secret'
+  const secret = process.env.MGMT_SECRET
+  if (!secret) throw new Error('MGMT_SECRET not configured')
   return crypto
     .createHmac('sha256', secret)
     .update(`${code}:${email}:${ts}`)
@@ -19,6 +20,10 @@ function hmacSign(code, email, ts) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (!process.env.MGMT_SECRET) {
+    return res.status(503).json({ error: 'MGMT_SECRET not configured. Set it in Vercel Environment Variables.' })
   }
 
   const { email, code, token, ts } = req.body || {}

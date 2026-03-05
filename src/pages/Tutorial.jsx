@@ -94,7 +94,7 @@ export default function Tutorial() {
       <SEO
         title="Tutorial — Build & Publish PWAs"
         description="Learn what a PWA is, how to build it with AI tools, and how to publish on SafeLaunch."
-        canonical="https://pwa-app-store.com/tutorial"
+        canonical="https://agentslock.com/tutorial"
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 980 }}>

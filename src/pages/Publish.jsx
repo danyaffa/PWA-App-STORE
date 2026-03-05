@@ -251,7 +251,7 @@ export default function Publish() {
       <SEO
         title="Publish — SafeLaunch"
         description="Upload and publish your PWA with AI safety scanning."
-        canonical="https://pwa-app-store.com/publish"
+        canonical="https://agentslock.com/publish"
       />
       <Nav />
 

@@ -112,7 +112,7 @@ export default function Store() {
 
   return (
     <>
-      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical="https://pwa-app-store.com/store" />
+      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical="https://agentslock.com/store" />
       <Nav />
       <div className="page-wrap">
         <div className="section-label">Store</div>

@@ -202,7 +202,7 @@ export default function Diagnostics() {
       <SEO
         title="Diagnostics — SafeLaunch"
         description="Run diagnostics to verify Store publishing and cloud sync across browsers."
-        canonical="https://pwa-app-store.com/diagnostics"
+        canonical="https://agentslock.com/diagnostics"
       />
       <Nav />
       <div className="page-wrap">

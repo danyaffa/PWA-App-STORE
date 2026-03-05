@@ -85,7 +85,7 @@ export default function AppDetail() {
       <SEO
         title={`${app.name} — SafeLaunch`}
         description={app.desc}
-        canonical={`https://pwa-app-store.com/app/${app.id}`}
+        canonical={`https://agentslock.com/app/${app.id}`}
       />
       <Nav />
 

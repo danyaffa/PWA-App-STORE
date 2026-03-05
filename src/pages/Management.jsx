@@ -138,7 +138,7 @@ export default function Management() {
 
   return (
     <>
-      <SEO title="Management Dashboard - SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical="https://pwa-app-store.com/management" />
+      <SEO title="Management Dashboard - SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical="https://agentslock.com/management" />
       <Nav />
       <div className="page-wrap">
         <div className={styles.header}>

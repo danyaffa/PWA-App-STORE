@@ -128,7 +128,7 @@ export default function SignIn() {
 
   return (
     <>
-      <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://pwa-app-store.com/signin" />
+      <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://agentslock.com/signin" />
       <div className={styles.page}>
         <div className={styles.card}>
           <div className={styles.logo}>Safe<span>Launch</span></div>
@@ -160,7 +160,35 @@ export default function SignIn() {
               </button>
 
               <div className={styles.forgot}>
-                <Link className={styles.forgotBtn} to="/forgot">Forgot password?</Link>
+                <button
+                  type="button"
+                  className={styles.forgotBtn}
+                  disabled={busy}
+                  onClick={async () => {
+                    if (!email) return setError('Enter your email first, then click "Forgot password".')
+                    setBusy(true)
+                    try {
+                      if (isConfigured) {
+                        const { sendPasswordResetEmail } = await import('firebase/auth')
+                        const { auth } = await import('../lib/firebase.js')
+                        await sendPasswordResetEmail(auth, email)
+                      }
+                      toast('Password reset email sent. Check your inbox.')
+                      setError('')
+                    } catch (err) {
+                      const code = err?.code || ''
+                      if (code === 'auth/user-not-found') {
+                        setError('No account found with this email.')
+                      } else {
+                        setError(err?.message || 'Failed to send reset email.')
+                      }
+                    } finally {
+                      setBusy(false)
+                    }
+                  }}
+                >
+                  Forgot password?
+                </button>
               </div>
 
               <div className={styles.divider}><span>or continue with</span></div>

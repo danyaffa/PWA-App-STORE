@@ -9,9 +9,13 @@
  */
 
 export default async function handler(req, res) {
-  // Simple auth to prevent unauthorized triggers
+  // Auth required — CRON_SECRET must be set in production
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return res.status(503).json({ error: 'CRON_SECRET not configured. Set it in Vercel Environment Variables.' })
+  }
   const authHeader = req.headers.authorization
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 

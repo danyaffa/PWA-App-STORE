@@ -112,7 +112,7 @@ export default function ManagementLogin() {
 
   return (
     <>
-      <SEO title="Management Login — SafeLaunch" description="Secure admin access with verification code." canonical="https://pwa-app-store.com/management-login" />
+      <SEO title="Management Login — SafeLaunch" description="Secure admin access with verification code." canonical="https://agentslock.com/management-login" />
       <Nav />
       <div className="page-wrap">
         <div className={styles.wrap}>
