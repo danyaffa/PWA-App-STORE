@@ -59,3 +59,21 @@
   .tblRow > *:nth-child(4), .tblRow > *:nth-child(5) { display: none; }
   .bottomGrid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .main { padding: 24px 16px; }
+  .pageTitle { font-size: 1.5rem; }
+  .actionRow { flex-direction: column; gap: 10px; }
+  .actionRow > * { width: 100%; justify-content: center; text-align: center; }
+  .statValue { font-size: 1.8rem; }
+  .tblHead { font-size: 0.65rem; padding: 10px 12px; }
+  .tblRow { padding: 12px; }
+}
+
+@media (max-width: 480px) {
+  .main { padding: 16px 12px; }
+  .statsRow { grid-template-columns: 1fr; }
+  .tblHead, .tblRow { grid-template-columns: 1fr 60px; }
+  .tblHead span:nth-child(2), .tblHead span:nth-child(3),
+  .tblRow > *:nth-child(2), .tblRow > *:nth-child(3) { display: none; }
+}

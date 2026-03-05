@@ -125,7 +125,29 @@ select.input option { background: var(--surface2); }
 }
 
 /* ── Responsive ────────────────────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .page-wrap { padding: calc(var(--nav-h) + 36px) 28px 70px; }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
-  .page-wrap { padding: calc(var(--nav-h) + 24px) 20px 60px; }
+  :root {
+    --nav-h: var(--nav-row1); /* only Row 1 visible on mobile */
+  }
+  .page-wrap { padding: calc(var(--nav-row1) + 24px) 16px 80px; }
   .hide-mobile { display: none !important; }
+  .btn { padding: 12px 20px; font-size: 0.88rem; min-height: 44px; }
+  .btn-sm { padding: 10px 16px; font-size: 0.82rem; min-height: 40px; }
+  .btn-lg { padding: 14px 28px; font-size: 0.95rem; min-height: 48px; }
+  .section-title { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+  .input { padding: 14px 16px; font-size: 1rem; min-height: 48px; }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .page-wrap { padding: calc(var(--nav-row1) + 16px) 12px 80px; }
+  .section-label { font-size: 0.72rem; }
+  .section-sub { font-size: 0.9rem; }
 }

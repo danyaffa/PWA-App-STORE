@@ -1,6 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ManagementRoute from './components/ManagementRoute.jsx'
+import InstallButton from './components/InstallButton.jsx'
+import IOSInstallGuide from './components/IOSInstallGuide.jsx'
+import { usePWAInstall } from './hooks/usePWAInstall.js'
 
 import Home         from './pages/Home.jsx'
 import Store        from './pages/Store.jsx'
@@ -28,7 +31,12 @@ import PayPalSetup  from './pages/PayPalSetup.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
+  const { showIOSGuide, dismissIOSGuide } = usePWAInstall()
+
   return (
+    <>
+    <InstallButton />
+    {showIOSGuide && <IOSInstallGuide onDismiss={dismissIOSGuide} />}
     <Routes>
       <Route path="/"             element={<Home />} />
       <Route path="/store"        element={<Store />} />
@@ -55,5 +63,6 @@ export default function App() {
       <Route path="/paypal/setup" element={<PayPalSetup />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
+    </>
   )
 }
