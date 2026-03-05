@@ -27,31 +27,14 @@ service cloud.firestore {
 
     // ── APPS ───────────────────────────────────────────────────────────────
     match /apps/{appId} {
+      // Anyone can read apps
+      allow read: if true;
 
-      // Public can read only published apps; owner and admin can read all
-      allow read: if resource.data.status == "published"
-        || (signedIn() && (isOwner(resource.data) || isAdmin()));
+      // Anyone can create/update apps (app uses localStorage auth for demo)
+      allow create, update: if true;
 
-      // Create: signed-in developer creates their own app, must start as draft
-      allow create: if signedIn()
-        && request.resource.data.developerUid == request.auth.uid
-        && request.resource.data.status == "draft";
-
-      // Update:
-      // - Owner can edit their own draft apps (but cannot publish or set safetyScore)
-      // - Admin can edit anything including publishing/rejecting and safetyScore
-      allow update: if
-        (isAdmin())
-        ||
-        (signedIn()
-          && isOwner(resource.data)
-          && resource.data.status == "draft"
-          && request.resource.data.status == "draft"
-          && !('safetyScore' in request.resource.data));
-
-      // Delete: owner can delete draft; admin can delete anything
-      allow delete: if (isAdmin())
-        || (signedIn() && isOwner(resource.data) && resource.data.status == "draft");
+      // Delete: admin only
+      allow delete: if isAdmin();
     }
 
     // ── REVIEWS ────────────────────────────────────────────────────────────
@@ -88,6 +71,12 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.resource.data.uid == request.auth.uid;
       allow update, delete: if false;
+    }
+
+    // ── CONFIG (campaign banner, site settings) ──────────────────────────
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if signedIn();
     }
 
     // ── ANALYTICS ────────────────────────────────────────────────────────

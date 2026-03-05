@@ -1,95 +1,188 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useToast } from '../hooks/useToast.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import SEO from '../components/SEO.jsx'
 import styles from './SignIn.module.css'
+import { useToast } from '../hooks/useToast.js'
 
 export default function SignIn() {
-  const [mode, setMode]           = useState('signin')
-  const [email, setEmail]         = useState('')
-  const [password, setPassword]   = useState('')
-  const [name, setName]           = useState('')
-  const [password2, setPassword2] = useState('')
-  const [error, setError]         = useState('')
+  const nav = useNavigate()
   const { toast, ToastContainer } = useToast()
-  const navigate = useNavigate()
+  const { login, register, isConfigured } = useAuth()
+  const [tab, setTab] = useState('signin')
 
-  function handleSignIn(e) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [company, setCompany] = useState('')
+  const [password2, setPassword2] = useState('')
+  const [promoCode, setPromoCode] = useState('')
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  async function handleSignIn(e) {
     e.preventDefault()
-    if (!email || !password) { setError('Please fill in all fields.'); return }
     setError('')
-    toast('✅ Signing in...')
-    setTimeout(() => navigate('/dashboard'), 1200)
+    if (!email || !password) return setError('Please enter email and password.')
+
+    setBusy(true)
+    try {
+      // Authenticate with Firebase when configured
+      if (isConfigured) {
+        await login(email, password)
+      }
+
+      // Store supplementary data in localStorage
+      localStorage.setItem('sl_auth', JSON.stringify({ email, company: company || 'Publisher', ts: Date.now() }))
+      if (promoCode && promoCode.trim()) {
+        localStorage.setItem('sl_promo_code', promoCode.trim())
+        localStorage.setItem('sl_billing_status', 'active')
+      }
+
+      toast('Signed in.')
+      setTimeout(() => nav('/dashboard'), 350)
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
+        setError('Invalid email or password. Please try again.')
+      } else if (code === 'auth/wrong-password') {
+        setError('Incorrect password. Please try again.')
+      } else if (code === 'auth/too-many-requests') {
+        setError('Too many attempts. Please try again later.')
+      } else if (code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else {
+        setError(err.message || 'Sign in failed. Please try again.')
+      }
+    } finally {
+      setBusy(false)
+    }
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault()
-    if (!name || !email || !password) { setError('Please fill in all fields.'); return }
-    if (password !== password2) { setError('Passwords do not match.'); return }
     setError('')
-    toast('🎉 Account created!')
-    setTimeout(() => navigate('/dashboard'), 1500)
+    if (!company || !email || !password) return setError('Please fill all fields.')
+    if (password.length < 8) return setError('Password must be at least 8 characters.')
+    if (password !== password2) return setError('Passwords do not match.')
+
+    setBusy(true)
+    try {
+      // Register with Firebase when configured
+      if (isConfigured) {
+        await register(email, password, company)
+      }
+
+      localStorage.setItem('sl_auth', JSON.stringify({ email, company, ts: Date.now() }))
+
+      // Promo code = free access path (skips payment for now)
+      if (promoCode && promoCode.trim()) {
+        localStorage.setItem('sl_promo_code', promoCode.trim())
+        localStorage.setItem('sl_billing_status', 'active')
+      }
+
+      toast('Account created!')
+      setTimeout(() => nav('/pricing'), 350)
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Try signing in instead.')
+      } else if (code === 'auth/weak-password') {
+        setError('Password is too weak. Please use a stronger password.')
+      } else if (code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else {
+        setError(err.message || 'Registration failed. Please try again.')
+      }
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
-    <div className={styles.page}>
-      <div className="orb" style={{width:500,height:500,background:'rgba(0,229,160,.06)',top:-100,left:-150}} />
-      <div className="orb" style={{width:400,height:400,background:'rgba(124,111,255,.06)',bottom:-100,right:-100}} />
+    <>
+      <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://pwa-app-store.com/signin" />
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <div className={styles.logo}>Safe<span>Launch</span></div>
 
-      <div className={styles.card}>
-        <Link to="/" className={styles.logo}>Safe<span>Launch</span></Link>
+          <div className={styles.tabs}>
+            <button className={`${styles.tab} ${tab === 'signin' ? styles.active : ''}`} onClick={() => setTab('signin')}>Sign In</button>
+            <button className={`${styles.tab} ${tab === 'register' ? styles.active : ''}`} onClick={() => setTab('register')}>Create Account</button>
+          </div>
 
-        <div className={styles.tabs}>
-          <button className={`${styles.tab} ${mode==='signin' ? styles.active : ''}`} onClick={() => { setMode('signin'); setError('') }}>Sign In</button>
-          <button className={`${styles.tab} ${mode==='register' ? styles.active : ''}`} onClick={() => { setMode('register'); setError('') }}>Create Account</button>
+          {tab === 'signin' && (
+            <form className={styles.form} onSubmit={handleSignIn}>
+              <div className="form-group">
+                <label>EMAIL</label>
+                <input className="input" placeholder="you@yourcompany.com" value={email} onChange={e => setEmail(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>PASSWORD</label>
+                <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>PROMO CODE (OPTIONAL)</label>
+                <input className="input" placeholder="Enter promo code" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
+              </div>
+
+              {error && <div className={styles.errorBox}>{error}</div>}
+
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} disabled={busy}>
+                {busy ? 'Signing in...' : 'Sign In →'}
+              </button>
+
+              <div className={styles.forgot}>
+                <Link className={styles.forgotBtn} to="/forgot">Forgot password?</Link>
+              </div>
+
+              <div className={styles.divider}><span>or continue with</span></div>
+              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`}>🦑 GitHub</button>
+              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`}>🔑 Google</button>
+
+              <Link className={styles.back} to="/store">← Back to SafeLaunch</Link>
+            </form>
+          )}
+
+          {tab === 'register' && (
+            <form className={styles.form} onSubmit={handleRegister}>
+              <div className="form-group">
+                <label>PUBLISHER / COMPANY NAME</label>
+                <input className="input" placeholder="Dev Studio" value={company} onChange={e => setCompany(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>EMAIL</label>
+                <input className="input" placeholder="you@yourcompany.com" value={email} onChange={e => setEmail(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>PASSWORD</label>
+                <input className="input" type="password" placeholder="Min 8 characters" value={password} onChange={e => setPassword(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>CONFIRM PASSWORD</label>
+                <input className="input" type="password" placeholder="Repeat password" value={password2} onChange={e => setPassword2(e.target.value)} />
+              </div>
+
+              <div className="form-group">
+                <label>PROMO CODE (OPTIONAL)</label>
+                <input className="input" placeholder="Enter promo code" value={promoCode} onChange={e => setPromoCode(e.target.value)} />
+              </div>
+
+              {error && <div className={styles.errorBox}>{error}</div>}
+
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} disabled={busy}>
+                {busy ? 'Creating account...' : 'Create Account →'}
+              </button>
+
+              <div className={styles.terms}>
+                By creating an account you agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
+              </div>
+
+              <Link className={styles.back} to="/store">← Back to SafeLaunch</Link>
+            </form>
+          )}
         </div>
-
-        {error && <div className={styles.errorBox}>{error}</div>}
-
-        {mode === 'signin' ? (
-          <form onSubmit={handleSignIn} className={styles.form}>
-            <div className="form-group">
-              <label>Email</label>
-              <input className="input" type="email" placeholder="you@yourcompany.com" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" />
-            </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
-            </div>
-            <div className={styles.forgot}>
-              <button type="button" className={styles.forgotBtn} onClick={() => toast('📧 Reset email sent')}>Forgot password?</button>
-            </div>
-            <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Sign In →</button>
-            <div className={styles.divider}><span>or continue with</span></div>
-            <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`} onClick={() => toast('🐙 GitHub OAuth — coming soon')}>🐙 GitHub</button>
-            <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`} onClick={() => toast('🔑 Google OAuth — coming soon')}>🔑 Google</button>
-          </form>
-        ) : (
-          <form onSubmit={handleRegister} className={styles.form}>
-            <div className="form-group">
-              <label>Publisher / Company Name</label>
-              <input className="input" placeholder="Dev Studio" value={name} onChange={e => setName(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input className="input" type="email" placeholder="you@yourcompany.com" value={email} onChange={e => setEmail(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input className="input" type="password" placeholder="Min 8 characters" value={password} onChange={e => setPassword(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>Confirm Password</label>
-              <input className="input" type="password" placeholder="Repeat password" value={password2} onChange={e => setPassword2(e.target.value)} />
-            </div>
-            <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Create Account →</button>
-            <p className={styles.terms}>By creating an account you agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
-          </form>
-        )}
-
-        <Link to="/" className={styles.back}>← Back to SafeLaunch</Link>
       </div>
-
       <ToastContainer />
-    </div>
+    </>
   )
 }

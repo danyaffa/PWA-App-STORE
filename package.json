@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "firebase": "^12.9.0",
+    "firebase-admin": "^13.7.0",
+    "nodemailer": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0"
@@ -22,6 +24,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.5",
+    "sharp": "^0.34.5",
     "vite": "^5.1.0",
     "vite-plugin-pwa": "^0.19.2"
   }

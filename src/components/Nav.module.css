@@ -1,53 +1,83 @@
-.nav {
+/* ── Header wrapper ────────────────────────────────────────────────────────── */
+.header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 40px;
-  background: rgba(10,10,15,0.9);
+}
+
+/* ── Row 1 – Primary (Store & Install) ────────────────────────────────────── */
+.primaryRow {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  padding: 0 40px;
+  background: rgba(10,10,15,0.95);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  height: var(--nav-h);
+  border-bottom: 1px solid var(--accent);
+  height: var(--nav-row1);
 }
 
 .logo {
+  position: absolute; left: 40px;
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   color: var(--text);
   letter-spacing: -0.02em;
   z-index: 101;
 }
 .logo span { color: var(--accent); }
 
-.links {
-  display: flex; gap: 32px; list-style: none;
+.primaryLinks {
+  display: flex; gap: 40px; list-style: none; align-items: center;
 }
 
-.link {
+.primaryLink {
+  color: var(--text);
+  font-size: 1.2rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color .2s;
+}
+.primaryLink:hover, .primaryLink.active { color: var(--accent); }
+
+.installLink {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body);
+  padding: 0;
+}
+
+.actions { display: flex; gap: 12px; margin-left: auto; }
+
+/* ── Row 2 – Secondary (Publisher Tools) ──────────────────────────────────── */
+.secondaryRow {
+  display: flex; align-items: center; gap: 24px;
+  padding: 0 40px;
+  background: rgba(18,18,30,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(124,111,255,0.3);
+  height: var(--nav-row2);
+}
+
+.secondaryLabel {
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(124,111,255,0.5);
+  margin-right: 4px;
+}
+
+.secondaryLinks {
+  display: flex; gap: 32px; list-style: none; align-items: center;
+}
+
+.secondaryLink {
   color: var(--muted);
-  font-size: 0.9rem; font-weight: 600;
+  font-size: 0.85rem; font-weight: 600;
   letter-spacing: 0.05em; text-transform: uppercase;
   transition: color .2s;
 }
-.link:hover, .active { color: var(--accent); }
+.secondaryLink:hover, .secondaryActive { color: var(--accent2); }
 
-/* Nav search bar */
-.navSearch {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; padding: 4px 14px;
-  transition: border-color .2s;
+.submitBtn {
+  margin-left: 12px;
 }
-.navSearch:focus-within { border-color: var(--accent); }
-.navSearchIcon { font-size: 0.8rem; }
-.navSearchInput {
-  border: none; background: transparent; outline: none;
-  color: var(--text); font-size: 0.82rem; padding: 6px 0;
-  width: 180px; font-family: var(--font-body);
-}
-.navSearchInput::placeholder { color: var(--muted); }
 
-.actions { display: flex; gap: 12px; }
-
-/* Hamburger */
+/* ── Hamburger ────────────────────────────────────────────────────────────── */
 .hamburger {
   display: none;
   flex-direction: column; gap: 5px;
@@ -63,25 +93,35 @@
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .nav { padding: 16px 20px; }
+  .primaryRow { padding: 0 20px; }
   .hamburger { display: flex; }
 
-  .navSearch {
+  .primaryLinks {
     display: none;
-    width: calc(100% - 40px); margin: 0 auto;
-    position: fixed; top: calc(var(--nav-h) + 12px); left: 20px; right: 20px;
+    position: fixed; top: var(--nav-row1); left: 0; right: 0; bottom: 0;
+    flex-direction: column; align-items: center;
+    padding-top: 80px;
+    gap: 28px; background: var(--bg); z-index: 102;
+  }
+  .primaryLinks.menuOpen { display: flex; }
+
+  /* On mobile, show secondary links in the mobile menu overlay */
+  .secondaryRow {
+    display: none;
+    position: fixed; bottom: 100px; left: 20px; right: 20px;
+    flex-direction: column; gap: 12px;
+    background: rgba(18,18,30,0.95);
+    border: 1px solid rgba(124,111,255,0.3);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    height: auto;
     z-index: 103;
   }
-  .navSearch.menuOpen { display: flex; }
-
-  .links {
-    display: none;
-    position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
-    flex-direction: column; align-items: center; justify-content: center;
-    gap: 32px; background: var(--bg); z-index: 102;
-  }
-  .links.menuOpen { display: flex; }
+  .secondaryRow.menuOpen { display: flex; }
+  .secondaryLinks { flex-wrap: wrap; justify-content: center; gap: 20px; }
+  .submitBtn { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; justify-content: center; }
 
   .actions {
     display: none;

@@ -1,67 +1,90 @@
-.tabs {
-  display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;
+/* Hero install section */
+.installHero {
+  text-align: center;
+  margin-bottom: 40px;
 }
-.tab {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 24px; border-radius: var(--radius-sm);
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--muted); font-weight: 700; font-size: 0.88rem;
-  cursor: pointer; transition: all .2s; font-family: var(--font-body);
-}
-.tab:hover { border-color: var(--accent); color: var(--text); }
-.tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,.06); }
-.tabIcon { font-size: 1.3rem; }
 
-.stepsCard {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 36px; margin-bottom: 32px;
+.installBtn {
+  font-size: 1.2rem;
+  padding: 18px 48px;
+  min-width: 280px;
+  margin-bottom: 16px;
 }
-.stepList {
-  list-style: none; display: flex; flex-direction: column; gap: 20px;
-  padding: 0; margin: 0 0 24px;
-}
-.step {
-  display: flex; align-items: flex-start; gap: 16px;
-  font-size: 0.92rem; line-height: 1.6; color: var(--text);
-}
-.step strong { color: var(--accent); }
-.stepNum {
-  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(0,229,160,.1); color: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 0.82rem;
-}
-.result {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 20px; border-radius: var(--radius-sm);
-  background: rgba(0,229,160,.06); border: 1px solid rgba(0,229,160,.15);
-  color: var(--accent); font-size: 0.88rem; line-height: 1.5;
-}
-.resultIcon { font-size: 1.2rem; }
 
+.installSub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.installedBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 229, 160, 0.08);
+  border: 1px solid rgba(0, 229, 160, 0.2);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.checkMark {
+  font-size: 1.3rem;
+}
+
+/* Info note */
 .note {
-  padding: 20px 24px; border-radius: var(--radius-md);
-  background: rgba(124,111,255,.06); border: 1px solid rgba(124,111,255,.15);
-  color: var(--text); font-size: 0.88rem; line-height: 1.7; margin-bottom: 48px;
+  padding: 20px 24px;
+  border-radius: var(--radius-md);
+  background: rgba(124, 111, 255, 0.06);
+  border: 1px solid rgba(124, 111, 255, 0.15);
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  text-align: center;
 }
 
+/* Promo code */
 .promoSection {
-  text-align: center; margin-bottom: 48px;
+  text-align: center;
+  margin-bottom: 48px;
 }
-.promoTitle {
-  font-size: 1.1rem; margin-bottom: 16px;
-}
-.promoForm {
-  display: flex; gap: 12px; max-width: 400px; margin: 0 auto;
-}
-.promoForm .input { flex: 1; }
 
+.promoTitle {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.promoForm {
+  display: flex;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.promoForm .input {
+  flex: 1;
+}
+
+/* CTA buttons */
 .cta {
-  display: flex; gap: 16px; justify-content: center; padding-bottom: 40px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding-bottom: 40px;
 }
 
 @media (max-width: 768px) {
-  .tabs { flex-direction: column; }
-  .stepsCard { padding: 24px; }
-  .cta { flex-direction: column; align-items: center; }
+  .installBtn {
+    width: 100%;
+    min-width: unset;
+  }
+  .cta {
+    flex-direction: column;
+    align-items: center;
+  }
 }

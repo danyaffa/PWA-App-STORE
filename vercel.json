@@ -1,0 +1,17 @@
+{
+  "redirects": [
+    {
+      "source": "/((?!api/).*)",
+      "has": [{ "type": "host", "value": "pwa-app-store.com" }],
+      "destination": "https://www.pwa-app-store.com/$1",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    {
+      "source": "/((?!.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|txt|xml|json|map|css|js|woff|woff2)$).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -6,6 +6,19 @@ import SEO from '../components/SEO.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Pricing.module.css'
 
+const LAUNCH_DEAL = {
+  price: 2,
+  totalSlots: 1000,
+  claimed: 0,   // TODO: wire to Firestore counter
+  features: [
+    'One-time $2 — no subscription needed',
+    'Full 6-layer AI safety scan included',
+    'Public trust report & verified badge',
+    'Listed in the store permanently',
+    'Upgrade to a plan anytime later',
+  ],
+}
+
 const PLANS = [
   {
     name: 'Creator Lite',
@@ -87,6 +100,46 @@ export default function Pricing() {
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 1100 }}>
 
+        {/* ── Grand Launch Deal ─────────────────────────────── */}
+        <div className={styles.launchDeal}>
+          <div className={styles.launchRibbon}>GRAND LAUNCH DEAL</div>
+          <div className={styles.launchContent}>
+            <div className={styles.launchLeft}>
+              <h2 className={`display ${styles.launchTitle}`}>
+                First 1,000 Apps<br />Just <span className={styles.launchPrice}>$2</span>
+              </h2>
+              <p className={styles.launchSub}>
+                One-time payment. No subscription required. Get your app listed in the store with a full safety scan.
+              </p>
+              <div className={styles.launchMeter}>
+                <div className={styles.launchMeterTrack}>
+                  <div
+                    className={styles.launchMeterFill}
+                    style={{ width: `${(LAUNCH_DEAL.claimed / LAUNCH_DEAL.totalSlots) * 100}%` }}
+                  />
+                </div>
+                <span className={styles.launchMeterLabel}>
+                  {LAUNCH_DEAL.totalSlots - LAUNCH_DEAL.claimed} of {LAUNCH_DEAL.totalSlots} spots left
+                </span>
+              </div>
+              <Link to="/publish" className={`btn btn-primary btn-lg ${styles.launchCta}`}>
+                Claim Your $2 Spot
+              </Link>
+            </div>
+            <div className={styles.launchRight}>
+              <ul className={styles.launchFeatures}>
+                {LAUNCH_DEAL.features.map(f => (
+                  <li key={f} className={styles.launchFeature}>
+                    <span className={styles.launchCheck}>&#10003;</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Regular Plans ───────────────────────────────── */}
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
           <div className="section-label">Simple Pricing</div>
           <h1 className={`section-title display ${styles.heroTitle}`}>
@@ -154,6 +207,7 @@ export default function Pricing() {
           <div className={styles.ctaActions}>
             <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
+            <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
         </div>
 

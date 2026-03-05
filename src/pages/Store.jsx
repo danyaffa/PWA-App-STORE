@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
 import SEO from '../components/SEO.jsx'
 import { trackSearch } from '../lib/analytics.js'
 import { APPS, CATEGORIES } from '../utils/data.js'
+import { loadPublishedApps, getAppsStoreStatus } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Store.module.css'
 
@@ -20,208 +21,153 @@ const SORT_OPTIONS = [
 
 function parseInstalls(str) {
   const n = parseFloat(str)
-  if (str.includes('k')) return n * 1000
-  return n
-}
-
-function sortApps(apps, sortBy) {
-  const sorted = [...apps]
-  switch (sortBy) {
-    case 'ranking':   return sorted.sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0))
-    case 'popular':   return sorted.sort((a, b) => parseInstalls(b.installs) - parseInstalls(a.installs))
-    case 'newest':    return sorted.sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
-    case 'safest':    return sorted.sort((a, b) => a.score - b.score)
-    case 'top_rated': return sorted.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-    case 'name':      return sorted.sort((a, b) => a.name.localeCompare(b.name))
-    default:          return sorted
-  }
-}
-
-function getPublishedApps() {
-  try {
-    return JSON.parse(localStorage.getItem('sl_published_apps') || '[]')
-  } catch { return [] }
+  if (String(str).toLowerCase().includes('m')) return Math.round(n * 1_000_000)
+  if (String(str).toLowerCase().includes('k')) return Math.round(n * 1_000)
+  return Number.isFinite(n) ? n : 0
 }
 
 export default function Store() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [filter, setFilter] = useState('All')
-  const [search, setSearch] = useState(searchParams.get('q') || '')
-  const [sort, setSort]     = useState('ranking')
-  const [userApps, setUserApps] = useState(getPublishedApps)
-  const [featuredApp, setFeaturedApp] = useState(null)
   const { toast, ToastContainer } = useToast()
-  const featuredRef = useRef(null)
+  const [baseApps, setBaseApps] = useState(APPS)
+  const [q, setQ] = useState('')
+  const [cat, setCat] = useState('All')
+  const [sort, setSort] = useState('ranking')
+  const [showSections, setShowSections] = useState(true)
 
-  // Refresh user-published apps when tab becomes visible (e.g. after publishing)
   useEffect(() => {
-    function onFocus() { setUserApps(getPublishedApps()) }
-    window.addEventListener('focus', onFocus)
-    return () => window.removeEventListener('focus', onFocus)
-  }, [])
-
-  // Also refresh on mount and storage changes
-  useEffect(() => {
-    function onStorage(e) { if (e.key === 'sl_published_apps') setUserApps(getPublishedApps()) }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
-  }, [])
-
-  // Merge hardcoded sample apps with user-published apps
-  const allApps = [...APPS, ...userApps]
-
-  // Algorithm-driven sections
-  const TRENDING    = [...allApps].sort((a, b) => (b.rankingScore || 0) - (a.rankingScore || 0)).slice(0, 4)
-  const TOP_RATED   = [...allApps].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4)
-  const NEW_APPS    = [...allApps].sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)).slice(0, 4)
-  const VERIFIED    = allApps.filter(a => (a.safetyScore || 0) >= 85).slice(0, 4)
-  const RISING_FAST = [...allApps].sort((a, b) => (b.installVelocity || 0) - (a.installVelocity || 0)).slice(0, 4)
-
-  // Featured app: user-selected or default to top trending
-  const FEATURED = featuredApp || TRENDING[0]
-
-  // Sync search from URL query param (e.g. /store?q=focus)
-  useEffect(() => {
-    const q = searchParams.get('q')
-    if (q && q !== search) setSearch(q)
-  }, [searchParams])
-
-  const filtered = allApps.filter(a =>
-    (filter === 'All' || a.category === filter) &&
-    (!search || a.name.toLowerCase().includes(search.toLowerCase()) || a.desc.toLowerCase().includes(search.toLowerCase()))
-  )
-  const visible = sortApps(filtered, sort)
-
-  function handleSearch(e) {
-    const q = e.target.value
-    setSearch(q)
-    if (q.length >= 3) trackSearch(q)
-  }
-
-  function handleFeature(app) {
-    setFeaturedApp(app)
-    // Scroll featured box into view
-    if (featuredRef.current) {
-      featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    const params = new URLSearchParams(window.location.search)
+    const pq = params.get('q') || ''
+    if (pq) {
+      setQ(pq)
+      setShowSections(false)
+      trackSearch(pq)
     }
-  }
+  }, [])
 
-  const showSections = !search && filter === 'All'
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const published = await loadPublishedApps()
+
+        const status = getAppsStoreStatus()
+        if (status.lastRemoteError) {
+          const err = status.lastRemoteError
+          if (err.includes('404')) {
+            toast('API /api/apps returned 404 — serverless function not deployed. Check Vercel deployment.')
+          } else if (err.includes('503') || err.includes('not configured')) {
+            toast('Firebase Admin not configured on server — visit /api/health for diagnostics.')
+          } else if (err.includes('firebase_not_configured')) {
+            toast('Firebase not configured — published apps only visible on THIS browser (not incognito).')
+          } else {
+            toast(`Cloud sync failed: ${err}. Showing local apps only.`)
+          }
+          console.warn('[Store] Cloud sync issue:', err, '— visit /api/health for diagnostics.')
+        } else if (!status.firebaseEnabled) {
+          toast('Firebase client not configured — using server API only. If apps are missing, visit /api/health.')
+        }
+
+        if (!mounted) return
+        const merged = [...published, ...APPS]
+        const seen = new Set()
+        const deduped = merged.filter(a => {
+          const id = a?.id
+          if (!id) return false
+          if (seen.has(id)) return false
+          seen.add(id)
+          return true
+        })
+        setBaseApps(deduped)
+      } catch (e) {
+        console.error(e)
+        setBaseApps(APPS)
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
+
+  const BASE = [...baseApps]
+
+  const filtered = BASE.filter(a => {
+    const matchesQ = !q.trim() || `${a.name} ${a.desc} ${a.category}`.toLowerCase().includes(q.toLowerCase())
+    const matchesCat = cat === 'All' || a.category === cat
+    return matchesQ && matchesCat
+  })
+
+  const sorted = filtered.sort((a, b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name)
+    if (sort === 'popular') return parseInstalls(b.installs) - parseInstalls(a.installs)
+    if (sort === 'newest') return (b.publishedAt || '').localeCompare(a.publishedAt || '')
+    if (sort === 'safest') return (b.safetyScore || 0) - (a.safetyScore || 0)
+    if (sort === 'top_rated') return (b.averageRating || 0) - (a.averageRating || 0)
+    return (b.rankingScore || 0) - (a.rankingScore || 0)
+  })
+
+  const visible = sorted.slice(0, 24)
+
+  const TRENDING = BASE.filter(a => (a.badges || []).includes('trending')).slice(0, 6)
+  const NEW_APPS = BASE.filter(a => (a.badges || []).includes('new')).slice(0, 6)
+  const VERIFIED = BASE.filter(a => (a.badges || []).includes('verified')).slice(0, 6)
+  const RISING_FAST = BASE.filter(a => (a.badges || []).includes('rising')).slice(0, 6)
 
   return (
     <>
-      <SEO
-        title="Browse Apps — SafeLaunch PWA App Store"
-        description="Browse and install AI-verified progressive web apps. Every app scanned for safety. Productivity, finance, health, developer tools, entertainment, and education."
-        canonical="https://agentslock.com/store"
-      />
+      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical="https://pwa-app-store.com/store" />
       <Nav />
       <div className="page-wrap">
-        <div className="section-label">The SafeLaunch Store</div>
-        <h1 className="section-title display">AI-Verified Apps.<br />Every Single One.</h1>
+        <div className="section-label">Store</div>
+        <h1 className="section-title display">Safe Apps. Fast Install.</h1>
+        <p className="section-sub">Find safe, verified apps with transparent trust scores.</p>
 
-        {/* Hero search bar — always visible at top */}
-        <div className={styles.heroSearch}>
-          <div className={styles.heroSearchInner}>
-            <span className={styles.heroSearchIcon}>🔍</span>
-            <input
-              className={styles.heroSearchInput}
-              type="search"
-              placeholder="Search by app name, category, or keyword..."
-              value={search}
-              onChange={handleSearch}
-            />
-            {search && (
-              <button className={styles.heroSearchClear} onClick={() => setSearch('')} aria-label="Clear search">✕</button>
-            )}
-          </div>
-          <div className={styles.heroFilters}>
-            {CATEGORIES.map(c => (
-              <button
-                key={c}
-                className={`${styles.filterBtn} ${filter === c ? styles.active : ''}`}
-                onClick={() => setFilter(c)}
-              >{c}</button>
-            ))}
-          </div>
-        </div>
+        <div className={styles.filters}>
+          <input
+            className={styles.search}
+            placeholder="Search apps..."
+            value={q}
+            onChange={e => { setQ(e.target.value); setShowSections(false) }}
+            onKeyDown={e => { if (e.key === 'Enter') { toast('Searching…'); trackSearch(q) } }}
+          />
 
-        {/* Featured strip — dynamic: updates when you click an app's Details */}
-        {showSections && FEATURED && (
-          <div ref={featuredRef} className={`${styles.featured} ${featuredApp ? styles.featuredActive : ''}`}>
-            <span className={styles.featuredEmoji}>{FEATURED.icon}</span>
-            <div className={styles.featuredInfo}>
-              <div className={styles.featuredLabel}>{featuredApp ? 'Selected App' : 'Featured App'}</div>
-              <div className={styles.featuredName}>{FEATURED.name}</div>
-              <div className={styles.featuredDesc}>
-                {FEATURED.desc}
-                {FEATURED.developer && <span style={{ display: 'block', marginTop: 4, fontSize: '0.82rem' }}>by {FEATURED.developer} · </span>}
-                Safety: {FEATURED.safetyScore}/100 · {FEATURED.averageRating} stars · {FEATURED.installs} installs
-              </div>
-            </div>
-            <Link to={`/app/${FEATURED.id}`} className="btn btn-primary">View App</Link>
-          </div>
-        )}
+          <select className={styles.select} value={cat} onChange={e => { setCat(e.target.value); setShowSections(false) }}>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
 
-        {/* Algorithm-driven sections (only when not searching) */}
-        {showSections && (
-          <>
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Trending Now</h2>
-              <div className={styles.scrollRow}>
-                {TRENDING.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
-              </div>
-            </section>
-
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Top Rated</h2>
-              <div className={styles.scrollRow}>
-                {TOP_RATED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
-              </div>
-            </section>
-
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>New Apps</h2>
-              <div className={styles.scrollRow}>
-                {NEW_APPS.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
-              </div>
-            </section>
-
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Verified Safe</h2>
-              <div className={styles.scrollRow}>
-                {VERIFIED.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
-              </div>
-            </section>
-
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Rising Fast</h2>
-              <div className={styles.scrollRow}>
-                {RISING_FAST.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}
-              </div>
-            </section>
-          </>
-        )}
-
-        {/* All Apps heading + sort */}
-        <div className={styles.allAppsHeader}>
-          <h2 className={styles.sectionTitle} style={{ margin: 0 }}>{search || filter !== 'All' ? `Results${search ? ` for "${search}"` : ''}${filter !== 'All' ? ` in ${filter}` : ''}` : 'All Apps'}</h2>
-          <select className={`input ${styles.sortSelect}`} value={sort} onChange={e => setSort(e.target.value)}>
+          <select className={styles.select} value={sort} onChange={e => setSort(e.target.value)}>
             {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
+
+          <button className="btn btn-ghost" onClick={() => { setQ(''); setCat('All'); setSort('ranking'); setShowSections(true); toast('Reset.') }}>
+            Reset
+          </button>
         </div>
 
-        {visible.length === 0
-          ? <div className={styles.empty}>No apps found. Try a different filter or search term.</div>
-          : <div className={styles.grid}>{visible.map(a => <AppCard key={a.id} app={a} onFeature={handleFeature} />)}</div>
-        }
+        {showSections ? (
+          <>
+            <h2 className={styles.sectionTitle}>Trending</h2>
+            <div className={styles.grid}>{TRENDING.map(a => <AppCard key={a.id} app={a} />)}</div>
 
-        {/* Stats bar */}
-        <div className={styles.storeStats}>
-          <span>{allApps.length} verified apps</span>
-          <span>6-layer AI safety scan</span>
-          <span>Algorithm-ranked daily</span>
-        </div>
+            <h2 className={styles.sectionTitle}>New & Updated</h2>
+            <div className={styles.grid}>{NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}</div>
+
+            <h2 className={styles.sectionTitle}>Verified Safe</h2>
+            <div className={styles.grid}>{VERIFIED.map(a => <AppCard key={a.id} app={a} />)}</div>
+
+            <h2 className={styles.sectionTitle}>Rising Fast</h2>
+            <div className={styles.grid}>{RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}</div>
+
+            <h2 className={styles.sectionTitle}>Browse</h2>
+            <div className={styles.grid}>
+              {visible.map(a => <AppCard key={a.id} app={a} />)}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className={styles.sectionTitle}>Results</h2>
+            <div className={styles.grid}>
+              {visible.map(a => <AppCard key={a.id} app={a} />)}
+            </div>
+          </>
+        )}
       </div>
       <Footer />
       <ToastContainer />
