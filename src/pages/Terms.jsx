@@ -98,8 +98,8 @@ export default function Terms() {
         </section>
 
         <section className={styles.section}>
-          <h2>11. Contact</h2>
-          <p>Questions about these Terms? Contact us at <strong>support@agentslock.com</strong>.</p>
+          <h2>11. Questions</h2>
+          <p>Questions about these Terms? Please use our AI Support page for assistance.</p>
         </section>
       </div>
       <Footer />
