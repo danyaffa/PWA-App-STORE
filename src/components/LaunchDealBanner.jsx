@@ -37,7 +37,7 @@ export default function LaunchDealBanner() {
           </div>
         </div>
 
-        <Link to="/publish" className={styles.cta}>
+        <Link to="/signin?tab=register" className={styles.cta}>
           Publish Your App for $2
         </Link>
       </div>
