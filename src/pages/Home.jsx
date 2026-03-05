@@ -48,7 +48,7 @@ export default function Home() {
             ))}
           </div>
           <div className={styles.featuresActions}>
-            <Link to="/signin?tab=register" className="btn btn-primary btn-lg">Browse Store</Link>
+            <Link to="/store" className="btn btn-primary btn-lg">Browse Store</Link>
             <Link to="/signin?tab=register" className="btn btn-ghost btn-lg">Start Publishing</Link>
           </div>
         </section>
