@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext.jsx'
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import styles from './Nav.module.css'
 
@@ -17,7 +16,6 @@ const PUBLISHER_LINKS = [
 
 export default function Nav() {
   const { pathname } = useLocation()
-  const { user } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const { install, installed, isStandalone } = usePWAInstall()
 
@@ -68,14 +66,8 @@ export default function Nav() {
 
           {/* Mobile-only: auth + dev links inside menu overlay */}
           <li className={styles.mobileAuthGroup}>
-            {user ? (
-              <Link to="/dashboard" className={`btn btn-primary btn-sm ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Dashboard</Link>
-            ) : (
-              <>
-                <Link to="/signin" className={`btn btn-ghost btn-sm ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Login</Link>
-                <Link to="/signin?tab=register" className={`btn btn-primary btn-sm ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Register</Link>
-              </>
-            )}
+            <Link to="/signin" className={`btn btn-ghost btn-sm ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Login</Link>
+            <Link to="/signin?tab=register" className={`btn btn-primary btn-sm ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Register</Link>
           </li>
 
           <li className={styles.mobileDevLinks}>
@@ -100,14 +92,8 @@ export default function Nav() {
 
         {/* Desktop auth buttons */}
         <div className={styles.authButtons}>
-          {user ? (
-            <Link to="/dashboard" className={`btn btn-ghost btn-sm ${styles.authBtn}`}>Dashboard</Link>
-          ) : (
-            <>
-              <Link to="/signin" className={`btn btn-ghost btn-sm ${styles.authBtn}`}>Login</Link>
-              <Link to="/signin?tab=register" className={`btn btn-primary btn-sm ${styles.authBtn} ${styles.registerBtn}`}>Register</Link>
-            </>
-          )}
+          <Link to="/signin" className={`btn btn-ghost btn-sm ${styles.authBtn}`}>Login</Link>
+          <Link to="/signin?tab=register" className={`btn btn-primary btn-sm ${styles.authBtn} ${styles.registerBtn}`}>Register</Link>
         </div>
       </nav>
 

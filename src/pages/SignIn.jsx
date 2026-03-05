@@ -9,7 +9,7 @@ export default function SignIn() {
   const nav = useNavigate()
   const [searchParams] = useSearchParams()
   const { toast, ToastContainer } = useToast()
-  const { login, register, isConfigured } = useAuth()
+  const { login, register, loginWithGoogle, loginWithGithub, isConfigured } = useAuth()
   const [tab, setTab] = useState(searchParams.get('tab') === 'register' ? 'register' : 'signin')
 
   const [email, setEmail] = useState('')
@@ -19,6 +19,33 @@ export default function SignIn() {
   const [promoCode, setPromoCode] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+
+  async function handleOAuthLogin(provider) {
+    setError('')
+    setBusy(true)
+    try {
+      const result = provider === 'google' ? await loginWithGoogle() : await loginWithGithub()
+      const u = result?.user
+      localStorage.setItem('sl_auth', JSON.stringify({
+        email: u?.email || '',
+        company: u?.displayName || 'Publisher',
+        ts: Date.now(),
+      }))
+      toast('Signed in.')
+      setTimeout(() => nav('/dashboard'), 350)
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/popup-closed-by-user') {
+        setError('Sign-in popup was closed. Please try again.')
+      } else if (code === 'auth/account-exists-with-different-credential') {
+        setError('An account already exists with the same email. Try a different sign-in method.')
+      } else {
+        setError(err.message || `${provider} sign-in failed. Please try again.`)
+      }
+    } finally {
+      setBusy(false)
+    }
+  }
 
   async function handleSignIn(e) {
     e.preventDefault()
@@ -137,10 +164,10 @@ export default function SignIn() {
               </div>
 
               <div className={styles.divider}><span>or continue with</span></div>
-              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`}>🦑 GitHub</button>
-              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`}>🔑 Google</button>
+              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`} disabled={busy} onClick={() => handleOAuthLogin('github')}>🦑 GitHub</button>
+              <button type="button" className={`btn btn-ghost ${styles.oauthBtn}`} disabled={busy} onClick={() => handleOAuthLogin('google')}>🔑 Google</button>
 
-              <Link className={styles.back} to="/store">← Back to SafeLaunch</Link>
+              <Link className={styles.back} to="/">← Back to SafeLaunch</Link>
             </form>
           )}
 
@@ -178,7 +205,7 @@ export default function SignIn() {
                 By creating an account you agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
               </div>
 
-              <Link className={styles.back} to="/store">← Back to SafeLaunch</Link>
+              <Link className={styles.back} to="/">← Back to SafeLaunch</Link>
             </form>
           )}
         </div>

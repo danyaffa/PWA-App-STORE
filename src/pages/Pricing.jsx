@@ -128,14 +128,12 @@ export default function Pricing() {
                   {LAUNCH_DEAL.totalSlots - LAUNCH_DEAL.claimed} of {LAUNCH_DEAL.totalSlots} spots left
                 </span>
               </div>
-              <a
-                href={`${PAYPAL_BASE}/webapps/billing/plans/subscribe?plan_id=${LAUNCH_DEAL.planId}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/signin?tab=register"
                 className={`btn btn-primary btn-lg ${styles.launchCta}`}
               >
                 Claim Your $2 Spot
-              </a>
+              </Link>
             </div>
             <div className={styles.launchRight}>
               <ul className={styles.launchFeatures}>
@@ -192,14 +190,12 @@ export default function Pricing() {
               )}
               <p className={styles.planDesc}>{plan.desc}</p>
               <div className={styles.trialBadge}>14-day free trial</div>
-              <a
-                href={`${PAYPAL_BASE}/webapps/billing/plans/subscribe?plan_id=${plan.planId}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/signin?tab=register"
                 className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'} ${styles.planCta}`}
               >
                 {plan.cta}
-              </a>
+              </Link>
               <ul className={styles.featureList}>
                 {plan.features.map(f => (
                   <li key={f.label} className={`${styles.featureItem} ${f.included ? styles.included : styles.excluded}`}>
@@ -219,7 +215,7 @@ export default function Pricing() {
             <p style={{ color: 'var(--muted)', marginTop: 8 }}>Join 4,200+ developers publishing PWAs people trust.</p>
           </div>
           <div className={styles.ctaActions}>
-            <Link to="/publish" className="btn btn-primary btn-lg">Start Publishing →</Link>
+            <Link to="/signin?tab=register" className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
             <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
