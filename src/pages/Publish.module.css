@@ -372,3 +372,12 @@
 @media (max-width: 860px){
   .decisionBanner{ flex-direction:column; align-items:stretch; }
 }
+@media (max-width: 768px) {
+  .steps { flex-direction: column; gap: 8px; }
+  .stepLine { display: none; }
+  .stepItem { padding: 12px 14px; }
+  .ghRow { flex-direction: column; }
+  .body { padding: 14px; }
+  .dropzone { padding: 28px 14px; }
+  .scanLog { height: 180px; font-size: 0.75rem; }
+}

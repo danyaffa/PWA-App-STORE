@@ -173,5 +173,44 @@
 .open { transform: rotate(90deg); }
 .faqA { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-top: 14px; max-width: 680px; }
 
-@media (max-width: 900px) { .plans { grid-template-columns: 1fr; } }
-@media (max-width: 768px) { .ctaStrip { flex-direction: column; text-align: center; } .ctaActions { justify-content: center; } }
+/* ── Tablet ──────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .plans { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .launchDeal { padding: 28px 20px; margin-bottom: 48px; }
+  .launchContent { flex-direction: column; gap: 28px; }
+  .launchRight { flex: 1; width: 100%; }
+  .launchCta { width: 100%; justify-content: center; text-align: center; min-height: 48px; }
+  .launchTitle { font-size: clamp(1.6rem, 5vw, 2.4rem); }
+  .launchSub { font-size: 0.9rem; }
+  .launchFeature { font-size: 0.88rem; }
+
+  .heroTitle { font-size: clamp(1.8rem, 6vw, 2.8rem); }
+
+  .toggle { gap: 10px; }
+  .toggleSwitch { width: 44px; height: 24px; min-height: 44px; min-width: 44px; }
+
+  .planCard { padding: 28px 20px; }
+  .amount { font-size: 3rem; }
+  .planCta { min-height: 48px; font-size: 0.95rem; }
+  .planDesc { min-height: auto; }
+
+  .ctaStrip { flex-direction: column; text-align: center; padding: 32px 20px; margin-bottom: 48px; }
+  .ctaActions { justify-content: center; flex-direction: column; align-items: center; }
+  .ctaActions > * { width: 100%; max-width: 300px; justify-content: center; text-align: center; }
+
+  .faqItem { padding: 18px 0; }
+  .faqQ { font-size: 0.92rem; gap: 12px; }
+  .faqA { font-size: 0.85rem; }
+}
+
+/* ── Small phones ────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .launchDeal { padding: 24px 16px; }
+  .planCard { padding: 24px 16px; }
+  .amount { font-size: 2.6rem; }
+  .ctaStrip { padding: 24px 16px; }
+}

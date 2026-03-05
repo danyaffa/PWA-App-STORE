@@ -55,3 +55,9 @@
   font-size: 0.9rem;
   margin-top: 0.6rem;
 }
+
+@media (max-width: 768px) {
+  .card { padding: 0.85rem; }
+  .pre { font-size: 0.75rem; padding: 0.65rem; }
+  .code { font-size: 0.75rem; padding: 0.55rem; }
+}

@@ -78,4 +78,6 @@
     flex-direction: column;
     align-items: center;
   }
+  .featuresActions > * { width: 100%; max-width: 300px; justify-content: center; text-align: center; }
+  .featCard { padding: 24px 18px; }
 }

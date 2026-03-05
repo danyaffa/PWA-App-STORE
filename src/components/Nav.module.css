@@ -10,6 +10,7 @@
   padding: 0 40px;
   background: rgba(10,10,15,0.95);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--accent);
   height: var(--nav-row1);
 }
@@ -42,13 +43,16 @@
   padding: 0;
 }
 
-/* ── Auth buttons (Row 1 right side) ─────────────────────────────────────── */
+/* ── Auth buttons (Row 1 right side, desktop only) ───────────────────────── */
 .authButtons {
   position: absolute; right: 40px;
   display: flex; gap: 10px; align-items: center;
   z-index: 101;
 }
-.authBtn { font-size: 0.85rem; }
+.authBtn {
+  font-size: 0.85rem;
+  -webkit-tap-highlight-color: transparent;
+}
 .registerBtn {
   background: var(--accent); color: #0a0a0f;
   border-radius: 100px; padding: 6px 18px;
@@ -56,14 +60,23 @@
 }
 .registerBtn:hover { opacity: 0.9; }
 
-.actions { display: flex; gap: 12px; margin-left: auto; }
+/* ── Mobile auth group (inside menu overlay) ─────────────────────────────── */
+.mobileAuthGroup {
+  display: none;
+}
 
-/* ── Row 2 – Secondary (Publisher Tools) ──────────────────────────────────── */
+/* ── Mobile dev links (inside menu overlay) ──────────────────────────────── */
+.mobileDevLinks {
+  display: none;
+}
+
+/* ── Row 2 – Secondary (Publisher Tools, desktop) ────────────────────────── */
 .secondaryRow {
   display: flex; align-items: center; gap: 24px;
   padding: 0 40px;
   background: rgba(18,18,30,0.95);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(124,111,255,0.3);
   height: var(--nav-row2);
 }
@@ -88,7 +101,7 @@
 .secondaryLink:hover, .secondaryActive { color: var(--accent2); }
 
 .submitBtn {
-  margin-left: 12px;
+  margin-left: auto;
 }
 
 /* ── Hamburger ────────────────────────────────────────────────────────────── */
@@ -97,6 +110,8 @@
   flex-direction: column; gap: 5px;
   background: none; border: none; cursor: pointer;
   padding: 8px; z-index: 101;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .hamburger span {
   display: block; width: 22px; height: 2px;
@@ -107,49 +122,113 @@
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-/* ── Mobile ───────────────────────────────────────────────────────────────── */
+/* ── Tablet (≤1024px) ────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .primaryRow { padding: 0 24px; }
+  .logo { left: 24px; font-size: 1.5rem; }
+  .authButtons { right: 24px; }
+  .secondaryRow { padding: 0 24px; gap: 16px; }
+  .secondaryLinks { gap: 20px; }
+  .primaryLinks { gap: 28px; }
+}
+
+/* ── Mobile (≤768px) ─────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .primaryRow { padding: 0 20px; }
+  .primaryRow { padding: 0 16px; }
+  .logo { left: 16px; font-size: 1.4rem; }
   .hamburger { display: flex; }
 
+  /* Desktop auth buttons hidden on mobile */
+  .authButtons { display: none; }
+
+  /* Row 2 hidden on mobile — content moves into mobile menu */
+  .secondaryRow { display: none; }
+
+  /* Mobile overlay menu */
   .primaryLinks {
     display: none;
     position: fixed; top: var(--nav-row1); left: 0; right: 0; bottom: 0;
     flex-direction: column; align-items: center;
-    padding-top: 80px;
-    gap: 28px; background: var(--bg); z-index: 102;
+    padding: 40px 24px 120px;
+    gap: 24px;
+    background: var(--bg);
+    z-index: 102;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .primaryLinks.menuOpen { display: flex; }
 
-  /* On mobile, show secondary links in the mobile menu overlay */
-  .secondaryRow {
-    display: none;
-    position: fixed; bottom: 100px; left: 20px; right: 20px;
-    flex-direction: column; gap: 12px;
-    background: rgba(18,18,30,0.95);
-    border: 1px solid rgba(124,111,255,0.3);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
-    height: auto;
-    z-index: 103;
+  .primaryLink {
+    font-size: 1.4rem;
+    padding: 8px 0;
   }
-  .secondaryRow.menuOpen { display: flex; }
-  .secondaryLinks { flex-wrap: wrap; justify-content: center; gap: 20px; }
-  .submitBtn { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; justify-content: center; }
 
-  .actions {
-    display: none;
-    position: fixed; bottom: 40px; left: 20px; right: 20px;
-    flex-direction: column; gap: 12px; z-index: 103;
+  /* Show mobile auth group inside overlay */
+  .mobileAuthGroup {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    list-style: none;
   }
-  .actions.menuOpen { display: flex; }
+  .mobileAuthBtn {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-  .authButtons {
-    position: static;
-    display: none;
-    flex-direction: row; justify-content: center;
-    gap: 12px; padding: 16px 0;
+  /* Show developer links inside overlay */
+  .mobileDevLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    list-style: none;
   }
-  .primaryLinks.menuOpen ~ .authButtons,
-  .authButtons.menuOpen { display: flex; }
+  .mobileDevLabel {
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(124,111,255,0.5);
+  }
+  .mobileDevGrid {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mobileDevLink {
+    color: var(--muted);
+    font-size: 0.92rem; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    transition: color .2s;
+    padding: 6px 4px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobileDevLink:hover, .mobileDevLink.secondaryActive { color: var(--accent2); }
+  .mobileSubmitBtn {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+}
+
+/* ── Small phones (≤480px) ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .primaryRow { padding: 0 12px; }
+  .logo { left: 12px; font-size: 1.25rem; }
+  .primaryLink { font-size: 1.2rem; }
 }
