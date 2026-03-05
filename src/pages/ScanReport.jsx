@@ -1,7 +1,9 @@
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import { APPS } from '../utils/data.js'
+import { loadPublishedApps } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
 import styles from './ScanReport.module.css'
 
@@ -72,7 +74,23 @@ const SEV_COLOR = { pass:'var(--accent)', bonus:'var(--accent2)', warn:'var(--wa
 export default function ScanReport() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
-  const app = APPS.find(a => a.id === id)
+  const [publishedApps, setPublishedApps] = useState([])
+
+  useEffect(() => {
+    loadPublishedApps().then(setPublishedApps).catch(() => {})
+  }, [])
+
+  const allApps = useMemo(() => {
+    const merged = [...publishedApps, ...APPS]
+    const seen = new Set()
+    return merged.filter(a => {
+      if (!a?.id || seen.has(a.id)) return false
+      seen.add(a.id)
+      return true
+    })
+  }, [publishedApps])
+
+  const app = allApps.find(a => a.id === id)
 
   if (!app) {
     return (

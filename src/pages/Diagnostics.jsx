@@ -1,5 +1,6 @@
 // FILE: src/pages/Diagnostics.jsx
 import { useEffect, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 import Nav from "../components/Nav.jsx"
 import Footer from "../components/Footer.jsx"
 import SEO from "../components/SEO.jsx"
@@ -217,7 +218,7 @@ export default function Diagnostics() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18 }}>
           <button
-            className="btn-primary"
+            className="btn btn-primary"
             onClick={runDiagnostics}
             disabled={running}
             style={{ minWidth: 200 }}
@@ -226,7 +227,7 @@ export default function Diagnostics() {
           </button>
 
           <button
-            className="btn-secondary"
+            className="btn btn-ghost"
             onClick={copyReport}
             disabled={!report}
             style={{ minWidth: 200 }}
@@ -234,9 +235,9 @@ export default function Diagnostics() {
             Copy Report JSON
           </button>
 
-          <a className="btn-secondary" href="/store" style={{ minWidth: 200, textAlign: "center" }}>
+          <Link className="btn btn-ghost" to="/store" style={{ minWidth: 200, textAlign: "center" }}>
             Go to Store
-          </a>
+          </Link>
         </div>
 
         {copyMsg ? (
