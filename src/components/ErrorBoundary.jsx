@@ -79,7 +79,7 @@ export default class ErrorBoundary extends Component {
                   cursor: 'pointer',
                 }}
               >
-                Clear Cache &amp; Reload
+                Clear Cache & Reload
               </button>
             </div>
           </div>

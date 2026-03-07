@@ -8,7 +8,7 @@ export default function CampaignBanner() {
 
   useEffect(() => {
     let mounted = true
-    loadCampaign().then(c => { if (mounted) setCampaign(c) })
+    loadCampaign().then(c => { if (mounted) setCampaign(c) }).catch(() => {})
     return () => { mounted = false }
   }, [])
 
