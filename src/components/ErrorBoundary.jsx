@@ -1,10 +1,35 @@
 import { Component } from 'react'
 
 export default class ErrorBoundary extends Component {
-  state = { error: null }
+  state = { error: null, retryCount: 0 }
 
   static getDerivedStateFromError(error) {
     return { error }
+  }
+
+  componentDidMount() {
+    // Signal to main.jsx that React mounted successfully
+    this.props.onMount?.()
+  }
+
+  handleRetry = () => {
+    this.setState(prev => ({ error: null, retryCount: prev.retryCount + 1 }))
+  }
+
+  handleClearAndReload = async () => {
+    try {
+      // Clear all caches
+      if ('caches' in window) {
+        const keys = await caches.keys()
+        await Promise.all(keys.map(k => caches.delete(k)))
+      }
+      // Unregister service workers
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations()
+        await Promise.all(regs.map(r => r.unregister()))
+      }
+    } catch { /* ignore cleanup errors */ }
+    window.location.href = '/'
   }
 
   render() {
@@ -25,20 +50,38 @@ export default class ErrorBoundary extends Component {
             <p style={{ color: '#7070a0', marginBottom: 20 }}>
               {this.state.error?.message || 'An unexpected error occurred.'}
             </p>
-            <button
-              onClick={() => { this.setState({ error: null }); window.location.href = '/' }}
-              style={{
-                background: '#00e5a0',
-                color: '#0a0a0f',
-                border: 'none',
-                borderRadius: 8,
-                padding: '12px 28px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              Go Home
-            </button>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {this.state.retryCount < 2 && (
+                <button
+                  onClick={this.handleRetry}
+                  style={{
+                    background: '#00e5a0',
+                    color: '#0a0a0f',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '12px 28px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Try Again
+                </button>
+              )}
+              <button
+                onClick={this.handleClearAndReload}
+                style={{
+                  background: this.state.retryCount >= 2 ? '#00e5a0' : 'transparent',
+                  color: this.state.retryCount >= 2 ? '#0a0a0f' : '#7070a0',
+                  border: this.state.retryCount >= 2 ? 'none' : '1px solid #2a2a3a',
+                  borderRadius: 8,
+                  padding: '12px 28px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                Clear Cache &amp; Reload
+              </button>
+            </div>
           </div>
         </div>
       )
