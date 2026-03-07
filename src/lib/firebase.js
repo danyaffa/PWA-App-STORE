@@ -23,45 +23,46 @@ let app  = null
 let auth = null
 let db   = null
 
-// Initialize app first — this rarely fails
-try {
-  app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
-} catch (e) {
-  console.error("Firebase app init failed:", e)
-}
-
-// Initialize Firestore separately with memory cache so it works in
-// incognito/private browsing (no IndexedDB dependency).
-if (app) {
+// Only initialize Firebase when we have valid config — empty strings cause
+// getAuth() to throw "auth/invalid-api-key" and can poison other SDK calls.
+if (isConfigured) {
   try {
-    db = initializeFirestore(app, {
-      localCache: memoryLocalCache(),
-      experimentalAutoDetectLongPolling: true,
-    })
+    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
   } catch (e) {
-    // initializeFirestore throws if called twice; fall back to getFirestore
+    console.error("Firebase app init failed:", e)
+  }
+
+  // Initialize Firestore separately with memory cache so it works in
+  // incognito/private browsing (no IndexedDB dependency).
+  if (app) {
     try {
-      db = getFirestore(app)
-    } catch (e2) {
-      console.error("Firestore init failed:", e2)
+      db = initializeFirestore(app, {
+        localCache: memoryLocalCache(),
+        experimentalAutoDetectLongPolling: true,
+      })
+    } catch (e) {
+      // initializeFirestore throws if called twice; fall back to getFirestore
+      try {
+        db = getFirestore(app)
+      } catch (e2) {
+        console.error("Firestore init failed:", e2)
+      }
     }
   }
-}
 
-// Initialize Auth separately — if this fails, Firestore still works
-if (app) {
-  try {
-    auth = getAuth(app)
-  } catch (e) {
-    console.error("Firebase Auth init failed:", e)
+  // Initialize Auth separately — if this fails, Firestore still works
+  if (app) {
+    try {
+      auth = getAuth(app)
+    } catch (e) {
+      console.error("Firebase Auth init failed:", e)
+    }
   }
+} else {
+  console.warn("Firebase not configured (missing env vars). Running in limited mode.")
 }
 
 const googleProvider = isConfigured ? new GoogleAuthProvider() : null
 const githubProvider = isConfigured ? new GithubAuthProvider() : null
-
-if (!firebaseReady) {
-  console.warn("Firebase not configured. Running in limited mode.")
-}
 
 export { app, auth, db, googleProvider, githubProvider, isConfigured }
