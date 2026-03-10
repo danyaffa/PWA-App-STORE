@@ -15,8 +15,15 @@ const NAV = [
   { icon:'📋', label:'Reports',      soon:true },
   { icon:'🔔', label:'Alerts',       soon:true },
   { icon:'⚙️', label:'Settings',    soon:true },
-  { icon:'💳', label:'Billing',      soon:true },
+  { icon:'💳', label:'Billing',      href:'/pricing' },
 ]
+
+// Plan limits
+const PLAN_LIMITS = {
+  'Creator Lite': { maxApps: 1, price: 9 },
+  'Creator Pro':  { maxApps: 5, price: 29 },
+  'Business':     { maxApps: Infinity, price: 99 },
+}
 
 export default function Dashboard() {
   const { toast, ToastContainer } = useToast()
@@ -25,6 +32,21 @@ export default function Dashboard() {
   const [apps, setApps] = useState([])
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  // Usage limits per plan — TODO: fetch userPlan from database
+  const [userPlan] = useState('Creator Pro')
+  const planConfig = PLAN_LIMITS[userPlan] || PLAN_LIMITS['Creator Pro']
+  const maxApps = planConfig.maxApps
+  const currentApps = apps.length
+  const appsAtLimit = maxApps !== Infinity && currentApps >= maxApps
+
+  // Determine next upgrade plan
+  const nextPlan = userPlan === 'Creator Lite'
+    ? { name: 'Creator Pro', maxApps: 5, price: 29 }
+    : userPlan === 'Creator Pro'
+      ? { name: 'Business', maxApps: 'Unlimited', price: 99 }
+      : null
 
   useEffect(() => {
     loadPublishedApps()
@@ -106,8 +128,20 @@ export default function Dashboard() {
         <div className={styles.topBar}>
           <h1 className={`display ${styles.pageTitle}`}>Dashboard</h1>
         </div>
+        {/* Usage counter */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: '.82rem', color: 'var(--muted)' }}>
+          <span>Apps: <strong style={{ color: appsAtLimit ? 'var(--danger)' : 'var(--text)' }}>{currentApps}/{maxApps === Infinity ? '\u221E' : maxApps}</strong></span>
+          <span style={{ fontSize: '.75rem' }}>({userPlan})</span>
+        </div>
+
         <div className={styles.actionRow}>
-          <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
+          {appsAtLimit ? (
+            <button className="btn btn-primary" onClick={() => setShowUpgradeModal(true)}>
+              + Submit New App (Limit Reached)
+            </button>
+          ) : (
+            <Link to="/publish" className="btn btn-primary">+ Submit New App</Link>
+          )}
           <Link to="/store" className="btn btn-ghost">View Store</Link>
           {apps.length > 0 && (
             <button
@@ -165,7 +199,11 @@ export default function Dashboard() {
         {/* Apps table */}
         <div id="my-apps" className={styles.sectionHead}>
           <span style={{ fontWeight:700 }}>My Apps</span>
-          <Link to="/publish" className="btn btn-ghost btn-sm">Submit New →</Link>
+          {appsAtLimit ? (
+            <button className="btn btn-ghost btn-sm" onClick={() => setShowUpgradeModal(true)}>Submit New (Limit) →</button>
+          ) : (
+            <Link to="/publish" className="btn btn-ghost btn-sm">Submit New →</Link>
+          )}
         </div>
         <div className={`card ${styles.table}`}>
           <div className={styles.tblHead}><span>App</span><span>Status</span><span>Risk</span><span>Installs</span><span>Actions</span></div>
@@ -239,6 +277,45 @@ export default function Dashboard() {
           ))}
         </div>
       </main>
+
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowUpgradeModal(false)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle} style={{ color: 'var(--warn)' }}>Upload Limit Reached</h3>
+            <p className={styles.modalDesc}>
+              You've reached the maximum of {maxApps} app{maxApps !== 1 ? 's' : ''} on your current plan ({userPlan}).
+            </p>
+            {nextPlan ? (
+              <div className={`card ${styles.upgradeCard}`}>
+                <div style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: 12 }}>
+                  Upgrade to <strong>{nextPlan.name}</strong> to unlock <strong>{nextPlan.maxApps === 'Unlimited' ? 'unlimited' : `up to ${nextPlan.maxApps}`} apps</strong>
+                </div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent)', marginBottom: 4 }}>
+                  ${nextPlan.price}<span style={{ fontSize: '.85rem', fontWeight: 400, color: 'var(--muted)' }}>/month</span>
+                </div>
+                <div style={{ fontSize: '.78rem', color: 'var(--muted)' }}>
+                  {nextPlan.name} plan
+                </div>
+              </div>
+            ) : (
+              <div className={`card ${styles.upgradeCard}`}>
+                <div style={{ fontSize: '.85rem', color: 'var(--muted)' }}>
+                  You're on the highest plan. Contact support if you need additional capacity.
+                </div>
+              </div>
+            )}
+            <div className={styles.modalActions}>
+              <button className="btn btn-ghost" onClick={() => setShowUpgradeModal(false)}>Maybe Later</button>
+              {nextPlan && (
+                <Link to="/pricing" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+                  Upgrade Plan
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </div>
