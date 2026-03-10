@@ -127,6 +127,11 @@
   margin-bottom: 20px;
 }
 
+/* PayPal button wrapper */
+.paypalWrap {
+  margin-bottom: 20px;
+}
+
 /* CTA */
 .cta {
   width: 100%;

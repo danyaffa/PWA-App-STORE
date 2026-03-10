@@ -15,7 +15,7 @@ const PAYPAL_BASE = PAYPAL_ENV === 'live'
 
 const LAUNCH_DEAL = {
   price: 2,
-  totalSlots: 1000,
+  totalSlots: 100,
   claimed: 0,   // TODO: wire to Firestore counter
   planId: 'P-2NW966480U5007726NGUP3EY',
   features: [
@@ -138,7 +138,7 @@ export default function Pricing() {
           <div className={styles.launchContent}>
             <div className={styles.launchLeft}>
               <h2 className={`display ${styles.launchTitle}`}>
-                First 1,000 Apps<br />Just <span className={styles.launchPrice}>$2</span>
+                First 100 Apps<br />Just <span className={styles.launchPrice}>$2</span>
               </h2>
               <p className={styles.launchSub}>
                 One-time payment. No subscription required. Get your app listed in the store with a full safety scan.
