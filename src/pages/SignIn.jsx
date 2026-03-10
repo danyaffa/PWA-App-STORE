@@ -95,6 +95,10 @@ export default function SignIn() {
         setError('Too many attempts. Please try again later.')
       } else if (code === 'auth/invalid-email') {
         setError('Please enter a valid email address.')
+      } else if (code === 'auth/network-request-failed') {
+        setError('Cannot reach authentication server. Please check your connection and try again.')
+      } else if (code === 'auth/invalid-api-key') {
+        setError('Authentication is misconfigured. Please contact support.')
       } else {
         setError(err.message || 'Sign in failed. Please try again.')
       }
@@ -146,6 +150,10 @@ export default function SignIn() {
         setError('Password is too weak. Please use a stronger password.')
       } else if (code === 'auth/invalid-email') {
         setError('Please enter a valid email address.')
+      } else if (code === 'auth/network-request-failed') {
+        setError('Cannot reach authentication server. Please check your connection and try again.')
+      } else if (code === 'auth/invalid-api-key') {
+        setError('Authentication is misconfigured. Please contact support.')
       } else {
         setError(err.message || 'Registration failed. Please try again.')
       }
