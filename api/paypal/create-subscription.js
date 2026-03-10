@@ -90,6 +90,8 @@ export default async function handler(req, res) {
     })
   } catch (err) {
     console.error('create-subscription exception:', err)
-    return res.status(500).json({ error: 'Internal server error' })
+    const message = err.message || 'Internal server error'
+    const status = message.includes('must be set') ? 503 : 500
+    return res.status(status).json({ error: message })
   }
 }

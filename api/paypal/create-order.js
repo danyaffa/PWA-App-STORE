@@ -78,6 +78,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ id: order.id })
   } catch (err) {
     console.error('create-order exception:', err)
-    return res.status(500).json({ error: 'Internal server error' })
+    const message = err.message || 'Internal server error'
+    const status = message.includes('must be set') ? 503 : 500
+    return res.status(status).json({ error: message })
   }
 }
