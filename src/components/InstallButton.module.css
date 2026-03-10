@@ -1,7 +1,7 @@
 /* ── Floating Install App Button ─────────────────────────────────────────── */
 .fab {
   position: fixed;
-  bottom: 24px;
+  bottom: 80px;
   right: 24px;
   z-index: 150;
   display: flex;
@@ -51,7 +51,7 @@
 /* Mobile: slightly smaller, more left margin to avoid edge */
 @media (max-width: 768px) {
   .fab {
-    bottom: 20px;
+    bottom: 72px;
     right: 16px;
     padding: 10px 18px;
     font-size: 0.82rem;
