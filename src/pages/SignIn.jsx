@@ -20,6 +20,7 @@ export default function SignIn() {
   const [promoCode, setPromoCode] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [showPw, setShowPw] = useState(false)
 
   async function handleOAuthLogin(provider) {
     setError('')
@@ -182,7 +183,10 @@ export default function SignIn() {
               </div>
               <div className="form-group">
                 <label>PASSWORD</label>
-                <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+                <div className={styles.pwWrap}>
+                  <input className="input" type={showPw ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+                  <button type="button" className={styles.pwToggle} onClick={() => setShowPw(v => !v)} tabIndex={-1}>{showPw ? 'Hide' : 'Show'}</button>
+                </div>
               </div>
               <div className="form-group">
                 <label>PROMO CODE (OPTIONAL)</label>
@@ -247,11 +251,16 @@ export default function SignIn() {
               </div>
               <div className="form-group">
                 <label>PASSWORD</label>
-                <input className="input" type="password" placeholder="Min 8 characters" value={password} onChange={e => setPassword(e.target.value)} />
+                <div className={styles.pwWrap}>
+                  <input className="input" type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" value={password} onChange={e => setPassword(e.target.value)} />
+                  <button type="button" className={styles.pwToggle} onClick={() => setShowPw(v => !v)} tabIndex={-1}>{showPw ? 'Hide' : 'Show'}</button>
+                </div>
               </div>
               <div className="form-group">
                 <label>CONFIRM PASSWORD</label>
-                <input className="input" type="password" placeholder="Repeat password" value={password2} onChange={e => setPassword2(e.target.value)} />
+                <div className={styles.pwWrap}>
+                  <input className="input" type={showPw ? 'text' : 'password'} placeholder="Repeat password" value={password2} onChange={e => setPassword2(e.target.value)} />
+                </div>
               </div>
 
               <div className="form-group">
