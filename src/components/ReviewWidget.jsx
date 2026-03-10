@@ -43,9 +43,9 @@ const basePanelStyle = {
 
 const floatingPanelStyle = {
   position: "fixed",
-  bottom: 24,
+  bottom: 90,
   right: 24,
-  zIndex: 51,
+  zIndex: 200,
 };
 
 const embeddedPanelStyle = {
