@@ -6,25 +6,47 @@ const PAYPAL_BASE = process.env.PAYPAL_ENV === 'live'
   ? 'https://api-m.paypal.com'
   : 'https://api-m.sandbox.paypal.com'
 
+function setCors(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+}
+
 async function getAccessToken() {
   if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
-    throw new Error('PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET must be set')
+    throw new Error('PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET must be set in Vercel Environment Variables')
   }
 
   const auth = Buffer.from(
     `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`,
   ).toString('base64')
 
-  const res = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials',
-  })
+  const tokenUrl = `${PAYPAL_BASE}/v1/oauth2/token`
+  let res
+  try {
+    res = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=client_credentials',
+    })
+  } catch (fetchErr) {
+    throw new Error(`Cannot reach PayPal (${tokenUrl}): ${fetchErr.message}`)
+  }
 
-  const data = await res.json()
+  let data
+  try {
+    data = await res.json()
+  } catch {
+    throw new Error(`PayPal returned non-JSON response (HTTP ${res.status})`)
+  }
+
+  if (!res.ok) {
+    throw new Error(`PayPal auth failed (HTTP ${res.status}): ${data.error_description || data.error || JSON.stringify(data)}`)
+  }
+
   if (!data.access_token) {
     throw new Error(`PayPal token request failed: ${data.error || 'no access_token returned'}`)
   }
@@ -32,12 +54,18 @@ async function getAccessToken() {
 }
 
 export default async function handler(req, res) {
+  setCors(res)
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end()
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const { amount, currency = 'USD', description = 'SafeLaunch Purchase' } = req.body
+    const { amount, currency = 'USD', description = 'SafeLaunch Purchase' } = req.body || {}
 
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
       return res.status(400).json({ error: 'Invalid amount' })
