@@ -182,8 +182,8 @@ export default function Payment() {
   /* ── Launch deal requires auth — redirect to register if not logged in */
   const isLoggedIn = !!user || !!(slAuth && parsed.email)
 
-  /* ── LAUNCH DEAL VIEW ($2 one-time) ─────────────────────────────────── */
-  if (showLaunchDeal && !isLoggedIn) {
+  /* ── Any payment requires auth — redirect to register if not logged in */
+  if (!isLoggedIn) {
     return (
       <>
         <Nav />

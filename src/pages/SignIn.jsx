@@ -11,6 +11,7 @@ export default function SignIn() {
   const { toast, ToastContainer } = useToast()
   const { login, register, loginWithGoogle, loginWithGithub, isConfigured } = useAuth()
   const [tab, setTab] = useState(searchParams.get('tab') === 'register' ? 'register' : 'signin')
+  const redirectTo = searchParams.get('redirect') || ''
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +33,15 @@ export default function SignIn() {
         ts: Date.now(),
       }))
       toast('Signed in.')
-      setTimeout(() => nav('/dashboard'), 350)
+      if (redirectTo) {
+        const params = new URLSearchParams()
+        if (u?.email) params.set('email', u.email)
+        if (u?.displayName) params.set('name', u.displayName)
+        const sep = redirectTo.includes('?') ? '&' : '?'
+        setTimeout(() => nav(`${redirectTo}${params.toString() ? sep + params.toString() : ''}`), 350)
+      } else {
+        setTimeout(() => nav('/dashboard'), 350)
+      }
     } catch (err) {
       const code = err?.code || ''
       if (code === 'auth/popup-closed-by-user') {
@@ -67,7 +76,15 @@ export default function SignIn() {
       }
 
       toast('Signed in.')
-      setTimeout(() => nav('/dashboard'), 350)
+      if (redirectTo) {
+        const params = new URLSearchParams()
+        params.set('email', email.trim().toLowerCase())
+        if (company.trim()) params.set('name', company.trim())
+        const sep = redirectTo.includes('?') ? '&' : '?'
+        setTimeout(() => nav(`${redirectTo}${sep}${params.toString()}`), 350)
+      } else {
+        setTimeout(() => nav('/dashboard'), 350)
+      }
     } catch (err) {
       const code = err?.code || ''
       if (code === 'auth/user-not-found' || code === 'auth/invalid-credential') {
@@ -110,14 +127,16 @@ export default function SignIn() {
 
       toast('Account created!')
 
-      // Promo/free users go straight to dashboard; everyone else sees the pricing/payment page first
+      // Promo/free users go straight to dashboard; everyone else sees the pricing/payment page
       if (promoCode && promoCode.trim()) {
         setTimeout(() => nav('/dashboard'), 350)
       } else {
+        const dest = redirectTo || '/payment'
         const paymentParams = new URLSearchParams()
         paymentParams.set('email', email.trim().toLowerCase())
         if (company.trim()) paymentParams.set('name', company.trim())
-        setTimeout(() => nav(`/payment?${paymentParams.toString()}`), 350)
+        const sep = dest.includes('?') ? '&' : '?'
+        setTimeout(() => nav(`${dest}${sep}${paymentParams.toString()}`), 350)
       }
     } catch (err) {
       const code = err?.code || ''

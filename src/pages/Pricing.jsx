@@ -99,9 +99,10 @@ export default function Pricing() {
   const { user } = useAuth()
   const { ToastContainer } = useToast()
 
-  // Check auth from Firebase user OR localStorage fallback
+  // Check auth from Firebase user OR localStorage fallback (must have email)
   const slAuth = !user && localStorage.getItem('sl_auth')
-  const isLoggedIn = !!user || !!slAuth
+  const parsedAuth = slAuth ? JSON.parse(slAuth) : {}
+  const isLoggedIn = !!user || !!(slAuth && parsedAuth.email)
   const billingStatus = localStorage.getItem('sl_billing_status')
   const alreadyPaid = billingStatus === 'active'
 
