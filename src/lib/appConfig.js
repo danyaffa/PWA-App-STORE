@@ -1,1 +1,1 @@
-export const APP_NAME = "SafeLaunch";
+export const APP_NAME = "PWA App Store";
