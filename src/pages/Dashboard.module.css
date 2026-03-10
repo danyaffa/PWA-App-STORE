@@ -77,3 +77,28 @@
   .tblHead span:nth-child(2), .tblHead span:nth-child(3),
   .tblRow > *:nth-child(2), .tblRow > *:nth-child(3) { display: none; }
 }
+
+/* Upgrade Modal */
+.modalOverlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modalBox {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+  max-width: 480px; width: 100%;
+}
+.modalTitle {
+  font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;
+}
+.modalDesc {
+  font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px;
+}
+.upgradeCard {
+  background: var(--surface2); padding: 20px; margin-bottom: 20px; text-align: center;
+}
+.modalActions {
+  display: flex; gap: 12px; justify-content: flex-end;
+}
