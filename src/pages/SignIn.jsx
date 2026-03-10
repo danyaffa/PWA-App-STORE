@@ -109,7 +109,8 @@ export default function SignIn() {
       }
 
       toast('Account created!')
-      setTimeout(() => nav('/pricing'), 350)
+      const redirectTo = searchParams.get('redirect') || '/pricing'
+      setTimeout(() => nav(redirectTo), 350)
     } catch (err) {
       const code = err?.code || ''
       if (code === 'auth/email-already-in-use') {

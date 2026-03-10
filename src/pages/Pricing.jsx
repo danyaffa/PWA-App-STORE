@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../hooks/useToast.js'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import PayPalButton from '../components/PayPalButton.jsx'
 import styles from './Pricing.module.css'
 
 const PAYPAL_ENV = import.meta.env.VITE_PAYPAL_ENV || 'sandbox'
@@ -96,6 +99,26 @@ const FAQS = [
 export default function Pricing() {
   const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const { toast, ToastContainer } = useToast()
+
+  // Check auth from Firebase user OR localStorage fallback
+  const slAuth = !user && localStorage.getItem('sl_auth')
+  const isLoggedIn = !!user || !!slAuth
+  const billingStatus = localStorage.getItem('sl_billing_status')
+  const alreadyPaid = billingStatus === 'active'
+
+  function handlePaymentSuccess(capture) {
+    localStorage.setItem('sl_billing_status', 'active')
+    toast('Payment successful! Your $2 spot is claimed.')
+    setTimeout(() => navigate('/publish'), 1200)
+  }
+
+  function handlePaymentError() {
+    toast('Payment failed. Please try again.')
+  }
+
   return (
     <>
       <SEO
@@ -128,12 +151,33 @@ export default function Pricing() {
                   {LAUNCH_DEAL.totalSlots - LAUNCH_DEAL.claimed} of {LAUNCH_DEAL.totalSlots} spots left
                 </span>
               </div>
-              <Link
-                to="/signin?tab=register"
-                className={`btn btn-primary btn-lg ${styles.launchCta}`}
-              >
-                Claim Your $2 Spot
-              </Link>
+              {alreadyPaid ? (
+                <Link
+                  to="/publish"
+                  className={`btn btn-primary btn-lg ${styles.launchCta}`}
+                >
+                  Start Publishing →
+                </Link>
+              ) : isLoggedIn ? (
+                <div className={styles.launchPaypal}>
+                  <p style={{ color: 'var(--accent)', fontWeight: 700, marginBottom: 12, fontSize: '0.95rem' }}>
+                    Complete your $2 payment to claim your spot:
+                  </p>
+                  <PayPalButton
+                    amount={LAUNCH_DEAL.price}
+                    description="SafeLaunch Grand Launch Deal — $2 spot"
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                  />
+                </div>
+              ) : (
+                <Link
+                  to="/signin?tab=register&redirect=/pricing"
+                  className={`btn btn-primary btn-lg ${styles.launchCta}`}
+                >
+                  Claim Your $2 Spot
+                </Link>
+              )}
             </div>
             <div className={styles.launchRight}>
               <ul className={styles.launchFeatures}>
@@ -191,10 +235,10 @@ export default function Pricing() {
               <p className={styles.planDesc}>{plan.desc}</p>
               <div className={styles.trialBadge}>14-day free trial</div>
               <Link
-                to="/signin?tab=register"
+                to={isLoggedIn ? '/publish' : '/signin?tab=register&redirect=/pricing'}
                 className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'} ${styles.planCta}`}
               >
-                {plan.cta}
+                {isLoggedIn ? 'Go to Publisher Dashboard →' : plan.cta}
               </Link>
               <ul className={styles.featureList}>
                 {plan.features.map(f => (
@@ -215,7 +259,7 @@ export default function Pricing() {
             <p style={{ color: 'var(--muted)', marginTop: 8 }}>Join 4,200+ developers publishing PWAs people trust.</p>
           </div>
           <div className={styles.ctaActions}>
-            <Link to="/signin?tab=register" className="btn btn-primary btn-lg">Start Publishing →</Link>
+            <Link to={isLoggedIn ? '/publish' : '/signin?tab=register&redirect=/pricing'} className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
             <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
@@ -237,6 +281,7 @@ export default function Pricing() {
 
       </div>
       <Footer />
+      <ToastContainer />
     </>
   )
 }
