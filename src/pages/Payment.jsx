@@ -122,8 +122,9 @@ export default function Payment() {
     setTimeout(() => navigate('/publish'), 1200)
   }
 
-  function handleLaunchError() {
-    setError('Payment failed. Please try again.')
+  function handleLaunchError(err) {
+    console.error('Launch payment error:', err)
+    setError(err?.message || 'Payment failed. Please try again.')
   }
 
   /* ── Subscription plan payment ──────────────────────────────────────── */

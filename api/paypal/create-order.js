@@ -55,7 +55,7 @@ export default async function handler(req, res) {
         intent: 'CAPTURE',
         purchase_units: [
           {
-            amount: { currency_code: currency, value: String(amount) },
+            amount: { currency_code: currency, value: Number(amount).toFixed(2) },
             description,
           },
         ],
@@ -70,8 +70,9 @@ export default async function handler(req, res) {
     const order = await orderRes.json()
 
     if (!orderRes.ok) {
-      console.error('PayPal create-order error:', order)
-      return res.status(500).json({ error: 'Failed to create order' })
+      console.error('PayPal create-order error:', JSON.stringify(order, null, 2))
+      const detail = order?.details?.[0]?.description || order?.message || 'Failed to create order'
+      return res.status(orderRes.status || 500).json({ error: detail })
     }
 
     return res.status(200).json({ id: order.id })
