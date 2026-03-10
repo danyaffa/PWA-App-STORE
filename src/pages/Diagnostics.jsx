@@ -66,6 +66,7 @@ export default function Diagnostics() {
       caches: {},
       api: {},
       apiHealth: {},
+      paypalHealth: {},
       firebaseClientRead: {},
       mergedApps: {},
       notes: [],
@@ -148,7 +149,21 @@ export default function Diagnostics() {
       out.apiHealth = { error: e?.message || String(e) }
     }
 
-    // 6) loadPublishedApps() (what the Store page actually uses)
+    // 6) PayPal health check
+    try {
+      const url = `/api/paypal/health?t=${Date.now()}`
+      const res = await fetch(url, { cache: "no-store" })
+      const body = await safeJson(res)
+      out.paypalHealth = {
+        ok: res.ok,
+        status: res.status,
+        body,
+      }
+    } catch (e) {
+      out.paypalHealth = { error: e?.message || String(e) }
+    }
+
+    // 7) loadPublishedApps() (what the Store page actually uses)
     try {
       const merged = await loadPublishedApps()
       out.mergedApps = {
@@ -179,6 +194,12 @@ export default function Diagnostics() {
     }
     if (out.apiHealth?.body?.status === "unhealthy") {
       out.notes.push("Server-side /api/health reports UNHEALTHY. Check the apiHealth section for details on what's misconfigured.")
+    }
+    if (out.paypalHealth?.body && !out.paypalHealth.body.ready) {
+      out.notes.push("PayPal is NOT configured: " + (out.paypalHealth.body.message || "Missing server-side credentials. Set PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET in Vercel Environment Variables."))
+    }
+    if (!import.meta.env.VITE_PAYPAL_CLIENT_ID) {
+      out.notes.push("VITE_PAYPAL_CLIENT_ID is missing in this build. PayPal buttons will not load. Set it in Vercel env vars and redeploy.")
     }
 
     out.finishedAt = nowISO()

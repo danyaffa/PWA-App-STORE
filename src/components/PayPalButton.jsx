@@ -11,7 +11,7 @@ export default function PayPalButton({ amount, currency = 'USD', description, on
 
   useEffect(() => {
     if (!PAYPAL_CLIENT_ID) {
-      setError('PayPal is not configured yet.')
+      setError('PayPal client ID is not configured. Ensure VITE_PAYPAL_CLIENT_ID is set in environment variables and redeploy.')
       return
     }
     if (window.paypal) { setSdkReady(true); return }
