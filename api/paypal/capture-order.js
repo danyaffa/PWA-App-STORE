@@ -58,8 +58,9 @@ export default async function handler(req, res) {
     const capture = await captureRes.json()
 
     if (!captureRes.ok) {
-      console.error('PayPal capture-order error:', capture)
-      return res.status(500).json({ error: 'Failed to capture order' })
+      console.error('PayPal capture-order error:', JSON.stringify(capture, null, 2))
+      const detail = capture?.details?.[0]?.description || capture?.message || 'Failed to capture order'
+      return res.status(captureRes.status || 500).json({ error: detail })
     }
 
     return res.status(200).json({
