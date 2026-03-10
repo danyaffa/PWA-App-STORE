@@ -54,6 +54,9 @@
 .launchCta {
   font-size: 1.1rem; padding: 16px 40px;
 }
+.launchPaypal {
+  max-width: 320px;
+}
 .launchFeatures {
   list-style: none; display: flex;
   flex-direction: column; gap: 18px;
