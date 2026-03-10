@@ -1,17 +1,11 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
-import PayPalButton from '../components/PayPalButton.jsx'
 import styles from './Pricing.module.css'
-
-const PAYPAL_ENV = import.meta.env.VITE_PAYPAL_ENV || 'sandbox'
-const PAYPAL_BASE = PAYPAL_ENV === 'live'
-  ? 'https://www.paypal.com'
-  : 'https://www.sandbox.paypal.com'
 
 const LAUNCH_DEAL = {
   price: 2,
@@ -103,24 +97,13 @@ export default function Pricing() {
   const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const { user } = useAuth()
-  const navigate = useNavigate()
-  const { toast, ToastContainer } = useToast()
+  const { ToastContainer } = useToast()
 
   // Check auth from Firebase user OR localStorage fallback
   const slAuth = !user && localStorage.getItem('sl_auth')
   const isLoggedIn = !!user || !!slAuth
   const billingStatus = localStorage.getItem('sl_billing_status')
   const alreadyPaid = billingStatus === 'active'
-
-  function handlePaymentSuccess(capture) {
-    localStorage.setItem('sl_billing_status', 'active')
-    toast('Payment successful! Your $2 spot is claimed.')
-    setTimeout(() => navigate('/publish'), 1200)
-  }
-
-  function handlePaymentError() {
-    toast('Payment failed. Please try again.')
-  }
 
   return (
     <>
@@ -161,24 +144,12 @@ export default function Pricing() {
                 >
                   Start Publishing →
                 </Link>
-              ) : isLoggedIn ? (
-                <div className={styles.launchPaypal}>
-                  <p style={{ color: 'var(--accent)', fontWeight: 700, marginBottom: 12, fontSize: '0.95rem' }}>
-                    Complete your $2 payment to claim your spot:
-                  </p>
-                  <PayPalButton
-                    amount={LAUNCH_DEAL.price}
-                    description="SafeLaunch Grand Launch Deal — $2 spot"
-                    onSuccess={handlePaymentSuccess}
-                    onError={handlePaymentError}
-                  />
-                </div>
               ) : (
                 <Link
-                  to="/signin?tab=register&redirect=/pricing"
+                  to={isLoggedIn ? '/payment' : '/signin?tab=register&redirect=/payment'}
                   className={`btn btn-primary btn-lg ${styles.launchCta}`}
                 >
-                  Claim Your $2 Spot
+                  Claim Your Spot
                 </Link>
               )}
             </div>

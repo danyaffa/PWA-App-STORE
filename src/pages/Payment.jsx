@@ -179,7 +179,24 @@ export default function Payment() {
     )
   }
 
+  /* ── Launch deal requires auth — redirect to register if not logged in */
+  const isLoggedIn = !!user || !!(slAuth && parsed.email)
+
   /* ── LAUNCH DEAL VIEW ($2 one-time) ─────────────────────────────────── */
+  if (showLaunchDeal && !isLoggedIn) {
+    return (
+      <>
+        <Nav />
+        <div className="page-wrap" style={{ maxWidth: 560, textAlign: 'center', padding: '80px 20px' }}>
+          <h1 className="display" style={{ marginBottom: 12 }}>Register to Claim Your Spot</h1>
+          <p style={{ color: 'var(--muted)', marginBottom: 24 }}>Create an account first, then complete your $2 payment.</p>
+          <Link to="/signin?tab=register&redirect=/payment" className="btn btn-primary btn-lg">Register Now →</Link>
+        </div>
+        <Footer />
+      </>
+    )
+  }
+
   if (showLaunchDeal) {
     return (
       <>
