@@ -109,7 +109,16 @@ export default function SignIn() {
       }
 
       toast('Account created!')
-      setTimeout(() => nav('/pricing'), 350)
+
+      // Promo/free users go straight to dashboard; everyone else sees the pricing/payment page first
+      if (promoCode && promoCode.trim()) {
+        setTimeout(() => nav('/dashboard'), 350)
+      } else {
+        const paymentParams = new URLSearchParams()
+        paymentParams.set('email', email.trim().toLowerCase())
+        if (company.trim()) paymentParams.set('name', company.trim())
+        setTimeout(() => nav(`/payment?${paymentParams.toString()}`), 350)
+      }
     } catch (err) {
       const code = err?.code || ''
       if (code === 'auth/email-already-in-use') {
