@@ -30,6 +30,7 @@ const LAUNCH_DEAL = {
 const PLANS = [
   {
     name: 'Creator Lite',
+    slug: 'creator-lite',
     price: { month: 9, year: 7 },
     desc: 'Perfect for indie devs shipping a single app.',
     cta: 'Start 14-Day Free Trial',
@@ -49,6 +50,7 @@ const PLANS = [
   },
   {
     name: 'Creator Pro',
+    slug: 'creator-pro',
     price: { month: 29, year: 23 },
     desc: 'For studios shipping multiple apps with full pipeline access.',
     cta: 'Start 14-Day Free Trial',
@@ -68,13 +70,14 @@ const PLANS = [
   },
   {
     name: 'Business',
+    slug: 'business',
     price: { month: 99, year: 79 },
     desc: 'For enterprises needing unlimited apps, team seats, and compliance.',
     cta: 'Start 14-Day Free Trial',
     featured: false,
     planId: 'P-3J957709U19092246NGTH2PY',
     features: [
-      { label: 'Unlimited apps',              included: true },
+      { label: 'Up to 20 published apps',      included: true },
       { label: 'Unlimited version slots',     included: true },
       { label: 'Full 6-layer safety scan',    included: true },
       { label: 'Public trust report',         included: true },
@@ -235,10 +238,12 @@ export default function Pricing() {
               <p className={styles.planDesc}>{plan.desc}</p>
               <div className={styles.trialBadge}>14-day free trial</div>
               <Link
-                to={isLoggedIn ? '/publish' : '/signin?tab=register&redirect=/pricing'}
+                to={isLoggedIn
+                  ? `/payment?plan=${plan.slug}&billing=${annual ? 'year' : 'month'}`
+                  : `/signin?tab=register&redirect=/pricing`}
                 className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'} ${styles.planCta}`}
               >
-                {isLoggedIn ? 'Go to Publisher Dashboard →' : plan.cta}
+                {plan.cta}
               </Link>
               <ul className={styles.featureList}>
                 {plan.features.map(f => (
@@ -259,7 +264,7 @@ export default function Pricing() {
             <p style={{ color: 'var(--muted)', marginTop: 8 }}>Join 4,200+ developers publishing PWAs people trust.</p>
           </div>
           <div className={styles.ctaActions}>
-            <Link to={isLoggedIn ? '/publish' : '/signin?tab=register&redirect=/pricing'} className="btn btn-primary btn-lg">Start Publishing →</Link>
+            <Link to={isLoggedIn ? `/payment?plan=creator-pro&billing=${annual ? 'year' : 'month'}` : '/signin?tab=register&redirect=/pricing'} className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
             <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
