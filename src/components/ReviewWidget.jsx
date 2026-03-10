@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { APP_NAME } from "../lib/appConfig.js";
 
-const DEFAULT_IOS_REVIEW_URL =
-  import.meta.env.VITE_IOS_REVIEW_URL ||
-  "https://apps.apple.com/app/idYOUR_APP_ID?action=write-review";
-
-const DEFAULT_ANDROID_REVIEW_URL =
-  import.meta.env.VITE_ANDROID_REVIEW_URL ||
-  "https://play.google.com/store/apps/details?id=your.package.name&reviewId=0";
 
 /* ── inline styles ─────────────────────────────────────────── */
 
@@ -176,8 +169,6 @@ export default function ReviewWidget({
   const [averageRating, setAverageRating] = useState(null);
 
   const effectiveAppName = appName || APP_NAME;
-  const iosReviewUrl = appStoreUrl || DEFAULT_IOS_REVIEW_URL;
-  const androidReviewUrl = DEFAULT_ANDROID_REVIEW_URL;
 
   useEffect(() => {
     let isMounted = true;
@@ -216,15 +207,6 @@ export default function ReviewWidget({
     setWidgetState("idle");
   };
 
-  const openStoreReviewPage = () => {
-    if (typeof window === "undefined") return;
-    const ua = window.navigator.userAgent || "";
-    let targetUrl = iosReviewUrl;
-    if (/Android/i.test(ua)) targetUrl = androidReviewUrl;
-    else if (/iPhone|iPad|iPod/i.test(ua)) targetUrl = iosReviewUrl;
-    window.open(targetUrl, "_blank");
-  };
-
   const handleSubmit = async () => {
     if (!rating) {
       alert("Please choose a star rating first.");
@@ -249,8 +231,6 @@ export default function ReviewWidget({
 
       setHasSubmitted(true);
       setWidgetState("thankyou");
-
-      if (rating >= 4) setTimeout(() => openStoreReviewPage(), 4000);
     } catch {
       alert("Sorry, something went wrong. Please try again later.");
       setWidgetState("open");
