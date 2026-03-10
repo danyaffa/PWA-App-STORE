@@ -3,6 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ManagementRoute from './components/ManagementRoute.jsx'
 import InstallButton from './components/InstallButton.jsx'
 import IOSInstallGuide from './components/IOSInstallGuide.jsx'
+import ReviewWidget from './components/ReviewWidget.jsx'
 import { usePWAInstall } from './hooks/usePWAInstall.js'
 
 import Home         from './pages/Home.jsx'
@@ -37,6 +38,7 @@ export default function App() {
   return (
     <>
     <InstallButton />
+    <ReviewWidget />
     {showIOSGuide && <IOSInstallGuide onDismiss={dismissIOSGuide} />}
     <Routes>
       <Route path="/"             element={<Home />} />
