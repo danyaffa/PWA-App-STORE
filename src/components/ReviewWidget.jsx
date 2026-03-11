@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { APP_NAME } from "../lib/appConfig.js";
+import { useDraggable } from "../hooks/useDraggable.js";
 
 
 /* ── inline styles ─────────────────────────────────────────── */
 
 const pillStyle = {
-  position: "fixed",
-  bottom: 24,
-  right: 24,
   zIndex: 40,
   background: "#ffffff",
   color: "#0f172a",
@@ -168,6 +166,11 @@ export default function ReviewWidget({
   const [reviewCount, setReviewCount] = useState(null);
   const [averageRating, setAverageRating] = useState(null);
 
+  const { ref: pillRef, style: pillDragStyle, onPointerDown: onPillPointerDown } = useDraggable(
+    'sl_review_btn_pos',
+    { bottom: 24, right: 24 },
+  );
+
   const effectiveAppName = appName || APP_NAME;
 
   useEffect(() => {
@@ -244,7 +247,7 @@ export default function ReviewWidget({
     if (widgetState === "open" || widgetState === "submitting") return null;
 
     return (
-      <button type="button" style={pillStyle} onClick={openWidget}>
+      <button type="button" ref={pillRef} style={{ ...pillStyle, ...pillDragStyle }} onClick={openWidget} onPointerDown={onPillPointerDown}>
         <span
           style={{
             width: 8,

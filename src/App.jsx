@@ -30,6 +30,7 @@ import ManagementLogin from './pages/ManagementLogin.jsx'
 import Diagnostics  from './pages/Diagnostics.jsx'
 import Payment      from './pages/Payment.jsx'
 import PayPalSetup  from './pages/PayPalSetup.jsx'
+import Cancel       from './pages/Cancel.jsx'
 import NotFound     from './pages/NotFound.jsx'
 
 export default function App() {
@@ -65,6 +66,7 @@ export default function App() {
       <Route path="/payment"      element={<Payment />} />
       <Route path="/diagnostics"  element={<Diagnostics />} />
       <Route path="/paypal/setup" element={<PayPalSetup />} />
+      <Route path="/cancel"      element={<Cancel />} />
       <Route path="*"             element={<NotFound />} />
     </Routes>
     </>

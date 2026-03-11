@@ -175,6 +175,8 @@
 .faqChevron { font-size: 1.4rem; color: var(--muted); transition: transform .25s; line-height: 1; }
 .open { transform: rotate(90deg); }
 .faqA { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-top: 14px; max-width: 680px; }
+.faqLink { display: inline-block; margin-top: 8px; color: var(--accent); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+.faqLink:hover { text-decoration: underline; }
 
 /* ── Tablet ──────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {

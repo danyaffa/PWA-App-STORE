@@ -31,6 +31,7 @@ export default function Footer() {
             <Link to="/terms">Terms of Service</Link>
             <Link to="/developer-agreement">Developer Agreement</Link>
             <Link to="/dmca">DMCA / Content Removal</Link>
+            <Link to="/cancel">Cancel Subscription</Link>
             <Link to="/management-login">Management Login</Link>
           </div>
         </div>
