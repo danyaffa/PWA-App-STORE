@@ -1,20 +1,28 @@
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
+import { useDraggable } from '../hooks/useDraggable.js'
 import styles from './InstallButton.module.css'
 
 /**
  * Persistent floating "Install App" button that appears on all screens.
  * Hidden when the app is already installed or running standalone.
- * On iOS, triggers the share-sheet guide overlay.
+ * Draggable — drag it anywhere on screen. Position is remembered.
  */
 export default function InstallButton() {
   const { install, installed, isStandalone, isIOS } = usePWAInstall()
+  const { ref, style: dragStyle, onPointerDown } = useDraggable(
+    'sl_install_btn_pos',
+    { bottom: 80, right: 24 },
+  )
 
   if (installed || isStandalone) return null
 
   return (
     <button
+      ref={ref}
       className={styles.fab}
+      style={dragStyle}
       onClick={install}
+      onPointerDown={onPointerDown}
       aria-label="Install SafeLaunch app"
     >
       <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
