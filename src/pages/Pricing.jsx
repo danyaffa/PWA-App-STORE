@@ -5,84 +5,8 @@ import { useToast } from '../hooks/useToast.js'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { LAUNCH_DEAL, PLANS_LIST } from '../config/plans.js'
 import styles from './Pricing.module.css'
-
-const LAUNCH_DEAL = {
-  price: 2,
-  totalSlots: 100,
-  claimed: 0,   // TODO: wire to Firestore counter
-  planId: 'P-2NW966480U5007726NGUP3EY',
-  features: [
-    'One-time $2 — no subscription needed',
-    'Full 6-layer AI safety scan included',
-    'Public trust report & verified badge',
-    'Listed in the store permanently',
-    'Upgrade to a plan anytime later',
-  ],
-}
-
-const PLANS = [
-  {
-    name: 'Creator Lite',
-    slug: 'creator-lite',
-    price: { month: 9, year: 7 },
-    desc: 'Perfect for indie devs shipping a single app.',
-    cta: 'Start 14-Day Free Trial',
-    featured: false,
-    planId: 'P-3DN45660DX3919046NGUPOHA',
-    features: [
-      { label: '1 published app',             included: true },
-      { label: '1 active version slot',       included: true },
-      { label: 'Full 6-layer safety scan',    included: true },
-      { label: 'Public trust report',         included: true },
-      { label: 'Dynamic sandbox (DAST)',       included: false },
-      { label: 'Continuous monitoring',       included: false },
-      { label: 'Priority review queue',       included: false },
-      { label: 'Team seats',                  included: false },
-      { label: 'SLA / compliance reports',    included: false },
-    ],
-  },
-  {
-    name: 'Creator Pro',
-    slug: 'creator-pro',
-    price: { month: 29, year: 23 },
-    desc: 'For studios shipping multiple apps with full pipeline access.',
-    cta: 'Start 14-Day Free Trial',
-    featured: true,
-    planId: 'P-2JS06822B95082352NGUPR5Q',
-    features: [
-      { label: 'Up to 5 published apps',      included: true },
-      { label: '3 active version slots / app',included: true },
-      { label: 'Full 6-layer safety scan',    included: true },
-      { label: 'Public trust report',         included: true },
-      { label: 'Dynamic sandbox (DAST)',       included: true },
-      { label: 'Continuous monitoring',       included: true },
-      { label: 'Priority review queue',       included: false },
-      { label: 'Team seats',                  included: false },
-      { label: 'SLA / compliance reports',    included: false },
-    ],
-  },
-  {
-    name: 'Business',
-    slug: 'business',
-    price: { month: 99, year: 79 },
-    desc: 'For enterprises needing unlimited apps, team seats, and compliance.',
-    cta: 'Start 14-Day Free Trial',
-    featured: false,
-    planId: 'P-3J957709U19092246NGTH2PY',
-    features: [
-      { label: 'Up to 20 published apps',      included: true },
-      { label: 'Unlimited version slots',     included: true },
-      { label: 'Full 6-layer safety scan',    included: true },
-      { label: 'Public trust report',         included: true },
-      { label: 'Dynamic sandbox (DAST)',       included: true },
-      { label: 'Continuous monitoring',       included: true },
-      { label: 'Priority review queue',       included: true },
-      { label: 'Team seats (up to 20)',       included: true },
-      { label: 'SLA + compliance reports',    included: true },
-    ],
-  },
-]
 
 const FAQS = [
   { q: 'Does SafeLaunch take a revenue cut?', a: 'No. SafeLaunch is subscription-only. We never touch your revenue, in-app purchases, or user payments. What you earn is 100% yours.' },
@@ -94,7 +18,6 @@ const FAQS = [
 ]
 
 export default function Pricing() {
-  const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const { user } = useAuth()
   const { ToastContainer } = useToast()
@@ -176,42 +99,24 @@ export default function Pricing() {
           <p className="section-sub" style={{ maxWidth: 480, margin: '0 auto 32px' }}>
             Flat monthly fee. Cancel anytime. Every plan includes a full 6-layer AI safety scan on every submission.
           </p>
-
-          {/* Billing toggle */}
-          <div className={styles.toggle}>
-            <span className={!annual ? styles.toggleActive : styles.toggleMuted}>Monthly</span>
-            <button
-              className={`${styles.toggleSwitch} ${annual ? styles.on : ''}`}
-              onClick={() => setAnnual(a => !a)}
-              aria-label="Toggle annual billing"
-            >
-              <span className={styles.toggleThumb} />
-            </button>
-            <span className={annual ? styles.toggleActive : styles.toggleMuted}>
-              Annual <span className={styles.saveBadge}>Save 20%</span>
-            </span>
-          </div>
         </div>
 
         {/* Plan cards */}
         <div className={styles.plans}>
-          {PLANS.map(plan => (
+          {PLANS_LIST.map(plan => (
             <div key={plan.name} className={`${styles.planCard} ${plan.featured ? styles.featured : ''}`}>
               {plan.featured && <div className={styles.popularRibbon}>MOST POPULAR</div>}
               <div className={styles.planName}>{plan.name}</div>
               <div className={styles.planPrice}>
                 <span className={styles.currency}>$</span>
-                <span className={styles.amount}>{annual ? plan.price.year : plan.price.month}</span>
+                <span className={styles.amount}>{plan.price}</span>
                 <span className={styles.per}>/mo</span>
               </div>
-              {annual && (
-                <div className={styles.annualNote}>billed ${plan.price.year * 12}/yr</div>
-              )}
               <p className={styles.planDesc}>{plan.desc}</p>
               <div className={styles.trialBadge}>14-day free trial</div>
               <Link
                 to={isLoggedIn
-                  ? `/payment?plan=${plan.slug}&billing=${annual ? 'year' : 'month'}`
+                  ? `/payment?plan=${plan.slug}`
                   : `/signin?tab=register&redirect=/pricing`}
                 className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'} ${styles.planCta}`}
               >
@@ -236,7 +141,7 @@ export default function Pricing() {
             <p style={{ color: 'var(--muted)', marginTop: 8 }}>Join 4,200+ developers publishing PWAs people trust.</p>
           </div>
           <div className={styles.ctaActions}>
-            <Link to={isLoggedIn ? `/payment?plan=creator-pro&billing=${annual ? 'year' : 'month'}` : '/signin?tab=register&redirect=/pricing'} className="btn btn-primary btn-lg">Start Publishing →</Link>
+            <Link to={isLoggedIn ? '/payment?plan=creator-pro' : '/signin?tab=register&redirect=/pricing'} className="btn btn-primary btn-lg">Start Publishing →</Link>
             <Link to="/store"   className="btn btn-ghost   btn-lg">Browse Store</Link>
             <Link to="/paypal/setup" className="btn btn-ghost btn-lg">PayPal Setup Guide</Link>
           </div>
