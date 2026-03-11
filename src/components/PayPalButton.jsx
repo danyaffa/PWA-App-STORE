@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID
-const PAYPAL_ENV       = import.meta.env.VITE_PAYPAL_ENV || 'sandbox'
 
 export default function PayPalButton({ amount, currency = 'USD', description, onSuccess, onError }) {
   const containerRef = useRef()

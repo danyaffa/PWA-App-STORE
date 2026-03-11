@@ -6,69 +6,8 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
+import { LAUNCH_DEAL, PLANS } from '../config/plans.js'
 import styles from './Payment.module.css'
-
-/* ── Launch deal (first 100 users pay $2 one-time) ────────────────────── */
-const LAUNCH_DEAL = {
-  price: 2,
-  totalSlots: 100,
-  claimed: 0,   // TODO: wire to Firestore counter
-  planId: 'P-2NW966480U5007726NGUP3EY',
-  features: [
-    'One-time $2 — no subscription needed',
-    'Full 6-layer AI safety scan included',
-    'Public trust report & verified badge',
-    'Listed in the store permanently',
-    'Upgrade to a plan anytime later',
-  ],
-}
-
-/* ── Subscription plans (after launch deal sells out) ─────────────────── */
-const PLANS = {
-  'creator-lite': {
-    name: 'Creator Lite',
-    price: { month: 9, year: 7 },
-    planId: { month: 'P-3DN45660DX3919046NGUPOHA', year: 'P-3DN45660DX3919046NGUPOHA' },
-    trial: 14,
-    features: [
-      '1 published app',
-      '1 active version slot',
-      'Full 6-layer safety scan',
-      'Public trust report',
-    ],
-  },
-  'creator-pro': {
-    name: 'Creator Pro',
-    price: { month: 29, year: 23 },
-    planId: { month: 'P-2JS06822B95082352NGUPR5Q', year: 'P-2JS06822B95082352NGUPR5Q' },
-    trial: 14,
-    features: [
-      'Up to 5 published apps',
-      '3 active version slots / app',
-      'Full 6-layer safety scan',
-      'Public trust report',
-      'Dynamic sandbox (DAST)',
-      'Continuous monitoring',
-    ],
-  },
-  'business': {
-    name: 'Business',
-    price: { month: 99, year: 79 },
-    planId: { month: 'P-3J957709U19092246NGTH2PY', year: 'P-3J957709U19092246NGTH2PY' },
-    trial: 14,
-    features: [
-      'Up to 20 published apps',
-      'Unlimited version slots',
-      'Full 6-layer safety scan',
-      'Public trust report',
-      'Dynamic sandbox (DAST)',
-      'Continuous monitoring',
-      'Priority review queue',
-      'Team seats (up to 20)',
-      'SLA + compliance reports',
-    ],
-  },
-}
 
 export default function Payment() {
   const [searchParams] = useSearchParams()
@@ -77,7 +16,6 @@ export default function Payment() {
   const { toast, ToastContainer } = useToast()
 
   const planKey = searchParams.get('plan') || ''
-  const billing = searchParams.get('billing') || 'month'
   const emailParam = searchParams.get('email') || ''
   const nameParam = searchParams.get('name') || ''
 
@@ -132,16 +70,15 @@ export default function Payment() {
     setError(null)
     setBusy(true)
     try {
-      const subPlanId = plan.planId[billing] || plan.planId.month
       const res = await fetch('/api/paypal/create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          planId: subPlanId,
+          planId: plan.planId,
           email: userEmail,
           name: userName,
-          returnUrl: `${window.location.origin}/payment?plan=${planKey}&billing=${billing}&success=true`,
-          cancelUrl: `${window.location.origin}/payment?plan=${planKey}&billing=${billing}&cancelled=true`,
+          returnUrl: `${window.location.origin}/payment?plan=${planKey}&success=true`,
+          cancelUrl: `${window.location.origin}/payment?plan=${planKey}&cancelled=true`,
         }),
       })
 
@@ -292,7 +229,8 @@ export default function Payment() {
     )
   }
 
-  const price = plan.price[billing] || plan.price.month
+  const price = plan.price
+  const includedFeatures = plan.features.filter(f => f.included)
 
   return (
     <>
@@ -332,16 +270,16 @@ export default function Payment() {
 
           {/* Features */}
           <ul className={styles.features}>
-            {plan.features.map(f => (
-              <li key={f} className={styles.feature}>
+            {includedFeatures.map(f => (
+              <li key={f.label} className={styles.feature}>
                 <span className={styles.check}>&#10003;</span>
-                {f}
+                {f.label}
               </li>
             ))}
           </ul>
 
           <div className={styles.note}>
-            <strong>Plan includes:</strong> {plan.features[0]?.toLowerCase()}.
+            <strong>Plan includes:</strong> {includedFeatures[0]?.label?.toLowerCase()}.
             Need more? You can upgrade your plan at any time from your dashboard.
           </div>
 
