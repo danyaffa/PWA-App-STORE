@@ -10,3 +10,9 @@ npm-debug.log*
 *.local
 /backend/.env
 /tmp/
+
+# Firebase service account keys
+*-firebase-adminsdk-*.json
+pwa-app-store.json
+*-service-account*.json
+*serviceAccountKey*.json
