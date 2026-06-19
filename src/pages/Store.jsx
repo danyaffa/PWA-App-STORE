@@ -103,12 +103,15 @@ export default function Store() {
     return (b.rankingScore || 0) - (a.rankingScore || 0)
   })
 
-  const visible = sorted.slice(0, 24)
-
-  const TRENDING = BASE.filter(a => (a.badges || []).includes('trending')).slice(0, 6)
-  const NEW_APPS = BASE.filter(a => (a.badges || []).includes('new')).slice(0, 6)
-  const VERIFIED = BASE.filter(a => (a.badges || []).includes('verified')).slice(0, 6)
+  const TRENDING    = BASE.filter(a => (a.badges || []).includes('trending')).slice(0, 6)
+  const NEW_APPS    = BASE.filter(a => (a.badges || []).includes('new')).slice(0, 6)
+  const VERIFIED    = BASE.filter(a => (a.badges || []).includes('verified')).slice(0, 6)
   const RISING_FAST = BASE.filter(a => (a.badges || []).includes('rising')).slice(0, 6)
+
+  const shownInSections = new Set(
+    [...TRENDING, ...NEW_APPS, ...VERIFIED, ...RISING_FAST].map(a => a.id)
+  )
+  const visible = sorted.filter(a => !shownInSections.has(a.id)).slice(0, 24)
 
   return (
     <>
@@ -164,7 +167,7 @@ export default function Store() {
           <>
             <h2 className={styles.sectionTitle}>Results</h2>
             <div className={styles.grid}>
-              {visible.map(a => <AppCard key={a.id} app={a} />)}
+              {sorted.slice(0, 24).map(a => <AppCard key={a.id} app={a} />)}
             </div>
           </>
         )}
