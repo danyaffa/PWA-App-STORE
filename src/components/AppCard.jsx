@@ -71,7 +71,9 @@ export default function AppCard({ app }) {
 
           <div className={styles.stats}>
             <span className={styles.installs}>{app.installs} installs</span>
-            {app.averageRating > 0 && <span>{'★'.repeat(Math.round(app.averageRating))} {app.averageRating}</span>}
+            {app.averageRating > 0 && (
+              <span>{'★'.repeat(Math.min(5, Math.round(app.averageRating)))} {app.averageRating}</span>
+            )}
           </div>
 
           <div className={styles.verChips}>
