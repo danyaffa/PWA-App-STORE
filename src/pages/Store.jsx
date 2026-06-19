@@ -146,17 +146,33 @@ export default function Store() {
 
         {showSections ? (
           <>
-            <h2 className={styles.sectionTitle}>Trending</h2>
-            <div className={styles.grid}>{TRENDING.map(a => <AppCard key={a.id} app={a} />)}</div>
+            {TRENDING.length > 0 && (
+              <>
+                <h2 className={styles.sectionTitle}>Trending</h2>
+                <div className={styles.grid}>{TRENDING.map(a => <AppCard key={a.id} app={a} />)}</div>
+              </>
+            )}
 
-            <h2 className={styles.sectionTitle}>New & Updated</h2>
-            <div className={styles.grid}>{NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}</div>
+            {NEW_APPS.length > 0 && (
+              <>
+                <h2 className={styles.sectionTitle}>New & Updated</h2>
+                <div className={styles.grid}>{NEW_APPS.map(a => <AppCard key={a.id} app={a} />)}</div>
+              </>
+            )}
 
-            <h2 className={styles.sectionTitle}>Verified Safe</h2>
-            <div className={styles.grid}>{VERIFIED.map(a => <AppCard key={a.id} app={a} />)}</div>
+            {VERIFIED.length > 0 && (
+              <>
+                <h2 className={styles.sectionTitle}>Verified Safe</h2>
+                <div className={styles.grid}>{VERIFIED.map(a => <AppCard key={a.id} app={a} />)}</div>
+              </>
+            )}
 
-            <h2 className={styles.sectionTitle}>Rising Fast</h2>
-            <div className={styles.grid}>{RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}</div>
+            {RISING_FAST.length > 0 && (
+              <>
+                <h2 className={styles.sectionTitle}>Rising Fast</h2>
+                <div className={styles.grid}>{RISING_FAST.map(a => <AppCard key={a.id} app={a} />)}</div>
+              </>
+            )}
 
             <h2 className={styles.sectionTitle}>Browse</h2>
             <div className={styles.grid}>
