@@ -5,6 +5,7 @@ import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
 import PayPalButton from '../components/PayPalButton.jsx'
 import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
+import ReportApp from '../components/ReportApp.jsx'
 import { APPS } from '../utils/data.js'
 import { loadPublishedApps } from '../lib/appsStore.js'
 import { useInstallState } from '../hooks/useInstallState.js'
@@ -16,6 +17,7 @@ export default function AppDetail() {
   const { id } = useParams()
   const { toast, ToastContainer } = useToast()
   const [publishedApps, setPublishedApps] = useState([])
+  const [showReport, setShowReport] = useState(false)
 
   useEffect(() => {
     loadPublishedApps().then(setPublishedApps).catch(() => {})
@@ -67,7 +69,6 @@ export default function AppDetail() {
     install()
     trackInstall(app.id)
 
-    // Open the app so the user can use/install it directly
     if (app.url) {
       window.open(app.url, '_blank', 'noopener,noreferrer')
       toast(`${app.name} installed and opened in a new tab!`)
@@ -80,6 +81,12 @@ export default function AppDetail() {
   function handleInstallDeclined() {
     setShowDisclaimer(false)
   }
+
+  // Split permissions into what the app can and cannot access
+  const canPerms = (app.permissions && app.permissions.length > 0 && app.permissions[0] !== 'None — fully offline')
+    ? app.permissions
+    : ['Internet access']
+  const cannotPerms = ['Use your camera', 'Read your contacts', 'Access microphone']
 
   return (
     <>
@@ -121,7 +128,7 @@ export default function AppDetail() {
                     {(app.screenshots || []).map((s, idx) => (
                       <div key={idx} className={styles.featureCard}>
                         <div className={styles.featureTitle}>{s.title}</div>
-                        <div className={styles.featureDesc}>{s.desc}</div>
+                        <div className={styles.featureDesc}>{s.caption}</div>
                       </div>
                     ))}
                   </div>
@@ -140,16 +147,13 @@ export default function AppDetail() {
                     <div>
                       <div className={styles.permLabel}>This app can:</div>
                       <ul>
-                        <li>Location (optional)</li>
-                        <li>Internet access</li>
+                        {canPerms.map((p, i) => <li key={i}>{p}</li>)}
                       </ul>
                     </div>
                     <div>
                       <div className={styles.permLabel}>This app cannot:</div>
                       <ul>
-                        <li>Use your camera</li>
-                        <li>Read your contacts</li>
-                        <li>Access microphone</li>
+                        {cannotPerms.map((p, i) => <li key={i}>{p}</li>)}
                       </ul>
                     </div>
                   </div>
@@ -223,8 +227,12 @@ export default function AppDetail() {
                     amount={app.price}
                     description={`Purchase ${app.name} — SafeLaunch`}
                     onSuccess={(capture) => {
-                      toast(`Payment successful! Opening ${app.name}…`)
-                      if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
+                      if (capture?.status === 'COMPLETED') {
+                        toast(`Payment successful! Opening ${app.name}…`)
+                        if (app.url) window.open(app.url, '_blank', 'noopener,noreferrer')
+                      } else {
+                        toast('Payment could not be verified. Please contact support.')
+                      }
                     }}
                     onError={() => toast('Payment failed. Please try again.')}
                   />
@@ -256,7 +264,12 @@ export default function AppDetail() {
                 <div><span>Price</span><span>{app.price || 'Free'}</span></div>
               </div>
 
-              <button className={`btn btn-ghost ${styles.reportBtn}`}>Report App</button>
+              <button
+                className={`btn btn-ghost ${styles.reportBtn}`}
+                onClick={() => setShowReport(true)}
+              >
+                Report App
+              </button>
             </div>
           </aside>
         </div>
@@ -267,6 +280,14 @@ export default function AppDetail() {
             appId={app.id}
             onAccept={handleInstallAccepted}
             onCancel={handleInstallDeclined}
+          />
+        )}
+
+        {showReport && (
+          <ReportApp
+            appId={app.id}
+            appName={app.name}
+            onClose={() => setShowReport(false)}
           />
         )}
       </div>
