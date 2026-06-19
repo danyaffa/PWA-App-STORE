@@ -25,6 +25,14 @@ const PLAN_LIMITS = {
   'Business':     { maxApps: Infinity, price: 99 },
 }
 
+function parseInstalls(str) {
+  const s = String(str || '0').toLowerCase().replace(/,/g, '')
+  const n = parseFloat(s)
+  if (s.includes('m')) return Math.round(n * 1_000_000)
+  if (s.includes('k')) return Math.round(n * 1_000)
+  return Number.isFinite(n) ? Math.round(n) : 0
+}
+
 export default function Dashboard() {
   const { toast, ToastContainer } = useToast()
   const { user, logout, isConfigured } = useAuth()
@@ -79,11 +87,7 @@ export default function Dashboard() {
   const displayName = user?.displayName || user?.email?.split('@')[0] || localAuth?.company || localAuth?.email?.split('@')[0] || 'Publisher'
   const initials = displayName.slice(0, 2).toUpperCase()
 
-  // Compute stats from real data
-  const totalInstalls = apps.reduce((sum, a) => {
-    const n = parseInt(String(a.installs || '0').replace(/,/g, ''), 10)
-    return sum + (isNaN(n) ? 0 : n)
-  }, 0)
+  const totalInstalls = apps.reduce((sum, a) => sum + parseInstalls(a.installs), 0)
   const avgRisk = apps.length
     ? Math.round(apps.reduce((s, a) => s + (a.score || 0), 0) / apps.length)
     : 0
@@ -130,7 +134,7 @@ export default function Dashboard() {
         </div>
         {/* Usage counter */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: '.82rem', color: 'var(--muted)' }}>
-          <span>Apps: <strong style={{ color: appsAtLimit ? 'var(--danger)' : 'var(--text)' }}>{currentApps}/{maxApps === Infinity ? '\u221E' : maxApps}</strong></span>
+          <span>Apps: <strong style={{ color: appsAtLimit ? 'var(--danger)' : 'var(--text)' }}>{currentApps}/{maxApps === Infinity ? '∞' : maxApps}</strong></span>
           <span style={{ fontSize: '.75rem' }}>({userPlan})</span>
         </div>
 
@@ -157,7 +161,6 @@ export default function Dashboard() {
                     toast(`Synced ${result.synced}, failed ${result.failed}. Check console for details.`)
                     console.error('[Dashboard] Partial sync errors:', result.errors)
                   } else if (result.errors.length) {
-                    // Show a more actionable error message
                     const detail = result.errors[0] || ''
                     if (detail.includes('not configured')) {
                       toast('Sync failed: Firebase not configured. Set env vars in Vercel dashboard.')
