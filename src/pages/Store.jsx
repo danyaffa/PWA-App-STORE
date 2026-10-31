@@ -4,6 +4,7 @@ import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import AppCard from '../components/AppCard.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { trackSearch } from '../lib/analytics.js'
 import { APPS, CATEGORIES } from '../utils/data.js'
 import { loadPublishedApps, getAppsStoreStatus } from '../lib/appsStore.js'
@@ -115,7 +116,7 @@ export default function Store() {
 
   return (
     <>
-      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical="https://agentslock.com/store" />
+      <SEO title="Store — SafeLaunch" description="Browse safe, verified PWAs with transparent trust scores." canonical={canonicalFor('/store')} />
       <Nav />
       <div className="page-wrap">
         <div className="section-label">Store</div>

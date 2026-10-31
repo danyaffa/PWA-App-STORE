@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import PayPalButton from '../components/PayPalButton.jsx'
 import InstallDisclaimer from '../components/InstallDisclaimer.jsx'
 import ReportApp from '../components/ReportApp.jsx'
@@ -11,6 +12,7 @@ import { loadPublishedApps } from '../lib/appsStore.js'
 import { useInstallState } from '../hooks/useInstallState.js'
 import { useToast } from '../hooks/useToast.js'
 import { trackInstall, trackOpenApp } from '../lib/analytics.js'
+import { appJsonLd, breadcrumbJsonLd } from '../seo/htmlTemplate.js'
 import styles from './AppDetail.module.css'
 
 export default function AppDetail() {
@@ -38,6 +40,17 @@ export default function AppDetail() {
   const [showDisclaimer, setShowDisclaimer] = useState(false)
   const { installed, install } = useInstallState(app?.id)
   const isPaid = app?.price && app.price !== 'Free' && app.price !== '0'
+  const jsonLd = useMemo(() => {
+    if (!app) return null
+    const strip = ({ '@context': _c, ...rest }) => rest
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        strip(appJsonLd(app, canonicalFor(`/app/${app.id}`))),
+        strip(breadcrumbJsonLd([['/', 'Home'], ['/store', 'Store'], [`/app/${app.id}`, app.name]])),
+      ],
+    }
+  }, [app])
 
   if (!app) {
     return (
@@ -93,7 +106,8 @@ export default function AppDetail() {
       <SEO
         title={`${app.name} — SafeLaunch`}
         description={app.desc}
-        canonical={`https://agentslock.com/app/${app.id}`}
+        canonical={canonicalFor(`/app/${app.id}`)}
+        jsonLd={jsonLd}
       />
       <Nav />
 

@@ -41,7 +41,7 @@ function getServiceAccount() {
   return { sa: null, method: 'none', error: 'No service account env var found.' }
 }
 
-function getAdminDb() {
+export function getAdminDb() {
   if (admin.apps.length) return { db: admin.firestore(), error: null }
 
   const { sa, method, error } = getServiceAccount()

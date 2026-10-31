@@ -1,11 +1,18 @@
+# SafeLaunch — https://www.pwa-app-store.com
+# Search engines and AI assistants are welcome to crawl public pages.
 User-agent: *
 Allow: /
-
-# Sitemaps
-Sitemap: https://agentslock.com/sitemap.xml
-
-# Disallow admin/dashboard pages from indexing
+Disallow: /api/
 Disallow: /dashboard
 Disallow: /trust-ops
 Disallow: /signin
-Disallow: /api/
+Disallow: /management
+Disallow: /management-login
+Disallow: /diagnostics
+Disallow: /payment
+Disallow: /cancel
+Disallow: /paypal/
+Disallow: /publish
+Disallow: /app/*/promote
+
+Sitemap: https://www.pwa-app-store.com/sitemap.xml

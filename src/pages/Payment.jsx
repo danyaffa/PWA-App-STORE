@@ -5,6 +5,8 @@ import { useToast } from '../hooks/useToast.js'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { trackEvent } from '../lib/track.js'
+import { canonicalFor } from '../seo/site.js'
 import PayPalButton from '../components/PayPalButton.jsx'
 import { LAUNCH_DEAL, PLANS } from '../config/plans.js'
 import styles from './Payment.module.css'
@@ -44,6 +46,8 @@ export default function Payment() {
     if (searchParams.get('success') === 'true') {
       localStorage.setItem('sl_billing_status', 'active')
       localStorage.setItem('sl_plan', planKey || 'launch')
+      // Subscription approved at PayPal (may still be inside the free trial) — report list price, not revenue
+      trackEvent('subscribe', { plan: planKey || 'launch', currency: 'USD', plan_price: PLANS[planKey]?.price ?? LAUNCH_DEAL.price })
       toast('Payment successful! Welcome to SafeLaunch.')
       setTimeout(() => navigate('/publish'), 1500)
     }
@@ -56,6 +60,7 @@ export default function Payment() {
   function handleLaunchSuccess(capture) {
     localStorage.setItem('sl_billing_status', 'active')
     localStorage.setItem('sl_plan', 'launch')
+    trackEvent('purchase', { plan: 'launch', currency: 'USD', value: LAUNCH_DEAL.price })
     toast('Payment successful! Your $2 spot is claimed.')
     setTimeout(() => navigate('/publish'), 1200)
   }
@@ -138,10 +143,10 @@ export default function Payment() {
   if (showLaunchDeal) {
     return (
       <>
-        <SEO
+        <SEO noindex
           title="Claim Your $2 Spot — SafeLaunch"
           description="Grand Launch Deal: Get your app listed on SafeLaunch for just $2. First 100 spots only."
-          canonical="https://pwa-app-store.com/payment"
+          canonical={canonicalFor('/payment')}
         />
         <Nav />
         <div className="page-wrap" style={{ maxWidth: 560 }}>
@@ -234,10 +239,10 @@ export default function Payment() {
 
   return (
     <>
-      <SEO
+      <SEO noindex
         title={`${plan.name} — SafeLaunch Payment`}
         description={`Subscribe to ${plan.name} plan on SafeLaunch.`}
-        canonical="https://pwa-app-store.com/payment"
+        canonical={canonicalFor('/payment')}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 560 }}>

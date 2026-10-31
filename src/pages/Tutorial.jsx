@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './Tutorial.module.css'
 
 const STEPS = [
@@ -94,7 +95,7 @@ export default function Tutorial() {
       <SEO
         title="Tutorial — Build & Publish PWAs"
         description="Learn what a PWA is, how to build it with AI tools, and how to publish on SafeLaunch."
-        canonical="https://agentslock.com/tutorial"
+        canonical={canonicalFor('/tutorial')}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 980 }}>

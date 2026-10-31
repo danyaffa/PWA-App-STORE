@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import Nav from "../components/Nav.jsx"
 import Footer from "../components/Footer.jsx"
 import SEO from "../components/SEO.jsx"
+import { canonicalFor } from "../seo/site.js"
 import { loadPublishedApps, getAppsStoreStatus } from "../lib/appsStore.js"
 import { isConfigured, firebaseReady, auth, db } from "../lib/firebase.js"
 
@@ -221,10 +222,10 @@ export default function Diagnostics() {
 
   return (
     <>
-      <SEO
+      <SEO noindex
         title="Diagnostics — SafeLaunch"
         description="Run diagnostics to verify Store publishing and cloud sync across browsers."
-        canonical="https://agentslock.com/diagnostics"
+        canonical={canonicalFor('/diagnostics')}
       />
       <Nav />
       <div className="page-wrap">

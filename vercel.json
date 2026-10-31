@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/app-page.js": { "includeFiles": "dist/index.html" }
+  },
   "redirects": [
     {
       "source": "/((?!api/).*)",
@@ -8,6 +11,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/app/:id", "destination": "/api/app-page?id=:id" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     {
       "source": "/((?!.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|txt|xml|json|map|css|js|woff|woff2)$).*)",

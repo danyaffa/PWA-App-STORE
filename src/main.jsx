@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import App from './App.jsx'
+import { trackAiReferral } from './lib/track.js'
 import './styles/global.css'
 
 // Capture PWA install prompt for later use
@@ -119,6 +120,8 @@ try {
       </ErrorBoundary>
     </React.StrictMode>
   )
+  // Visibility: record visits that arrive from AI assistants (ChatGPT, Perplexity, Gemini…)
+  trackAiReferral()
   // Fallback: dismiss loader after 3s if onMount hasn't fired
   // (gives React enough time to mount — old 500ms was too aggressive)
   setTimeout(() => {

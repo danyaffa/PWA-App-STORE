@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor, SITE_URL } from '../seo/site.js'
 import { APPS } from '../utils/data.js'
 import { loadPublishedApps } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
@@ -45,7 +46,7 @@ export default function Promote() {
     )
   }
 
-  const appUrl = `https://agentslock.com/app/${app.id}`
+  const appUrl = canonicalFor(`/app/${app.id}`)
 
   function copy(text, label) {
     navigator.clipboard.writeText(text).then(() => {
@@ -56,7 +57,7 @@ export default function Promote() {
   }
 
   const shareLink = appUrl
-  const embedBadge = `<a href="${appUrl}" target="_blank" rel="noopener"><img src="https://agentslock.com/badge-safelaunch.svg" alt="Available on SafeLaunch" width="200" height="58" /></a>`
+  const embedBadge = `<a href="${appUrl}" target="_blank" rel="noopener"><img src="${SITE_URL}/badge-safelaunch.svg" alt="Available on SafeLaunch" width="200" height="58" /></a>`
   const installButton = `<a href="${appUrl}" style="display:inline-block;padding:12px 24px;background:#00e5a0;color:#0a0a0f;border-radius:8px;font-weight:700;text-decoration:none;font-family:sans-serif">Install ${app.name} on SafeLaunch</a>`
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(appUrl)}`
 
@@ -68,7 +69,7 @@ export default function Promote() {
 
   return (
     <>
-      <SEO title={`Promote ${app.name} — SafeLaunch`} description={`Promote your app ${app.name} with share links, embed badges, and ready-made social posts.`} canonical={`https://agentslock.com/app/${app.id}/promote`} />
+      <SEO noindex title={`Promote ${app.name} — SafeLaunch`} description={`Promote your app ${app.name} with share links, embed badges, and ready-made social posts.`} canonical={canonicalFor(`/app/${app.id}/promote`)} />
       <Nav />
       <div className="page-wrap page-wrap--narrow">
         <Link to={`/app/${app.id}`} style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>← Back to {app.name}</Link>

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './PayPalSetup.module.css'
 
 const steps = [
@@ -31,10 +32,10 @@ export default function PayPalSetup() {
 
   return (
     <>
-      <SEO
+      <SEO noindex
         title="PayPal Setup — SafeLaunch"
         description="Configure PayPal checkout, API secrets, and webhook verification for SafeLaunch."
-        canonical="https://agentslock.com/paypal/setup"
+        canonical={canonicalFor('/paypal/setup')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

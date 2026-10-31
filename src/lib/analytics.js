@@ -2,6 +2,7 @@
 // Stores in Firestore when configured, otherwise uses localStorage.
 
 import { db, isConfigured } from './firebase.js'
+import { trackEvent } from './track.js'
 
 const LOCAL_KEY = 'sl_analytics'
 
@@ -18,6 +19,7 @@ function saveLocalAnalytics(data) {
  * Track an app page view.
  */
 export async function trackView(appId) {
+  trackEvent('view_item', { item_id: appId })
   if (isConfigured && db) {
     try {
       const { doc, updateDoc, increment } = await import('firebase/firestore')
@@ -47,6 +49,7 @@ export async function trackView(appId) {
  * Track an app install.
  */
 export async function trackInstall(appId) {
+  trackEvent('install_app', { item_id: appId })
   if (isConfigured && db) {
     try {
       const { doc, updateDoc, increment } = await import('firebase/firestore')
@@ -67,6 +70,7 @@ export async function trackInstall(appId) {
  * Track an app open (user clicks "Open App").
  */
 export async function trackOpenApp(appId) {
+  trackEvent('outbound_click', { item_id: appId, link_type: 'open_app' })
   if (isConfigured && db) {
     try {
       const { doc, updateDoc, increment } = await import('firebase/firestore')
@@ -88,6 +92,7 @@ export async function trackOpenApp(appId) {
  */
 export async function trackSearch(query) {
   if (!query || query.length < 2) return
+  trackEvent('search', { search_term: query.toLowerCase().trim().slice(0, 100) })
 
   if (isConfigured && db) {
     try {

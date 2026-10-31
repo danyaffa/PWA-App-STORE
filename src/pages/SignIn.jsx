@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import SEO from '../components/SEO.jsx'
+import { trackEvent } from '../lib/track.js'
+import { canonicalFor } from '../seo/site.js'
 import styles from './SignIn.module.css'
 import { useToast } from '../hooks/useToast.js'
 
@@ -123,6 +125,7 @@ export default function SignIn() {
       }
 
       localStorage.setItem('sl_auth', JSON.stringify({ email, company, ts: Date.now() }))
+      trackEvent('sign_up', { method: 'email' })
 
       // Promo code = free access path (skips payment for now)
       if (promoCode && promoCode.trim()) {
@@ -165,7 +168,7 @@ export default function SignIn() {
 
   return (
     <>
-      <SEO title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical="https://agentslock.com/signin" />
+      <SEO noindex title="Sign In — SafeLaunch" description="Sign in to publish and manage your apps." canonical={canonicalFor('/signin')} />
       <div className={styles.page}>
         <div className={styles.card}>
           <div className={styles.logo}>Safe<span>Launch</span></div>

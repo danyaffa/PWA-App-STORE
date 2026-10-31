@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import IOSInstallGuide from '../components/IOSInstallGuide.jsx'
 import { usePWAInstall } from '../hooks/usePWAInstall.js'
 import { useToast } from '../hooks/useToast.js'
@@ -42,7 +43,7 @@ export default function InstallGuide() {
       <SEO
         title="Install SafeLaunch — PWA App Store"
         description="Install SafeLaunch on your iPhone, iPad, Android, or Mac. Works like a native app — no App Store required."
-        canonical="https://agentslock.com/app-store"
+        canonical={canonicalFor('/app-store')}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 900 }}>
