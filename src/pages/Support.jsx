@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Support.module.css'
@@ -87,7 +88,7 @@ export default function Support() {
       <SEO
         title="Support — SafeLaunch"
         description="Get help with SafeLaunch. FAQs and AI-powered support."
-        canonical="https://agentslock.com/support"
+        canonical={canonicalFor('/support')}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 900 }}>

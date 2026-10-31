@@ -1,6 +1,7 @@
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './Legal.module.css'
 
 export default function DMCA() {
@@ -9,7 +10,7 @@ export default function DMCA() {
       <SEO
         title="DMCA / Content Removal — SafeLaunch"
         description="Report copyright infringement or request content removal on SafeLaunch."
-        canonical="https://agentslock.com/dmca"
+        canonical={canonicalFor('/dmca')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

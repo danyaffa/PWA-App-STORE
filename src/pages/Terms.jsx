@@ -1,6 +1,7 @@
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './Legal.module.css'
 
 export default function Terms() {
@@ -9,7 +10,7 @@ export default function Terms() {
       <SEO
         title="Terms of Service — SafeLaunch"
         description="SafeLaunch terms of service. Rules and guidelines for using the SafeLaunch PWA App Store."
-        canonical="https://agentslock.com/terms"
+        canonical={canonicalFor('/terms')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

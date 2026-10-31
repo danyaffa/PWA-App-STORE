@@ -94,7 +94,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.layout}>
-      <SEO title="Dashboard — SafeLaunch" description="Manage your published PWA apps, view analytics, and monitor safety scans." />
+      <SEO noindex title="Dashboard — SafeLaunch" description="Manage your published PWA apps, view analytics, and monitor safety scans." />
 
       {/* Sidebar */}
       <aside className={styles.sidebar}>

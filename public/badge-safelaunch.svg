@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="58" viewBox="0 0 200 58" role="img" aria-label="Available on SafeLaunch">
+  <title>Available on SafeLaunch</title>
+  <rect x="0.5" y="0.5" width="199" height="57" rx="10" fill="#0a0a0f" stroke="#00e5a0"/>
+  <g transform="translate(14 13)">
+    <path d="M16 0 L30 6 V15 C30 23.5 24 29.5 16 32 C8 29.5 2 23.5 2 15 V6 Z" fill="#00e5a0"/>
+    <path d="M10 16 L14.5 20.5 L22.5 11.5" fill="none" stroke="#0a0a0f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="56" y="24" fill="#a0a0c0" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="10" letter-spacing="0.5">AVAILABLE ON</text>
+  <text x="56" y="43" fill="#e8e8f0" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="19" font-weight="700">Safe<tspan fill="#00e5a0">Launch</tspan></text>
+</svg>

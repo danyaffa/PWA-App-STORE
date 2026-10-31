@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './Legal.module.css'
 
 export default function Cancel() {
@@ -54,10 +55,10 @@ export default function Cancel() {
 
   return (
     <>
-      <SEO
+      <SEO noindex
         title="Cancel & Delete Account — SafeLaunch"
         description="Cancel your SafeLaunch subscription and delete your account in one click."
-        canonical="https://pwa-app-store.com/cancel"
+        canonical={canonicalFor('/cancel')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './HowSafetyWorks.module.css'
 
 const LAYERS = [
@@ -55,7 +56,7 @@ export default function HowSafetyWorks() {
       <SEO
         title="How Safety Works — SafeLaunch"
         description="Learn how SafeLaunch protects users with a 6-layer automated security scanning pipeline, continuous monitoring, and instant takedown capabilities."
-        canonical="https://agentslock.com/how-safety-works"
+        canonical={canonicalFor('/how-safety-works')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

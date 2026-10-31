@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import CampaignBanner from '../components/CampaignBanner.jsx'
 import LaunchDealBanner from '../components/LaunchDealBanner.jsx'
+import { organizationJsonLd, websiteJsonLd } from '../seo/htmlTemplate.js'
 import styles from './Home.module.css'
+
+const HOME_JSONLD = { '@context': 'https://schema.org', '@graph': [organizationJsonLd(), websiteJsonLd()].map(({ '@context': _c, ...rest }) => rest) }
 
 const KEY_FEATURES = [
   { icon: '🏪', title: 'Trusted App Store',       desc: 'Browse and install AI-verified PWAs with confidence. Every app carries a public trust report.' },
@@ -21,16 +25,31 @@ export default function Home() {
       <SEO
         title="SafeLaunch — Trusted PWA App Store | AI-Verified Web Apps"
         description="SafeLaunch is the trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified progressive web apps with confidence."
-        canonical="https://agentslock.com/"
+        canonical={canonicalFor('/')}
+        jsonLd={HOME_JSONLD}
       />
       <Nav />
 
       <div className={styles.homePage}>
-        <img
-          src="/homepage.png"
-          alt="SafeLaunch — Trusted PWA App Store"
-          className={styles.heroImage}
-        />
+        {/* H1 wraps the hero image so the page has a real heading (alt text) with no visual change */}
+        <h1 style={{ margin: 0, fontSize: 'inherit', lineHeight: 0 }}>
+          <picture>
+            <source
+              type="image/webp"
+              srcSet="/homepage-640.webp 640w, /homepage.webp 1233w"
+              sizes="100vw"
+            />
+            <img
+              src="/homepage.png"
+              alt="SafeLaunch — Trusted PWA App Store"
+              className={styles.heroImage}
+              width="1233"
+              height="690"
+              fetchpriority="high"
+              style={{ height: 'auto' }}
+            />
+          </picture>
+        </h1>
 
         <CampaignBanner />
 

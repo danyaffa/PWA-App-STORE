@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useToast } from '../hooks/useToast.js'
 import styles from './Legal.module.css'
@@ -56,7 +57,7 @@ export default function DeveloperAgreement() {
       <SEO
         title="Developer Agreement — SafeLaunch"
         description="SafeLaunch Developer Agreement. Terms and responsibilities for app publishers."
-        canonical="https://agentslock.com/developer-agreement"
+        canonical={canonicalFor('/developer-agreement')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

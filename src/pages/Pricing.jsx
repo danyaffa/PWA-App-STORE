@@ -5,17 +5,13 @@ import { useToast } from '../hooks/useToast.js'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { LAUNCH_DEAL, PLANS_LIST } from '../config/plans.js'
+import { PRICING_FAQS as FAQS } from '../config/pricingFaqs.js'
+import { faqJsonLd } from '../seo/htmlTemplate.js'
 import styles from './Pricing.module.css'
 
-const FAQS = [
-  { q: 'Does SafeLaunch take a revenue cut?', a: 'No. SafeLaunch is subscription-only. We never touch your revenue, in-app purchases, or user payments. What you earn is 100% yours.' },
-  { q: 'What happens if my app is blocked?', a: "You receive a full scan report detailing exactly what was found, why it matters, and how to fix it. Once fixed, you can resubmit for a free rescan." },
-  { q: 'Is the 14-day trial really free?', a: 'Yes — no credit card required for the trial. You only pay if you decide to continue after 14 days.' },
-  { q: 'Which frameworks are supported?', a: 'React, Vue, Svelte, SvelteKit, Next.js (static export), Astro, Angular, and vanilla HTML/JS/CSS. Auto-detected from your repo.' },
-  { q: 'Can I cancel anytime?', a: 'Yes. Cancel anytime from your dashboard or directly through PayPal. Your apps remain listed until the end of your billing period, then unpublish automatically.', link: '/cancel', linkLabel: 'See cancellation options →' },
-  { q: 'Do users need accounts to install apps?', a: 'No. Store visitors can browse and install any app without signing up. Only developers need a SafeLaunch publisher account.' },
-]
+const PRICING_JSONLD = faqJsonLd(FAQS)
 
 export default function Pricing() {
   const [openFaq, setOpenFaq] = useState(null)
@@ -34,7 +30,8 @@ export default function Pricing() {
       <SEO
         title="Pricing — SafeLaunch PWA App Store"
         description="Simple, flat pricing with no revenue cuts. Publish PWAs from $9/month. Every plan includes a full 6-layer AI safety scan."
-        canonical="https://agentslock.com/pricing"
+        canonical={canonicalFor('/pricing')}
+        jsonLd={PRICING_JSONLD}
       />
       <Nav />
       <div className="page-wrap" style={{ maxWidth: 1100 }}>

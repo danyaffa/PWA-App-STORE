@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO.jsx'
 import styles from './NotFound.module.css'
 
 export default function NotFound() {
   return (
     <div className={styles.page}>
+      <SEO noindex title="Page Not Found — SafeLaunch" description="This page doesn't exist — or it may have been moved." />
       <div className="orb" style={{width:400,height:400,background:'rgba(0,229,160,.06)',top:-100,left:-100}} />
       <div className="orb" style={{width:300,height:300,background:'rgba(124,111,255,.06)',bottom:-100,right:-50}} />
 

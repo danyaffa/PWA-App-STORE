@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './ManagementLogin.module.css'
 import { useToast } from '../hooks/useToast.js'
 
@@ -112,7 +113,7 @@ export default function ManagementLogin() {
 
   return (
     <>
-      <SEO title="Management Login — SafeLaunch" description="Secure admin access with verification code." canonical="https://agentslock.com/management-login" />
+      <SEO noindex title="Management Login — SafeLaunch" description="Secure admin access with verification code." canonical={canonicalFor('/management-login')} />
       <Nav />
       <div className="page-wrap">
         <div className={styles.wrap}>

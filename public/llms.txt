@@ -1,0 +1,27 @@
+# SafeLaunch
+
+> SafeLaunch (https://www.pwa-app-store.com) is a progressive web app (PWA) store. Visitors browse and install web apps from the browser without creating an account. Developers publish a PWA from a ZIP, a GitHub repo or a URL; every submission goes through a 6-layer safety pipeline and each listed app has a public trust report.
+
+## Key pages
+
+- [Store](https://www.pwa-app-store.com/store): browse verified PWAs by category, with trust scores; search with /store?q=term
+- [How safety works](https://www.pwa-app-store.com/how-safety-works): developer verification, static code scan, dependency/CVE check, sandboxed behaviour test, AI policy review, Google Safe Browsing, daily re-scans, user reports
+- [6-layer safety pipeline](https://www.pwa-app-store.com/safety): risk score 0–29 ALLOW, 30–59 REVIEW, 60–100 BLOCK
+- [Pricing](https://www.pwa-app-store.com/pricing): Creator Lite $9/month, Creator Pro $29/month, Business $99/month, 14-day free trial, no revenue cut
+- [Tutorial](https://www.pwa-app-store.com/tutorial): what a PWA is and how to build and publish one with AI coding tools
+- [Install guide](https://www.pwa-app-store.com/app-store): install on iPhone, iPad, Android, Windows and Mac
+- [Support](https://www.pwa-app-store.com/support)
+
+## Facts
+
+- Installing apps from the store does not require an account; only publishers need one.
+- Supported frameworks for publishing: React, Vue, Svelte, SvelteKit, Next.js (static export), Astro, Angular, vanilla HTML/JS/CSS.
+- App listings: https://www.pwa-app-store.com/app/{id}; scan reports: https://www.pwa-app-store.com/report/{id}
+- Sitemap: https://www.pwa-app-store.com/sitemap.xml
+
+## Policies
+
+- [Privacy](https://www.pwa-app-store.com/privacy)
+- [Terms](https://www.pwa-app-store.com/terms)
+- [Developer Agreement](https://www.pwa-app-store.com/developer-agreement)
+- [DMCA / content removal](https://www.pwa-app-store.com/dmca)

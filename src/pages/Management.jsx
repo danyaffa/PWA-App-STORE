@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { useToast } from '../hooks/useToast.js'
 import { loadPublishedApps, loadCampaign, saveCampaign, deletePublishedApp } from '../lib/appsStore.js'
 import styles from './Management.module.css'
@@ -138,7 +139,7 @@ export default function Management() {
 
   return (
     <>
-      <SEO title="Management Dashboard - SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical="https://agentslock.com/management" />
+      <SEO noindex title="Management Dashboard - SafeLaunch" description="Manage apps, blocks, and moderation actions." canonical={canonicalFor('/management')} />
       <Nav />
       <div className="page-wrap">
         <div className={styles.header}>

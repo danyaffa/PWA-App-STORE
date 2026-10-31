@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
+import SEO from '../components/SEO.jsx'
 import { APPS } from '../utils/data.js'
 import { loadPublishedApps } from '../lib/appsStore.js'
 import { useToast } from '../hooks/useToast.js'
@@ -108,6 +109,8 @@ export default function ScanReport() {
 
   return (
     <>
+      {/* noindex: report header/build details are still placeholder values, not per-app scan data */}
+      <SEO noindex title={`${app.name} — Scan Report — SafeLaunch`} description={`Safety scan report for ${app.name} on SafeLaunch.`} />
       <Nav />
       <div className="page-wrap page-wrap--narrow">
         <Link to={`/app/${app.id}`} style={{ color:'var(--muted)', fontSize:'0.85rem' }}>← Back to App Detail</Link>

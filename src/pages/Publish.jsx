@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { SCAN_STEPS, CATEGORIES } from '../utils/data.js'
 import { savePublishedApp } from '../lib/appsStore.js'
@@ -248,10 +249,10 @@ export default function Publish() {
 
   return (
     <>
-      <SEO
+      <SEO noindex
         title="Publish — SafeLaunch"
         description="Upload and publish your PWA with AI safety scanning."
-        canonical="https://agentslock.com/publish"
+        canonical={canonicalFor('/publish')}
       />
       <Nav />
 

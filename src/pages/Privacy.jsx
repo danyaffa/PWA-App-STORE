@@ -1,6 +1,7 @@
 import Nav from '../components/Nav.jsx'
 import Footer from '../components/Footer.jsx'
 import SEO from '../components/SEO.jsx'
+import { canonicalFor } from '../seo/site.js'
 import styles from './Legal.module.css'
 
 export default function Privacy() {
@@ -9,7 +10,7 @@ export default function Privacy() {
       <SEO
         title="Privacy Policy — SafeLaunch"
         description="SafeLaunch privacy policy. How we collect, use, and protect your data."
-        canonical="https://agentslock.com/privacy"
+        canonical={canonicalFor('/privacy')}
       />
       <Nav />
       <div className="page-wrap page-wrap--narrow">

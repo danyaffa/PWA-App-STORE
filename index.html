@@ -4,27 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- SEO -->
-  <title>SafeLaunch — Trusted PWA App Store | AI-Verified Web Apps</title>
-  <meta name="description" content="SafeLaunch is the trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified progressive web apps with confidence." />
+  <!-- SEO (title/description/canonical/OG/JSON-LD are rewritten per route by src/seo/vitePluginSeo.js) -->
   <meta name="keywords" content="PWA, app store, progressive web app, web app store, AI verified, safety scanning, install PWA, publish app" />
   <meta name="author" content="SafeLaunch" />
-  <link rel="canonical" href="https://agentslock.com/" />
-
-  <!-- Open Graph / Facebook -->
+  <!--seo-head:start-->
+  <title>SafeLaunch — Trusted PWA App Store | AI-Verified Web Apps</title>
+  <meta name="description" content="SafeLaunch is the trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified progressive web apps with confidence." />
+  <link rel="canonical" href="https://www.pwa-app-store.com/" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://agentslock.com/" />
+  <meta property="og:url" content="https://www.pwa-app-store.com/" />
   <meta property="og:title" content="SafeLaunch — Trusted PWA App Store" />
   <meta property="og:description" content="The trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified web apps." />
-  <meta property="og:image" content="https://agentslock.com/icons/og-image.png" />
+  <meta property="og:image" content="https://www.pwa-app-store.com/icons/og-image.png" />
   <meta property="og:site_name" content="SafeLaunch" />
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://agentslock.com/" />
+  <meta name="twitter:url" content="https://www.pwa-app-store.com/" />
   <meta name="twitter:title" content="SafeLaunch — Trusted PWA App Store" />
   <meta name="twitter:description" content="The trusted PWA app store with AI-powered safety scanning." />
-  <meta name="twitter:image" content="https://agentslock.com/icons/og-image.png" />
+  <meta name="twitter:image" content="https://www.pwa-app-store.com/icons/og-image.png" />
+  <!--seo-head:end-->
 
   <!-- PWA -->
   <meta name="theme-color" content="#00e5a0" />
@@ -42,7 +40,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "SafeLaunch",
-    "url": "https://agentslock.com",
+    "url": "https://www.pwa-app-store.com",
     "description": "The trusted PWA app store with AI-powered safety scanning. Browse, publish, and install verified progressive web apps.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Web, iOS, Android, macOS, Windows",
@@ -56,7 +54,7 @@
     "creator": {
       "@type": "Organization",
       "name": "SafeLaunch",
-      "url": "https://agentslock.com"
+      "url": "https://www.pwa-app-store.com"
     }
   }
   </script>
@@ -91,7 +89,7 @@
     (function(){
       var t = setTimeout(function(){
         var root = document.getElementById('root');
-        if (root && root.children.length === 0) {
+        if (root && (root.children.length === 0 || root.querySelector('[data-prerender]'))) {
           var loader = document.getElementById('boot-loader');
           if (loader) loader.innerHTML =
             '<div style="text-align:center;padding:40px;max-width:480px">' +
@@ -121,7 +119,7 @@
       font-family: system-ui, sans-serif; text-align: center; padding: 40px;
     ">
       <div>
-        <h1 style="font-size: 1.3rem; margin-bottom: 12px;">JavaScript Required</h1>
+        <p style="font-size: 1.3rem; margin-bottom: 12px; font-weight: 700;">JavaScript Required</p>
         <p style="color: #7070a0;">SafeLaunch requires JavaScript to run. Please enable it in your browser settings.</p>
       </div>
     </div>
